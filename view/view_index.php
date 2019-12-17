@@ -10,18 +10,14 @@
     <body>
          <div class="title">
              <form class="menus">Stuck Overflow</form>  
-             <form class="menu">
-                <a href="Post/questions">Questions</a>
-                <a href="Post/login">Log In</a>
-                <a href="Post/signup">Sign Up</a>
-           </form>
+             <?php include('menu.html'); ?>1
         </div>
          <div class="menus">
              <form class="menus">
-                <a href="Post/Newest">Newest</a>
-                <a href="Vote/Active"> Active</a>
-                <a href="Post/Unanswered">Unanswered</a>
-                <a href="Vote/Vote">Vote</a>
+                <a href="post/newest">Newest</a>
+                <a href="vote/active"> Active</a>
+                <a href="post/unanswered">Unanswered</a>
+                <a href="vote/votes">Vote</a>
             </form> 
              <form class="recherche">
                  <input id="idsearch" type="search" name="" aria-label="search ">

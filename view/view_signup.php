@@ -11,21 +11,21 @@
         <div class="title">Sign Up</div>
         <div class="menu">
             <br>
-            <a href="Post/index">Home</a>
+            <a href="post/index">Home</a>
         </div>
         <br><br>
         <div class="main">
             <br>
             <p> Please enter your details to sign up :</p>
             <br><br>
-            <form id="signupForm" action="Post/signup" method="post">
+            <form id="signupForm" action="user/signup" method="post">
                 <table>
                     <tr>
-                        <td>UserName:</td>
+                        <td>Username:</td>
                         <td><input id="UserName" name="UserName" type="text" size="16" value="<?= $UserName ?>"></td>
                     </tr>
                     <tr>
-                        <td>FullName:</td>
+                        <td>Fullname:</td>
                         <td><input id="FullName" name="FullName" type="text" size="16" value="<?= $FullName ?>"></td>
                     </tr>
                     <tr>
@@ -44,15 +44,18 @@
                 <br><br>
                 <input type="submit" value="Sign Up"  >
             </form>
-            <?php if(count($errors)!=0):?>
+
+
+            <?php if (count($errors) != 0): ?>
                 <div class='errors'>
                     <br><br><p>Please correct the following error(s) :</p>
                     <ul>
-                    <?php foreach($errors as $error): ?>
-                        <li><?= $error ?></li>
-                    <?php endforeach; ?>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= $error ?></li>
+                        <?php endforeach; ?>
                     </ul>
                 </div>
             <?php endif; ?>
+
         </div>
     </body>

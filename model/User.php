@@ -1,6 +1,6 @@
 <?php
 require_once "framework/Model.php";
-
+require_once "Question.php";
 class User extends Model {
     public $UserName;
     public $hashed_password;
