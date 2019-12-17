@@ -8,19 +8,20 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-         <div class="title">Stuck Overflow  
-            <form class="menu">
-                <a href="signup.php">Questions</a>
-               <a href="main/login">Log In</a>
-               <a href="signup.php">Sign Up</a>
+         <div class="title">
+             <form class="menus">Stuck Overflow</form>  
+             <form class="menu">
+                <a href="Post/questions">Questions</a>
+                <a href="Post/login">Log In</a>
+                <a href="Post/signup">Sign Up</a>
            </form>
         </div>
          <div class="menus">
              <form class="menus">
-                <a href="main/login">Newest</a>
-                <a href="signup.php"> Active</a>
-                <a href="main/login">Unanswered</a>
-                <a href="main/login">Vote</a>
+                <a href="Post/Newest">Newest</a>
+                <a href="Vote/Active"> Active</a>
+                <a href="Post/Unanswered">Unanswered</a>
+                <a href="Vote/Vote">Vote</a>
             </form> 
              <form class="recherche">
                  <input id="idsearch" type="search" name="" aria-label="search ">

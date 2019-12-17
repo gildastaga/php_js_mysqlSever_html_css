@@ -15,7 +15,7 @@ html {
 }
 
 .main {
-    padding     :20px;
+    padding    :20px;
 }
 
 form * {
@@ -26,7 +26,7 @@ form * {
 .menu {
     float: right;
     text-align  :right;
-    padding     :10px;
+/*    padding     :10px;*/
     padding-left: 300px;
 }
 .menus {
