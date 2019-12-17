@@ -10,7 +10,7 @@
     <body>
          <div class="title">
              <form class="menus">Stuck Overflow</form>  
-             <?php include('menu.html'); ?>1
+             <?php include('menu.html'); ?>
         </div>
          <div class="menus">
              <form class="menus">

@@ -1,6 +1,6 @@
 <?php
 require_once "framework/Model.php";
-require_once "Question.php";
+require_once "model/Question.php";
 class User extends Model {
     public $UserName;
     public $hashed_password;
@@ -10,12 +10,11 @@ class User extends Model {
     public $profile;
     
 
-    public function __construct($UserName, $hashed_password,$FullName,$Email,$profile = null,$UserId=0) {
+    public function __construct($UserName, $hashed_password,$FullName,$Email,$UserId=0) {
         $this->UserName = $UserName;
         $this->hashed_password = $hashed_password;
         $this->FullName = $FullName;
-        $this->email = $Email;
-        $this->profile = $profile;
+        $this->Email = $Email;
         $this->UserId = $UserId;
     }
     
@@ -68,13 +67,11 @@ class User extends Model {
     
     public function update() {
         if (self::get_member_by_username($this->UserName)) {
-            self::execute("UPDATE user SET  Password=:Password,FullName=:FullName,Email=:Email ,profile=:profile WHERE username=:username ",
-                    array("FullName" => $this->FullName, "UserName" => $this->UserName, "Password" => $this->hashed_password,
-                "Email" => $this->Email, "UserId" => $this->UserId));
+            self::execute("UPDATE User SET  Password=:Password, FullName=:FullName, Email=:Email  WHERE UserName=:UserName ",
+                    array( "UserName" => $this->UserName, "Password" => $this->hashed_password,"FullName" => $this->FullName, "Email" => $this->Email));
         } else {
-            self::execute("INSERT INTO user(UserName,Password,FullName,Email) VALUES(:UserName,:Password,:FullName,:Email)", 
-                    array("profile"=>$this->profile,"FullName" => $this->FullName, "UserName" => $this->UserName, "Password" => $this->hashed_password,
-                "Email" => $this->Email, "UserId" => $this->UserId));
+            self::execute("INSERT INTO User(UserName,Password,FullName,Email) VALUES(:UserName,:Password,:FullName,:Email)", 
+                    array( "UserName" => $this->UserName, "Password" => $this->hashed_password,"FullName" => $this->FullName, "Email" => $this->Email));
         }
         return $this;
     }
@@ -89,13 +86,17 @@ class User extends Model {
     }
     
 
-    public static function get_members() {
-        $query = self::execute("SELECT * FROM user", array());
-        $data = $query->fetchAll();
-        $results = [];
-        foreach ($data as $row) {
-            $results[] = new User($row["UserName"], $row["Password"], $row["FullName"], $row["Email"]);
-        }
-        return $results;
+    public function write_question($question) {
+        return $question->update();
     }
+
+    public function delete_question($question) {
+        return $question->delete($this);
+    }
+
+    public function get_question() {
+        return Question::get_question($this);
+    }
+    
+    
 }
