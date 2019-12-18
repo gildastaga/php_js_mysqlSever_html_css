@@ -27,7 +27,7 @@ form * {
     float: right;
     text-align  :right;
 /*    padding     :10px;*/
-    padding-left: 300px;
+    padding-left:30%;
 }
 .menus {
     float: left;
@@ -42,20 +42,20 @@ form * {
 .title {
     float: left;
     text-align  :left;
-    background  :lightsteelblue;
-/*    color       :yellow;*/
+    background  :blue;
+    color       :white;
     font-family :helvetica;
     font-size   :20pt;
     font-weight :bold;
     padding     :8px;
     margin      :10px;
-    padding-right: 00px;
+    
 }
 
 .menu a {
     display           :inline;
     padding           :4px 6px;
-    border            :1px solid #777;
+    border            :1px solid #100;
     background        :#ddd;
     color             :#d04;
     margin-right      :8px;
@@ -108,4 +108,23 @@ form.link input[type="submit"] {
      text-decoration: underline;
      
      cursor: pointer;
+}
+.menu ul{
+    padding: 0px;
+    margin: 0px;
+    list-style-type: nome;
+}
+.menu li{
+    display: inline;
+    width: 10px;
+    height: 40px;
+    margin: 0px;
+    padding: 0px;
+    border-right: 1px solid #777;
+    text-align:center;
+    line-height: 20px;
+}
+.menu li a{
+    text-decoration: none;
+    
 }

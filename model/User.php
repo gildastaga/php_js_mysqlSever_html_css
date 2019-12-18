@@ -1,6 +1,6 @@
 <?php
 require_once "framework/Model.php";
-require_once "model/Question.php";
+require_once "model/Post.php";
 class User extends Model {
     public $UserName;
     public $hashed_password;
@@ -86,16 +86,16 @@ class User extends Model {
     }
     
 
-    public function write_question($question) {
-        return $question->update();
+    public function write_post($post) {
+        return $post->update();
     }
 
-    public function delete_question($question) {
+    public function delete_post($question) {
         return $question->delete($this);
     }
 
-    public function get_question() {
-        return Question::get_question($this);
+    public function get_post() {
+        return Post::get_post($this);
     }
     
     
