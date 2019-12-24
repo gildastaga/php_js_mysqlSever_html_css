@@ -14,6 +14,7 @@
             <br>
             <a href="post/index">Home</a>
         </div>
+         <?php include('menu.html'); ?>
         <br><br>
         <div class="main">
             <br>
