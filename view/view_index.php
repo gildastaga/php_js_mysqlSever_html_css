@@ -8,8 +8,12 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-         <div class="title">
-             <form class="menus">Stuck Overflow</form>  
+         <div class="title">Stuck Overflow  
+            <form class="menu">
+                <a href="post/question">Questions</a>
+               <a href="user/login">Log In</a>
+               <a href="user/signup">Sign Up</a>
+
              <?php if (strlen($user->UserName) == 0): ?>
                 <?php include('menu.html'); ?>
              <?php else: ?>

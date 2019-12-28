@@ -6,26 +6,23 @@ require_once 'framework/View.php';
 require_once 'framework/Controller.php';
 
 class ControllerUser  extends Controller{
-     public function index() {
-         
-//          if ($this->user_logged()) {
-//            $this->redirect("post", "index");
-//        } else {
-//            (new View("index"))->show();
-//        }
-       
-       // (new View("index"))->show();
+    public function index() {
         
-        $user = $this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
-          $user = User::get_member_by_username($_GET["param1"]);
-       }
-       (new View("index"))->show(array("user" => $user));
     }
-    
-//    public function index() {
-//        $this->profile();
-//    }
+    public function login(){
+        $UserName='';
+        $Password='';
+        $errors=[];
+    if(isset($_POST['UserName']) && isset($_POST['Password'])){
+        $UserName=$_POST['UserName'];
+        $Password=$_POST['Password'];
+        $error=User::validate_login(UserName, Password);
+         if (empty($errors)) {
+                $this->log_user(User::get_user_by_username($UserName));
+            }
+        }
+        (new View("login"))->show(array("UserName" => $UserName, "Password" => $Password, "errors" => $errors));
+    }
    
     public function signup(){
         
@@ -54,12 +51,9 @@ class ControllerUser  extends Controller{
         $web_root= Configuration::get("web_root");
         (new View("signup"))->show(array("UserName" => $UserName,"FullName"=>$FullName ,"Password" => $Password,
             "Password_confirm"=>$Password_confirm,"Email"=>$Email, "errors" => $errors));
-    }   
-//    public function profile() {
-//        $user = $this->get_user_or_redirect();
-//        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
-//            $user = User::get_member_by_username($_GET["param1"]);
-//        }
-//        (new View("profile"))->show(array("user" => $user));
-//    }
+    }
+
+    
+
 }
+

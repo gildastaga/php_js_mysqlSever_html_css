@@ -96,16 +96,22 @@ class Post extends Model {
             $post[] = new Post( User::get_member_by_username($row['author']), User::get_member_by_username($row['Title']), $row['Body'], $row['Timestamp']);
         }
         return $post;
-//        $query = self::execute( SELECT post.*, max_score FROM post, (SELECT parentid, max(score) max_score
-//        FROM (
-//        SELECT post.postId, ifnull(post.parentid, post.postId) parentid, ifnull(sum(vote.updown), 0) score
-//        FROM post LEFT JOIN vote ON vote.postId = post.postId
-//        GROUP BY post.postId
-//        ) AS tbl1
-//        GROUP by parentid
-//        ) AS q1
-//        WHERE post.postId = q1.parentid
-//        ORDER BY q1.max_score DESC, timestamp DESC )
+        
     }
+        
+       /* public  function print() {
+
+
+        $query = self::execute(( SELECT post.*, max_score FROM post, (SELECT parentid, max(score) max_score
+                    FROM (
+                        SELECT post.postId, ifnull(post.parentid, post.postId) parentid, ifnull(sum(vote.updown), 0) score
+                   FROM post LEFT JOIN vote ON vote.postId = post.postId
+                        GROUP BY post.postId
+                            ) AS tbl1
+                        GROUP by parentid
+                            ) AS q1
+                        WHERE post.postId = q1.parentid
+                                ORDER BY q1.max_score DESC, timestamp DESC ),array())
+    }*/
 
 }
