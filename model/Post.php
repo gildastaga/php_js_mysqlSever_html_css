@@ -99,7 +99,7 @@ class Post extends Model {
         
     }
         
-        public  function print() {
+       /* public  function print() {
 
 
         $query = self::execute(( SELECT post.*, max_score FROM post, (SELECT parentid, max(score) max_score
@@ -112,6 +112,6 @@ class Post extends Model {
                             ) AS q1
                         WHERE post.postId = q1.parentid
                                 ORDER BY q1.max_score DESC, timestamp DESC ),array())
-    }
+    }*/
 
 }
