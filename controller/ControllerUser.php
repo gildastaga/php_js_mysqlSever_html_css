@@ -7,7 +7,13 @@ require_once 'framework/Controller.php';
 
 class ControllerUser  extends Controller{
     public function index() {
-        
+     
+        if ($this->user_logged()) {
+            $this->redirect("user");
+        } else {
+            (new View("index"))->show();
+           
+    }
     }
     public function login(){
         $UserName='';
@@ -16,9 +22,9 @@ class ControllerUser  extends Controller{
     if(isset($_POST['UserName']) && isset($_POST['Password'])){
         $UserName=$_POST['UserName'];
         $Password=$_POST['Password'];
-        $error=User::validate_login(UserName, Password);
+        $errors=User::validate_login($UserName, $Password);
          if (empty($errors)) {
-                $this->log_user(User::get_user_by_username($UserName));
+                $this->log_user(User::get_member_by_username($UserName));
             }
         }
         (new View("login"))->show(array("UserName" => $UserName, "Password" => $Password, "errors" => $errors));

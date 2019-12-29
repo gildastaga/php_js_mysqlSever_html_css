@@ -6,9 +6,17 @@ require_once 'framework/Tools.php';
 
 class ControllerPost extends Controller {
     public function index() {
+        if ($this->user_logged()) {
+            $this->redirect("user");
+        } else {
+            (new View("index"))->show();
+           
+    }
+    }
+    /*public function index() {
         $this->posts();
         $post = Post::affichepost();
-    }
+    }*/
     public function posts(){
         
         $user = $this->get_user_or_redirect();

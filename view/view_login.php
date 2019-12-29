@@ -9,11 +9,8 @@
     <body>
         <div class="title">Stuck Overflow  
             <form class="menu">
-                <a href="post/posts">Questions</a>
-               <a href="user/login">Log In</a>
-               <a href="user/signup">Sign Up</a>
+                <a href="post/index">home</a>
            </form>
-        
         <div class="login">
             <form action="user/login" method="post">
                  <center>

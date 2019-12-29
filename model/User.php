@@ -17,6 +17,27 @@ class User extends Model {
         $this->Email = $Email;
         $this->UserId = $UserId;
     }
+     public static function validate_login($UserName, $Password) {
+        $errors = [];
+        $user = User::get_member_by_username($UserName);
+        if ($user) {
+            if (!self::check_password($Password, $user->hashed_password)) {
+                $errors[] = "Wrong password. Please try again.";
+            }
+        } else {
+            $errors[] = "Can't find a member with the username '$UserName'. Please sign up.";
+        }
+        return $errors;
+    }
+   /* public static function get_member_by_username($UserName) {
+        $query = self::execute("SELECT * FROM User where UserName = :UserName", array("UserName"=>$UserName));
+        $data = $query->fetch(); 
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new User($data["UserName"], $data["password"], $data["FullName"], $data["Email"], $data["UserId"]);
+        }
+    }*/
     
     public function validate(){
         $errors = array();
@@ -75,7 +96,7 @@ class User extends Model {
         }
         return $this;
     }
-     public static function get_member_by_username($UserName) {
+    public static function get_member_by_username($UserName) {
         $query = self::execute("SELECT * FROM user where UserName = :UserName", array("UserName"=>$UserName));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
