@@ -6,20 +6,16 @@ require_once 'framework/Tools.php';
 
 class ControllerPost extends Controller {
     public function index() {
+        $user = $this->get_user_or_false();
         if ($this->user_logged()) {
-            $this->redirect("user");
+            $this->redirect("post","index");
         } else {
-            (new View("index"))->show();
-           
+            (new View("index"))->show(array("user"=>$user));   
+        }
     }
-    }
-    /*public function index() {
-        $this->posts();
-        $post = Post::affichepost();
-    }*/
-    public function posts(){
-        
-        $user = $this->get_user_or_redirect();
+   
+    public function posts(){   
+        $user = $this->get_user_or_false();
         $Title = $this->get_title($user);
         $errors = [];
         
@@ -28,7 +24,7 @@ class ControllerPost extends Controller {
         }
         $post = $Title->get_post();
         
-//        $post =Post::get_post($user);
+       $post =Post::affichepost($user);
         (new View("index"))->show(array("Title" => $Title, "user" => $user,
             "post" => $post, "errors" => $errors));    
     }

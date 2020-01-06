@@ -10,12 +10,13 @@
     <body>
          <div class="title">Stuck Overflow  
             <form class="menu">
-             <?php if (strlen($user->UserName) == 0): ?>
+             <?php if (!$user): ?>
                 <?php include('menu.html'); ?>
              <?php else: ?>
                  <?php include('menus.html'); ?>
              <?php endif; ?>
-        </div>      
+        </div> 
+        <br>
         <div class="main"> 
             <div class="menus">
                 <form class="menus">
@@ -30,7 +31,7 @@
                 </form>
             </div>
              <form id="post_form" action="post/index?param1=<?= $Title->UserName ?>" method="post">
-                question :<br>
+<!--               question :<br>-->
                 <textarea id="Body" name="Body" rows='3'></textarea><br>
 <!--               <input id="private" name="private" type="checkbox">Private message<br>-->
                 <input id="post" type="submit" value="Post">

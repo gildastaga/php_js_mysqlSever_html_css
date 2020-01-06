@@ -37,8 +37,8 @@ class Post extends Model {
        // }
         return $errors;
     }
-    public static function get_post($user) {
-        $query = self::execute("select * from post where Title = :UserName order by Timestamp DESC", array("UserName" => $user->UserName));
+    public static function get_post() {
+        $query = self::execute("select * from post where Title = :UserName order by Timestamp DESC", array());
         $data = $query->fetchAll();
         $post = [];
         foreach ($data as $row) {
@@ -89,12 +89,11 @@ class Post extends Model {
 
     public static function affichepost() {
         
-       $query = self::execute("select * from post", array());
-        $data = $query->fetchAll();
-        $post = [];
-        foreach ($data as $row) {
-            $post[] = new Post( User::get_member_by_username($row['author']), User::get_member_by_username($row['Title']), $row['Body'], $row['Timestamp']);
-        }
+       $query = self::execute("select * from post join user on UserId=Post.AuthordId "
+               . "where body is NOT NULL and ParentIdIS NULL ORDER BY Timesamp DESC", array());
+        $post = $query->fetchAll();
+        
+      // $post[] = new Post( User::get_member_by_username($row['author']), User::get_member_by_username($row['Title']), $row['Body'], $row['Timestamp']);
         return $post;
         
     }
