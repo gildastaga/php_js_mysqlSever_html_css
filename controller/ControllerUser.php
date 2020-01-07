@@ -8,13 +8,14 @@ require_once 'framework/Controller.php';
 class ControllerUser extends Controller {
 
     public function index() {
-        $user = $this->get_user_or_redirect();
+        $user = $this->get_user_or_false();
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
             $user = User::get_member_by_username($_GET["param1"]);
         }
             (new View("index"))->show(array("user" => $user));
     }
-    public function logout() {
+    public function log_out() {
+       // $this->logout();
         parent::logout();
     }
 

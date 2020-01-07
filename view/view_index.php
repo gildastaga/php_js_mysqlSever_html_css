@@ -30,12 +30,15 @@
                     <button>search</button>
                 </form>
             </div>
+            <?php if ($user): ?>
              <form id="post_form" action="post/index?param1=<?= $Title->UserName ?>" method="post">
 <!--               question :<br>-->
                 <textarea id="Body" name="Body" rows='3'></textarea><br>
 <!--               <input id="private" name="private" type="checkbox">Private message<br>-->
                 <input id="post" type="submit" value="Post">
             </form>
+            <?php endif; ?>
+            <div class="main">
            afficharge des question !!!!!
              <?php foreach($post as $message): ?>
                     <?php if(( ($message->author == $user || $message->Title == $user)) ): ?>
@@ -54,7 +57,8 @@
                             </td>
                         </tr>
                     <?php endif;?>
-                <?php endforeach; ?>   
+                <?php endforeach; ?>  
+            </div>            
         </div>
     </body>
 </html>
