@@ -40,7 +40,9 @@
             <?php endif; ?>
             <div class="main">
            afficharge des question !!!!!
-             <?php foreach($post as $message): ?>
+           <?php var_dump($post) ?>
+           <p> var dumn au dessus</p>
+             <?php foreach ($post as $message): ?>
                     <?php if(( ($message->author == $user || $message->Title == $user)) ): ?>
                         <tr>
                             <td><?= $message->Timestamp ?></td>
