@@ -4,7 +4,6 @@
 }
 
 body {
-    width       :700px;
     margin      :20px auto;
     background  :#f8f8f8;
     border      :1px solid #888;
@@ -26,39 +25,34 @@ form * {
 .menu {
     float: right;
     text-align  :right;
-/*    padding     :10px;*/
-    padding-left:30%;
 }
 .menus {
     float: left;
     text-align  :left;
-   padding     :10px;
 }
 .recherche{
     float: right;
     text-align  :right;
-  
+    margin-left:50%;
+}
+.bloc1 {
+    padding-top: 10px;
+    background:blue;
+    padding-bottom: 30px; 
 }
 .title {
     float: left;
     text-align  :left;
-    background  :blue;
+   background  :blue;
     color       :white;
-    font-family :helvetica;
-    font-size   :20pt;
-    font-weight :bold;
-    
 }
 
 .menu a {
     display           :inline;
-    padding           :4px 6px;
     border            :1px solid #100;
     background        :#ddd;
     color             :#d04;
-    margin-right      :8px;
     border-radius     :3px;
-    box-shadow        :2px 2px 2px #888;
     text-decoration   :none;
 }
 
@@ -99,30 +93,10 @@ form.link {
 
 form.link input[type="submit"] {
     background:none!important;
-     border:none; 
-     padding:0!important;
-     font: inherit;
-     color: blue;
-     text-decoration: underline;
-     
-     cursor: pointer;
-}
-.menu ul{
-    padding: 0px;
-    margin: 0px;
-    list-style-type: nome;
-}
-.menu li{
-    display: inline;
-    width: 10px;
-    height: 40px;
-    margin: 0px;
-    padding: 0px;
-    border-right: 1px solid #777;
-    text-align:center;
-    line-height: 20px;
-}
-.menu li a{
-    text-decoration: none;
-    
+    border:none; 
+    padding:0!important;
+    font: inherit;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
 }
