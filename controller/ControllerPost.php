@@ -30,5 +30,10 @@ class ControllerPost extends Controller {
         $Ak_a = Post::Ak_a_question();
         (new View("index"))->show(array("user" => $user, "Ak_a_question" => $Ak_a));
     }
+    public function newest(){
+        $newest = Post::newest();
+        (new View("index"))->show(Array("newest" => $newest));
+        
+    }
 
 }

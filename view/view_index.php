@@ -51,14 +51,15 @@
             <br><br><br><br>
             <div class="main">
                 afficharge des question !!!!!
+                
                 <?php var_dump($posts); ?><br>
                 <?php foreach ($posts as $erro): ?>
-                <li><?= $erro ?></li>
-                <ul>
-                    <?php foreach ($posts as $errod): ?>
-                    <li><?= $errod ?></li><br>
-                    <?php endforeach; ?>
-                </ul>
+                    <li><?= $erro ?></li>
+                    <ul>
+                        <?php foreach ($posts as $errod): ?>
+                            <li><?= $errod ?></li><br>
+                        <?php endforeach; ?>
+                    </ul>
                 <?php endforeach; ?>
                 <?php foreach ($posts as $question): ?>
                     <tr>q
@@ -67,7 +68,16 @@
                     <td><?php $question["Body"] ?></td>
 
                     </tr>
-                <?php endforeach; ?>  
+                <?php endforeach; ?>
+                    
+                    
+                <?php if ($newest): ?>
+                    <table>
+                <?php foreach ($newest as $value): ?> 
+                        <tr><li><a href="post/newest" > <?php echo $value->Title; ?> </a></li></tr> 
+                <?php endforeach; ?>
+                    </table>
+                <?php  endif ;?>
             </div>            
         </div>
     </body>
