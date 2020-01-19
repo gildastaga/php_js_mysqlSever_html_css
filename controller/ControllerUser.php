@@ -15,7 +15,6 @@ class ControllerUser extends Controller {
             (new View("index"))->show(array("user" => $user));
     }
     public function log_out() {
-       // $this->logout();
         parent::logout();
     }
 

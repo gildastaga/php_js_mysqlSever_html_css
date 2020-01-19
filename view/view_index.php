@@ -1,3 +1,6 @@
+<?php
+    require_once "lib/parsedown-1.7.3/Parsedown.php";
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -38,7 +41,7 @@
             </div>
             <br><br><br>
             <div>
-                <?php if ($user && strlen($Ak_a_question) == 0): ?>
+                <?php if ($user && $Ak_a): ?>
                     <form id="post_form" action="post/Ak_a_question=<?= $Title->UserName ?>" method="post">
                         <td>Title</td<br>
                         <textarea id="Title" name="Title" rows='1'></textarea><br>  
@@ -48,26 +51,35 @@
                     </form>
                 <?php endif; ?>
             </div>
-            <br><br><br><br>
+            <br><br><br>
             <div class="main">
-                afficharge des question !!!!!
-                <?php var_dump($posts); ?><br>
-                <?php foreach ($posts as $erro): ?>
-                <li><?= $erro ?></li>
-                <ul>
-                    <?php foreach ($posts as $errod): ?>
-                    <li><?= $errod ?></li><br>
-                    <?php endforeach; ?>
-                </ul>
-                <?php endforeach; ?>
-                <?php foreach ($posts as $question): ?>
-                    <tr>q
-                    <p> question</p>
-                    <li><?php $question["Title"] ?></a></li>
-                    <td><?php $question["Body"] ?></td>
-
-                    </tr>
-                <?php endforeach; ?>  
+                <?php if ($posts || $questions) :?>
+                <table id="message_list" class="message_list">
+                    <?php foreach ($posts as $values): ?>
+                    <?php// $markdown = $question;
+//                            $Parsedown = new Parsedown();
+//                            $Parsedown->setSafeMode(true);
+//                            $html = $Parsedown->text($markdown);
+//                            echo $html; 
+                    ?>
+                        <tr>
+                            <a href="post/question"><?php echo $values->Title; ?></a><br>
+                        </tr>
+                        <?php if ($values->Title): ?>
+                            <tr>
+                                <td>
+                                    vote<br>
+                                    <a href="vote/addvote"><img src="lib/parsedown-1.7.3/haudb.png" width="30" height="20"  alt=""/></a><br>
+                                    <a href="vote/devote"><img src="lib/parsedown-1.7.3/basb.png" width="30" height="20" alt=""/></a>
+                                </td>
+                                <td>
+                                    <li><?php echo $values->Body; ?></li>
+                                </td>
+                            </tr>
+                        <?php endif; ?>   
+                    <?php endforeach; ?>  
+                </table>
+                <?php endif; ?>
             </div>            
         </div>
     </body>

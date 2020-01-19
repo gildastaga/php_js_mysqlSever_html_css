@@ -71,8 +71,8 @@ form * {
 
 .message_list th, .message_list td {
     border: 1px solid black;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 textarea {
