@@ -42,5 +42,10 @@ class ControllerPost extends Controller {
         (new View("index"))->show(array("user" => $user, "Ak_a" => $Ak_a,"posts" => $posts
                 ,"Body"=>$Body,"Title"=>$Title));
     }
+    public function newest(){
+        $newest = Post::newest();
+        (new View("index"))->show(Array("newest" => $newest));
+        
+    }
 
 }

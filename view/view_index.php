@@ -1,5 +1,5 @@
 <?php
-    require_once "lib/parsedown-1.7.3/Parsedown.php";
+require_once "lib/parsedown-1.7.3/Parsedown.php";
 ?>
 <!DOCTYPE html>
 <html>
@@ -53,33 +53,43 @@
             </div>
             <br><br><br>
             <div class="main">
-                <?php if ($posts || $questions) :?>
-                <table id="message_list" class="message_list">
-                    <?php foreach ($posts as $values): ?>
-                    <?php// $markdown = $question;
+                <<<<<<< HEAD
+                <?php if ($posts || $questions) : ?>
+                    <table id="message_list" class="message_list">
+                        <?php foreach ($posts as $values): ?>
+                            <?php
+                            // $markdown = $question;
 //                            $Parsedown = new Parsedown();
 //                            $Parsedown->setSafeMode(true);
 //                            $html = $Parsedown->text($markdown);
 //                            echo $html; 
-                    ?>
-                        <tr>
-                            <a href="post/question"><?php echo $values->Title; ?></a><br>
-                        </tr>
-                        <?php if ($values->Title): ?>
+                            ?>
                             <tr>
-                                <td>
-                                    vote<br>
-                                    <a href="vote/addvote"><img src="lib/parsedown-1.7.3/haudb.png" width="30" height="20"  alt=""/></a><br>
-                                    <a href="vote/devote"><img src="lib/parsedown-1.7.3/basb.png" width="30" height="20" alt=""/></a>
-                                </td>
-                                <td>
-                                    <li><?php echo $values->Body; ?></li>
-                                </td>
+                            <a href="post/question"><?php echo $values->Title; ?></a><br>
                             </tr>
-                        <?php endif; ?>   
-                    <?php endforeach; ?>  
-                </table>
+                                <?php if ($values->Title): ?>
+                                <tr>
+                                    <td>
+                                        vote<br>
+                                        <a href="vote/addvote"><img src="lib/parsedown-1.7.3/haudb.png" width="30" height="20"  alt=""/></a><br>
+                                        <a href="vote/devote"><img src="lib/parsedown-1.7.3/basb.png" width="30" height="20" alt=""/></a>
+                                    </td>
+                                    <td>
+                                      <li><?php echo $values->Body; ?></li>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>   
+                        <?php endforeach; ?>  
+                    </table>
                 <?php endif; ?>
+                <?php if ($newest): ?>
+                    <table>
+                        <?php foreach ($newest as $value): ?> 
+                            <tr><li><a href="post/newest" > <?php echo $value->Title; ?> </a></li></tr> 
+                        <?php endforeach; ?>
+                    </table>
+                 <?php endif; ?>
+                >>>>>>> origin/master
             </div>            
         </div>
     </body>

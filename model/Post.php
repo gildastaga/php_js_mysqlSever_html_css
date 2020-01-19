@@ -94,4 +94,24 @@ class Post extends Model {
         }
     }
 
+    public static function newest(){
+        $query= self::execute(("SELECT post.*, max_score
+                                FROM post, (
+                          SELECT parentid, max(score) max_score
+                          FROM (
+                              SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score
+                              FROM post LEFT JOIN vote ON vote.postid = post.postid
+                              GROUP BY post.postid
+                          ) AS tbl1
+                          GROUP by parentid
+                      ) AS q1
+                      WHERE post.postid = q1.parentid
+                      ORDER BY q1.max_score DESC, timestamp DESC "), array());
+        $data = $query->fetchAll();
+        $newest = [];
+        foreach ($data as $value) {
+            $newest[]=new Post($value["PostId"], $value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"]);
+         }
+         return $newest;   
+    }
 }
