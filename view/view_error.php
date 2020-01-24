@@ -22,7 +22,12 @@
 <body>
     <div class="title">Error</div>
     <div class="main">
-        <?= $error ?>
+       <div class='errors'>
+            <br><br><p>Please correct the following error(s) :</p>
+            <ul>
+                    <li><?= $errors ?></li>
+            </ul>
+        </div>
     </div>
 </body>
 

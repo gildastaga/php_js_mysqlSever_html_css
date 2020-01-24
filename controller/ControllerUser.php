@@ -57,7 +57,6 @@ class ControllerUser extends Controller {
                 $this->log_user($user);
             }
         }
-        $web_root = Configuration::get("web_root");
         (new View("signup"))->show(array( "UserName" => $UserName, "FullName" => $FullName, "Password" => $Password,
             "Password_confirm" => $Password_confirm, "Email" => $Email, "errors" => $errors));
     }

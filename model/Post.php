@@ -1,5 +1,7 @@
 <?php
 
+require_once "lib/parsedown-1.7.3/Parsedown.php";
+
 class Post extends Model {
 
     public $PostId;
@@ -7,37 +9,40 @@ class Post extends Model {
     public $Title;
     public $Body;
     public $Timestamp;
-    public $AcceptedAnwerId;
-    public $Parentid;
+    public $AcceptedAnswerId;
+    public $ParentId;
 
-    public function __construct($PostId=-1, $AuthorId, $Title, $Body, $Timestamp, $AcceptedAnwerId , $Parentid ) {
+    public function __construct($AuthorId, $Title, $Body, $Timestamp, $AcceptedAnswerId, $Parentid, $PostId = -1) {
         $this->PostId = $PostId;
         $this->AuthorId = $AuthorId;
         $this->Title = $Title;
         $this->Body = $Body;
         $this->Timestamp = $Timestamp;
-        $this->AcceptedAnwerId = $AcceptedAnwerId;
+        $this->AcceptedAnswerId = $AcceptedAnswerId;
         $this->ParentId = $Parentid;
     }
 
-   
-  public static function affichepost() {
+    public function markdown(){
+        //$markdown = "Ceci est un *texte* **Markdown**";
+        $Parsedown = new Parsedown();
+        $Parsedown->setSafeMode(true);
+        $html = $Parsedown->text($this->Body);
+        return $html;
+    }
+
+    public static function affichepost() {
 
         $query = self::execute("select * from post join user on user.UserId=post.PostId "
                         . "where body IS NOT NULL and ParentId IS NULL ORDER BY Timestamp DESC", array());
         $array = $query->fetchAll();
-
         $resul = [];
         foreach ($array as $row) {
-            $post = new Post($row["PostId"], $row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"]);
-            //$post[] = new Post($row['PostId'], $row['AuthorId'], $row['Title'], $row['Body'], $row['Timestamp'], $row['AcceptedAnswerId'], $row['ParentId']);
-            $resul[] = $post;
+            $resul[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row["PostId"]);
         }
         return $resul;
     }
-   
-    public static function post() {
 
+    public static function post() {
         $query = self::execute(("SELECT post.*, max_score FROM post,(SELECT parentid, max(score) max_score
             FROM (SELECT post.postId, ifnull(post.parentid, post.postId) parentid, ifnull(sum(vote.updown), 0) score
             FROM post LEFT JOIN vote ON vote.postId = post.postId
@@ -47,55 +52,97 @@ class Post extends Model {
             WHERE post.postId = q1.parentid
             ORDER BY q1.max_score DESC, timestamp DESC"), array());
         $data = $query->fetchAll();
-        
         $results = [];
         foreach ($data as $row) {
-            $results[] = new Post($row["PostId"], $row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"]);
-             
+            $results[] = new Post( $row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"],
+                    $row["ParentId"],$row["PostId"]);
         }
         return $results;
     }
-    public static function Ak_a_question(){
-        
-    }
-     //renvoie un tableau d'erreur(s) 
-    //le tableau est vide s'il n'y a pas d'erreur.
-    public function validate(){
-        $errors = array();
-        if(!(isset($this->AuthorId ) && is_a($this->AuthorId,"User") && User::get_member_by_username($this->AuthorId->UserName))){
-            $errors[] = "Incorrect authorid";
-        }
-        if(!(isset($this->Title) && is_a($this->Title,"User") && User::get_member_by_username($this->Title->UserName))){
-            $errors[] = "Incorrect Title";
-        }
-        if(!(isset($this->Body) && is_string($this->Body) && strlen($this->Body) > 0)){
-            $errors[] = "Body must be filled";
-        }
-        return $errors;
-    }
-    public static function get_post_user($user) {
-        $query = self::execute("select * from FROM Post join user on user.UserId=Post.AuthorId "
-                . "where UserName = :UserName order by Timestamp", array("UserName" => $user->UserName));
-        $data = $query->fetchAll();
-        $post = [];
-        foreach ($data as $row) {
-            $post[] = new Message($row['PostId'],User::get_member_by_username($row['AuthorId']), User::get_member_by_username($row['Title']), $row['Body'], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"]);
 
-        }
-        return $post;
-    }
-    public static function get_post_PostId($PostId) {
-        $query = self::execute("select * from post join user on user.UserId=post.PostId where post_id = :id", array("id" => $post_id));
+    // return false ou le post d'un postId
+    public static function get_quetion($PostId) {
+        $query = self::execute("SELECT * FROM post where PostId =:PostId", array("PostId" => $PostId));
         if ($query->rowCount() == 0) {
             return false;
         } else {
             $row = $query->fetch();
-            return new Message($row['PostId'],User::get_member_by_username($row['AuthorId']), User::get_member_by_username($row['Title']), $row['Body'], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"]);
+            return new Post( $row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row["PostId"]);
         }
     }
 
-    public static function newest(){
-        $query= self::execute(("SELECT post.*, max_score
+    //renvoie un tableau d'erreur(s) 
+    //le tableau est vide s'il n'y a pas d'erreur.
+    public  function validate() {
+        $errors = array();
+        if (!(isset($this->Title) )) {
+            $errors[] = "Incorrect Title";
+        }
+        if (!(isset($this->Body)  )) {
+            $errors[] = "Body must be filled";
+        }
+        return $errors;
+    } 
+    //revoir les answer et autorid d'un post
+    public function getAllAnswerAndAutorIdbypost($PosId){
+         $query = self::execute("select AuthorId,AcceptedAnswerId  from  Post where PosId = :PosId "
+                 . "GROUP by AuthorId, ORDER BY Timestamp",array("PosId" => $PosId));
+         $data = $query->fetchAll();
+         return $data;
+    } 
+   // renvoir le nombre de reponse sur une question  
+    public function getAllAnswerByPost($PosId){
+         $query = self::execute("select count(AcceptedAnswerId)as nbr_answer from  Post where PosId = :PosId ",
+                 array("PosId" => $PosId));
+         $data = $query->fetch();
+         return $data;
+    }   
+
+    //renvoie la question d'un postid si trouver si non false
+    public static function get_post_PostId($PostId) {
+        $query = self::execute("select * from post  where PostId =:PostId", array("PostId" => $PostId));
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            $row = $query->fetch();
+            return new Post( $row['AuthorId'],$row['Title'], $row['Body'], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row['PostId']);
+        }
+    }
+
+    //renvoie tous les post d'un auteur ou false si null
+    public static function getAllPost_by_user($user) {
+        $query = self::execute("SELECT * FROM post where AuthorId = :UserId order by Timestamp DESC", array("UserId" => $user->UserId));
+        $data = $query->fetchAll();
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            $resul=[];
+            foreach ($data as $row) {
+                $resul= $post[] = new Post( $row['AuthorId'],$row['Title'], $row['Body'], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row['PostId']);
+            }
+            return $resul;
+        }
+    }
+
+    //ajoute un post ou update un post
+    public function update() {
+        if ($this->PostId == -1) {           
+            self::execute("INSERT INTO post(AuthorId,Title,Body,Timestamp,AcceptedAnswerId,ParentId) "
+                    . "VALUES(:AuthorId,:Title,:Body,:Timestamp,:AcceptedAnswerId,:ParentId)", 
+                array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body,
+                "Timestamp"=> $this->Timestamp, "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId));
+            return $this;
+        } else {var_dump("lol");
+            self::execute("UPDATE post SET  AuthorId:AuthorId, Title:Title, Body:Body, Timestamp:Timestamp,"
+                    . "AcceptedAnswerId:AcceptedAnswerId, ParentId:ParentId WHERE PostId=:PostId ", 
+                        array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body, "Timestamp" => $this->Timestamp,
+                            "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId,"PostId"=> $this->PostId));    
+                 return $this;
+        }
+    }
+
+    public static function newest() {
+        $query = self::execute(("SELECT post.*, max_score
                                 FROM post, (
                           SELECT parentid, max(score) max_score
                           FROM (
@@ -110,8 +157,15 @@ class Post extends Model {
         $data = $query->fetchAll();
         $newest = [];
         foreach ($data as $value) {
-            $newest[]=new Post($value["PostId"], $value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"]);
-         }
-         return $newest;   
+            $newest[] = new Post( $value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"],$value["PostId"]);
+        }
+        return $newest;
+    }
+    public function delete($initiator) {
+        if ($this->AuthorId == $initiator->UserId ) {
+            self::execute('DELETE FROM post WHERE postid = :postid', array('postid' => $this->postid));
+            return $this;
+        }
+        return false;
     }
 }

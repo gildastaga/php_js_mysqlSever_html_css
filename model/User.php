@@ -7,15 +7,14 @@ class User extends Model {
     public $FullName;
     public $Email;
     public $UserId;
-    public $profile;
     
 
-    public function __construct($UserName, $hashed_password,$FullName,$Email,$UserId=0) {
+    public function __construct($UserName, $hashed_password, $FullName, $Email, $UserId =-1) {
+        $this->UserId = $UserId;
         $this->UserName = $UserName;
         $this->hashed_password = $hashed_password;
         $this->FullName = $FullName;
-        $this->Email = $Email;
-        $this->UserId = $UserId;
+        $this->Email = $Email;  
     }
      public static function validate_login($UserName, $Password) {
         $errors = [];
@@ -29,17 +28,18 @@ class User extends Model {
         }
         return $errors;
     }
-   /* public static function get_member_by_username($UserName) {
-        $query = self::execute("SELECT * FROM User where UserName = :UserName", array("UserName"=>$UserName));
-        $data = $query->fetch(); 
+  // renvoie le UserId d'un user
+ public function getUserId($UserName){
+        $query = self::execute("SELECT * FROM user where UserName = :UserName ", array("UserName"=>$UserName));
+        $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["UserName"], $data["password"], $data["FullName"], $data["Email"], $data["UserId"]);
+            return $data[0];
         }
-    }*/
-    
-    public function validate(){
+ }
+
+  public function validate(){
         $errors = array();
         if (!(isset($this->UserName) && is_string($this->UserName) && strlen($this->UserName) > 0)) {
             $errors[] = "Pseudo is required.";
@@ -88,7 +88,7 @@ class User extends Model {
     
     public function update() {
         if (self::get_member_by_username($this->UserName)) {
-            self::execute("UPDATE User SET  Password=:Password, FullName=:FullName, Email=:Email  WHERE UserName=:UserName ",
+            self::execute("UPDATE User SET  UserName=:UserName,Password=:Password, FullName=:FullName, Email=:Email  WHERE UserId:UserId ",
                     array( "UserName" => $this->UserName, "Password" => $this->hashed_password,"FullName" => $this->FullName, "Email" => $this->Email));
         } else {
             self::execute("INSERT INTO User(UserName,Password,FullName,Email) VALUES(:UserName,:Password,:FullName,:Email)", 
@@ -102,13 +102,13 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"]);
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"],$data["UserId"]);
         }
     }
     
 
-    public function write_post($post) {
-        return $post->update();
+    public function write_post($question) {
+        return $question->update();
     }
 
     public function delete_post($question) {

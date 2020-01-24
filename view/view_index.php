@@ -39,57 +39,28 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                     <button>search</button>
                 </form>
             </div>
-            <br><br><br>
-            <div>
-                <?php if ($user && $Ak_a): ?>
-                    <form id="post_form" action="post/Ak_a_question=<?= $Title->UserName ?>" method="post">
-                        <td>Title</td<br>
-                        <textarea id="Title" name="Title" rows='1'></textarea><br>  
-                        <td>Body</td><br>
-                        <textarea id="Body" name="Body" rows='8'></textarea><br>
-                        <input id="post" type="submit" value="Post">
-                    </form>
-                <?php endif; ?>
-            </div>
-            <br><br><br>
+            <br><br>
             <div class="main">
-                <<<<<<< HEAD
                 <?php if ($posts || $questions) : ?>
                     <table id="message_list" class="message_list">
                         <?php foreach ($posts as $values): ?>
-                            <?php
-                            // $markdown = $question;
-//                            $Parsedown = new Parsedown();
-//                            $Parsedown->setSafeMode(true);
-//                            $html = $Parsedown->text($markdown);
-//                            echo $html; 
-                            ?>
-                            <tr>
-                            <a href="post/question"><?php echo $values->Title; ?></a><br>
-                            </tr>
-                                <?php if ($values->Title): ?>
-                                <tr>
-                                    <td>
-                                        vote<br>
-                                        <a href="vote/addvote"><img src="lib/parsedown-1.7.3/haudb.png" width="30" height="20"  alt=""/></a><br>
-                                        <a href="vote/devote"><img src="lib/parsedown-1.7.3/basb.png" width="30" height="20" alt=""/></a>
-                                    </td>
-                                    <td>
-                                      <li><?php echo $values->Body; ?></li>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>   
+                        <tr>
+                            <a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a><br>
+                        </tr>                           
                         <?php endforeach; ?>  
                     </table>
                 <?php endif; ?>
-                <?php if ($newest): ?>
-                    <table>
-                        <?php foreach ($newest as $value): ?> 
-                            <tr><li><a href="post/newest" > <?php echo $value->Title; ?> </a></li></tr> 
-                        <?php endforeach; ?>
-                    </table>
-                 <?php endif; ?>
-                >>>>>>> origin/master
+
+                <?php if (count($errors) != 0): ?>
+                    <div class='errors'>
+                        <br><br><p>Please correct the following error(s) :</p>
+                        <ul>
+                            <?php foreach ($errors as $error): ?>
+                                <li><?= $error ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
             </div>            
         </div>
     </body>
