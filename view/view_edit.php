@@ -24,16 +24,16 @@
         <div class="main">
         <br><br>
                 <div>
-                    <form id="post_form" action="post/addanswer" method="post">
+                    <form id="post_form" action="post/postedit/<?php echo $posts->PostId; ?>" method="post">
                         <td>Body</td><br>
                         <textarea id="Body" name="Body" rows='8'></textarea><br><br>
                         <input id="post" type="submit" value="Post">
                     </form>
                 </div>    
-            <br><br><br>
+            <br>
              <?php if (count($errors) != 0): ?>
                 <div class='errors'>
-                    <br><br><p>Please correct the following error(s) :</p>
+                    <br><p>Please correct the following error(s) :</p>
                     <ul>
                         <?php foreach ($errors as $error): ?>
                             <li><?= $error ?></li>

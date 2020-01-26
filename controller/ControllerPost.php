@@ -9,7 +9,7 @@ class ControllerPost extends Controller {
 
     public function index() {
         $user = $this->get_user_or_false();
-        $posts = Post::post() ;
+        $posts = Post::affichepost() ;
         $errors=[];
         (new View("index"))->show(array("user" => $user, "posts" => $posts,"errors"=>$errors));
     }
@@ -39,19 +39,32 @@ class ControllerPost extends Controller {
         }
         (new View("ask_a_question"))->show(array("user" => $user,"Body" => $Body, "Title" => $Title,"errors"=>$errors));
     }
+    
+    public function unanswered(){
+        
+    }
+
     //controller answer :post/anwer
     public function addanswer() {
         $user= $this->get_user_or_redirect();
+        $PostId=$_GET['param1'];
+        $posts = Post::get_quetion($PostId) ;
+         $answerauthor= Post::getAllAnswerAndAutorIdbypost($PostId);
         $errors = [];
-        if (isset($_POST['body'])) {
-            $body = $_POST['body'];
-            $answered = new Pot($user, $body);
-            $errors = $answered->validate();
-            if(empty($errors)){
-                $user->write_message($answered);                
-            }
+        if (isset($_POST['Body'])) {
+            $AcceptedAnswerId = $_POST['Body'];
+            if(strlen($AcceptedAnswerId)!=0){
+                $answered = new Post($user->UserId,$posts->Title,$posts->Body,date('Y-m-d H:i:s'), $AcceptedAnswerId,$posts->ParentId,$posts->PostId);
+                var_dump($answered);
+                $errors [] = $answered->validate();
+                if(count($errors)==0){
+                    $user->write_post($answered);                
+                }
+            }else{
+                $errors [] ="you cannot add an empty answer";
+            }    
         }
-        (new View("index"))->show(array("user" => $user,"Body" => $Body,"errors"=>$errors));
+        (new View("show"))->show(array("user" => $user, "posts" => $posts,"answerauthor"=>$answerauthor,"errors"=>$errors));
     }
     //controller neswest :post/neswet
     public function newest() {
@@ -65,42 +78,44 @@ class ControllerPost extends Controller {
     public function show(){
         $user = $this->get_user_or_false();
         $PostId=$_GET['param1'];
-        $posts = Post::post($PostId) ;
+        $posts = Post::get_quetion($PostId) ;
+        $answerauthor= Post::getAllAnswerAndAutorIdbypost($PostId);
         $errors=[];
         if (isset($_POST['body'])) {
             $body = $_POST['body'];
             $errors = $body->validate();
         }
-         (new View("show"))->show(array("user" => $user, "posts" => $posts,"errors"=>$errors));
+         (new View("show"))->show(array("user" => $user, "posts" => $posts,"errors"=>$errors,"answerauthor"=>$answerauthor));
     }
     // controller delete
-    public function delete_confirm() {
-        
+    public function delete_confirm() { 
         $user = $this->get_user_or_false();
         $PostId=$_GET['param1'];
         $posts = Post::post($PostId) ;
         (new View("delete"))->show(array("user" => $user, "posts" => $posts)); 
     }
     public function am_ok_delete(){
-        $post= $this->remove_post();
+        $post= $this->remove_post();  
         if($post){
            $user=$post->AuthorId;
            $this->redirect("post","index",$user->UserName);
         } else {
             $errors = [];
-            $errors="vous deviers etre l'auteur du post";
+            $errors []="vous deviers etre l'auteur du post";
             (new View("error"))->show(array("errors" => $errors));
         }
     }
     //méthode delete post.
     private function remove_post() {
         $user = $this->get_user_or_false();
-        if (isset($_GET['PostId']) && $_GET['PostId'] != "") {
-            $PostId = $_POST['PostId'];
+        var_dump($user);
+        if (isset($_GET['param1'])) {
+            $PostId = $_POST['param1'];
             var_dump($PostId);
             $post = Post::get_quetion($PostId);
             if ($post) {
-                return $post->delete($user);
+              return  $user->delete_post($post);
+            //    return $post->delete($user);
             } 
         }
         return false;
@@ -109,27 +124,39 @@ class ControllerPost extends Controller {
     public function edit() {
         $user= $this->get_user_or_false();
         $PostId=$_GET['param1'];
-        $posts = Post::post($PostId) ;
+        $posts = Post::get_quetion($PostId) ;
+        $errors = [];
+        (new View("edit"))->show(array("user" => $user,"posts" => $posts,"errors"=>$errors));
+    }
+    public function postedit(){
+        $user= $this->get_user_or_false();
+        $PostId=$_GET['param1'];
+        $posts = Post::get_quetion($PostId) ;
         $Body = '';
-        $errors = []; 
-        if ( isset($_POST['Body'])) {
-            $Body = $_POST['Body'];
-            if($posts->AuthorId==$user->UserId){
-                $Title=$posts->Title;
-                $AuthorId = $user->UserId;// ok
-                $Timestamp=date('Y-m-d H:i:s');
-                $AcceptedAnswerId=$posts->AcceptedAnswerId;
-                $ParentId=$posts->ParentId;
-                $PostId=$posts->PostId;
-                $question = new Post($AuthorId, $Title, $Body,$Timestamp, $AcceptedAnswerId, $ParentId,$PostId);
-                $errors = $question->validate();
-                if (count($errors) == 0) {
-                    $user->write_post($question);     
-                }
-            } else {
-                 $errors="vous deviers etre l'auteur de la quetionn";
-            }    
-        }
-        (new View("edit"))->show(array("user" => $user,"Body" => $Body,"errors"=>$errors));
+        $errors = [];
+        if($user){ 
+            if (isset($_POST['Body'])){
+                $Body = $_POST['Body'];
+                if($posts->AuthorId === $user->UserId){
+                    $Title=$posts->Title;
+                    $AuthorId = $user->UserId;// ok
+                    $Timestamp=date('Y-m-d H:i:s');
+                    $AcceptedAnswerId=$posts->AcceptedAnswerId;
+                    $ParentId=$posts->ParentId;
+                    $PostId=$posts->PostId;
+                    $question = new Post($AuthorId, $Title, $Body,$Timestamp, $AcceptedAnswerId, $ParentId,$PostId);
+                    $errors = $question->validate();
+                    if (count($errors) == 0) {
+                        $user->write_post($question); 
+                        $this->redirect("post","index",$user->UserName);
+                    }
+                } else {
+                     $errors[] ="you must have been the author of the question";
+                }    
+            }
+        }else{
+            $errors[] ="you had to be a member";
+        }    
+        (new View("edit"))->show(array("user" => $user,"posts" => $posts,"errors"=>$errors));
     }
 }

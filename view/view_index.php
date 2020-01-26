@@ -44,9 +44,15 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 <?php if ($posts || $questions) : ?>
                     <table id="message_list" class="message_list">
                         <?php foreach ($posts as $values): ?>
-                        <tr>
-                            <a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a><br>
-                        </tr>                           
+                            <tr>
+<!--                                <td>
+                                    <a href="vote/addvote"><img src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
+                                     <a href="vote/devote"><img src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a>
+                                 </td>-->
+                                 <td>
+                                    <li> <a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li><br>
+                                </td>    
+                            </tr>                           
                         <?php endforeach; ?>  
                     </table>
                 <?php endif; ?>

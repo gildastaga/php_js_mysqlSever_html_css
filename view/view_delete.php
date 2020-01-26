@@ -30,12 +30,11 @@
                             <h2> are you sure ?</h2>
                         </tr>
                         <tr>
-                        <p> Do you really want to delete this post? <br><br>
+                            <p> Do you really want to delete this post? <br><br>
                             This process cannot be undone<br>
-                        </p>
-                        <td><a href="post/show/<?php echo $posts->PostId; ?>">cancel</a></td> 
-                        <td> <a href="post/am_ok_delete">DELETE</a></td> 
-                           
+                            </p>
+                            <td><a href="post/index">cancel</a></td> 
+                            <td> <a href="post/am_ok_delete/<?php echo $posts->PostId; ?>">DELETE</a></td> 
                         </tr>
                     </table>
                 </div>    

@@ -32,8 +32,7 @@ class Post extends Model {
 
     public static function affichepost() {
 
-        $query = self::execute("select * from post join user on user.UserId=post.PostId "
-                        . "where body IS NOT NULL and ParentId IS NULL ORDER BY Timestamp DESC", array());
+        $query = self::execute("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL ORDER BY Timestamp DESC", array());
         $array = $query->fetchAll();
         $resul = [];
         foreach ($array as $row) {
@@ -70,7 +69,7 @@ class Post extends Model {
             return new Post( $row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row["PostId"]);
         }
     }
-
+    
     //renvoie un tableau d'erreur(s) 
     //le tableau est vide s'il n'y a pas d'erreur.
     public  function validate() {
@@ -84,11 +83,15 @@ class Post extends Model {
         return $errors;
     } 
     //revoir les answer et autorid d'un post
-    public function getAllAnswerAndAutorIdbypost($PosId){
-         $query = self::execute("select AuthorId,AcceptedAnswerId  from  Post where PosId = :PosId "
-                 . "GROUP by AuthorId, ORDER BY Timestamp",array("PosId" => $PosId));
+    public static function getAllAnswerAndAutorIdbypost($PostId){
+         $query = self::execute("select AuthorId,AcceptedAnswerId  from  post where PostId = :PostId "
+                 . " ORDER BY Timestamp",array("PostId" =>$PostId));
          $data = $query->fetchAll();
-         return $data;
+         $resul=[];
+            foreach ($data as $row) {
+                $resul=array(User::get_member_by_username($row['AuthorId']),$row["AcceptedAnswerId"]);
+        }
+            return $resul;
     } 
    // renvoir le nombre de reponse sur une question  
     public function getAllAnswerByPost($PosId){
@@ -108,6 +111,7 @@ class Post extends Model {
             return new Post( $row['AuthorId'],$row['Title'], $row['Body'], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row['PostId']);
         }
     }
+
 
     //renvoie tous les post d'un auteur ou false si null
     public static function getAllPost_by_user($user) {
@@ -136,7 +140,7 @@ class Post extends Model {
             self::execute("UPDATE post SET  AuthorId:AuthorId, Title:Title, Body:Body, Timestamp:Timestamp,"
                     . "AcceptedAnswerId:AcceptedAnswerId, ParentId:ParentId WHERE PostId=:PostId ", 
                         array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body, "Timestamp" => $this->Timestamp,
-                            "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId,"PostId"=> $this->PostId));    
+                            "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId,"PostId"=> $this->PostId));  var_dump("ok")   ;
                  return $this;
         }
     }
