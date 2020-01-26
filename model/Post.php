@@ -74,10 +74,10 @@ class Post extends Model {
     //le tableau est vide s'il n'y a pas d'erreur.
     public  function validate() {
         $errors = array();
-        if (!(isset($this->Title) )) {
+        if (!(($this->Title) )) {
             $errors[] = "Incorrect Title";
         }
-        if (!(isset($this->Body)  )) {
+        if (!(($this->Body)  )) {
             $errors[] = "Body must be filled";
         }
         return $errors;
