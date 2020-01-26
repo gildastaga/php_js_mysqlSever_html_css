@@ -39,10 +39,6 @@ class ControllerPost extends Controller {
         }
         (new View("ask_a_question"))->show(array("user" => $user,"Body" => $Body, "Title" => $Title,"errors"=>$errors));
     }
-    
-    public function unanswered(){
-        
-    }
 
     //controller answer :post/anwer
     public function addanswer() {
@@ -158,5 +154,11 @@ class ControllerPost extends Controller {
             $errors[] ="you had to be a member";
         }    
         (new View("edit"))->show(array("user" => $user,"posts" => $posts,"errors"=>$errors));
+    }
+    public function unanswered(){
+         $user = $this->get_user_or_false();
+        $posts = Post::unanswere() ;
+        $errors=[];
+        (new View("index"))->show(Array("posts" => $posts,"user" => $user,"errors"=>$errors));
     }
 }
