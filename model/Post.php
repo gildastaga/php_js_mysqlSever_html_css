@@ -168,4 +168,14 @@ class Post extends Model {
         }
         return false;
     }
+    
+    public static function unanswere(){
+        $query = self::execute("SELECT * FROM post where ParentId IS NULL and  AcceptedAnswerId IS NULL order by Timestamp DESC", array());
+        $data = $query->fetchAll();
+         $result = [];
+        foreach ($data as $value) {
+            $result[] = new Post( $value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"],$value["PostId"]);
+        }
+        return $result;
+    }
 }

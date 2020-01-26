@@ -45,8 +45,10 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                     <table id="message_list" class="message_list">
                         <?php foreach ($posts as $values): ?>
                         <tr>
-                            <a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a><br>
-                        </tr>                           
+                        <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a><br></li>
+                       &nbsp &nbsp <?php echo "  ".$values->Body; ?>
+                        
+                    </tr><br><br>                          
                         <?php endforeach; ?>  
                     </table>
                 <?php endif; ?>

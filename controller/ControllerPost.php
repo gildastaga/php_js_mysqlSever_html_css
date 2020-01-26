@@ -132,4 +132,10 @@ class ControllerPost extends Controller {
         }
         (new View("edit"))->show(array("user" => $user,"Body" => $Body,"errors"=>$errors));
     }
+    public function unanswered(){
+         $user = $this->get_user_or_false();
+        $posts = Post::unanswere() ;
+        $errors=[];
+        (new View("index"))->show(Array("posts" => $posts,"user" => $user,"errors"=>$errors));
+    }
 }
