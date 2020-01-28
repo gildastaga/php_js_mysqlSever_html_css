@@ -105,6 +105,15 @@ class User extends Model {
             return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"],$data["UserId"]);
         }
     }
+    public static function get_user_by_UserId($UserId) {
+        $query = self::execute("SELECT * FROM user where UserId = :UserId", array("UserId"=>$UserId));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"],$data["UserId"]);
+        }
+    }
     
 
     public function write_post($question) {

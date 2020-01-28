@@ -32,7 +32,6 @@
                         <input id="post" type="submit" value="publish your question">
                     </form>
                 </div>    
-            <br><br><br>
              <?php if (count($errors) != 0): ?>
                 <div class='errors'>
                     <br><br><p>Please correct the following error(s) :</p>
