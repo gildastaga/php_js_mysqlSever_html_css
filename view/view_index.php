@@ -27,7 +27,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <div class="main"> 
             <div class="menus">
                 <form class="menus">
-                    <a href="post/newest">Newest</a>
+                    <a href="post/index">Newest</a>
                     <a href="vote/active"> Active</a>
                     <a href="post/unanswered">Unanswered</a>
                     <a href="vote/votes">Vote</a>

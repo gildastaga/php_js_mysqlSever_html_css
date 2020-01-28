@@ -74,10 +74,10 @@ class Post extends Model {
     //le tableau est vide s'il n'y a pas d'erreur.
     public  function validate() {
         $errors = array();
-        if (!(isset($this->Title) )) {
+        if (!(($this->Title) )) {
             $errors[] = "Incorrect Title";
         }
-        if (!(isset($this->Body)  )) {
+        if (!(($this->Body)  )) {
             $errors[] = "Body must be filled";
         }
         return $errors;
@@ -146,7 +146,7 @@ class Post extends Model {
     }
 
     public static function newest() {
-        $query = self::execute(("SELECT post.*, max_score
+                $query = self::execute(("SELECT post.*, max_score
                                 FROM post, (
                           SELECT parentid, max(score) max_score
                           FROM (
