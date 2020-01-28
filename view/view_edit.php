@@ -22,16 +22,16 @@
         </div>
         <br>
         <div class="main">
-        <br><br>
-                <div>
-                    <form id="post_form" action="post/postedit/<?php echo $posts->PostId; ?>" method="post">
-                        <td>Body</td><br>
-                        <textarea id="Body" name="Body" rows='8'></textarea><br><br>
-                        <input id="post" type="submit" value="Post">
-                    </form>
-                </div>    
-            <br>
-             <?php if (count($errors) != 0): ?>
+            <br><br>
+            <div>
+                <form id="post_form" action="post/postupdate/<?php echo $posts->PostId; ?>" method="post">
+                    <td>Body</td><br>
+                    <textarea id="Body" name="Body" rows='8'></textarea><br><br>
+                    <input id="post" type="submit" value="Post">
+                </form>
+            </div>    
+            <br> 
+            <?php  if (count($errors) != 0): ?>
                 <div class='errors'>
                     <br><p>Please correct the following error(s) :</p>
                     <ul>

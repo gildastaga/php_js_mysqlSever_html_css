@@ -28,9 +28,9 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
             <div class="menus">
                 <form class="menus">
                     <a href="post/index">Newest</a>
-                    <a href="vote/active"> Active</a>
-                    <a href="post/unanswered">Unanswered</a>
-                    <a href="vote/votes">Vote</a>
+                    <a href=""> Active</a>
+                    <a href="post/index">Unanswered</a>
+                    <a href="vote/index">Vote</a>
                 </form> 
             </div>   
             <div>
@@ -56,7 +56,8 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         <tr>
                         <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a><br></li>
                        &nbsp &nbsp <?php echo "  ".$values->Body; ?>
-                        
+                       <p>asked <span><?php echo $values->Timestamp; ?></span>
+                      &nbsp by <?php $values->name($values->AuthorId); ?> &nbsp by &nbsp</p>
                     </tr><br><br>                          
                         <?php endforeach; ?>  
                     </table>

@@ -82,15 +82,25 @@ class Post extends Model {
         }
         return $errors;
     } 
+    public  function validates() {
+        $errors = array();
+        if (!($this->Body)) {
+            $errors[] = "Body must be filled";
+        }
+        return $errors;
+    }
+    public function name($UserId){
+        return User::get_user_by_UserId($UserId)->FullName.' '.User::get_user_by_UserId($UserId)->UserName;
+    }
     //revoir les answer et autorid d'un post
     public static function getAllAnswerAndAutorIdbypost($PostId){
-         $query = self::execute("select AuthorId,AcceptedAnswerId  from  post where PostId = :PostId "
-                 . " ORDER BY Timestamp",array("PostId" =>$PostId));
+         $query = self::execute("select *  from  post where ParentId = :PostId "
+                 . " ORDER BY Timestamp DESC",array("PostId" =>$PostId));
          $data = $query->fetchAll();
          $resul=[];
             foreach ($data as $row) {
-                $resul=array(User::get_member_by_username($row['AuthorId']),$row["AcceptedAnswerId"]);
-        }
+                $resul [] = $post[] = new Post( $row['AuthorId'],$row['Title'], $row['Body'], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row['PostId']);
+            }
             return $resul;
     } 
    // renvoir le nombre de reponse sur une question  
@@ -135,13 +145,13 @@ class Post extends Model {
                     . "VALUES(:AuthorId,:Title,:Body,:Timestamp,:AcceptedAnswerId,:ParentId)", 
                 array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body,
                 "Timestamp"=> $this->Timestamp, "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId));
-            return $this;
-        } else {var_dump("lol");
-            self::execute("UPDATE post SET  AuthorId:AuthorId, Title:Title, Body:Body, Timestamp:Timestamp,"
-                    . "AcceptedAnswerId:AcceptedAnswerId, ParentId:ParentId WHERE PostId=:PostId ", 
-                        array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body, "Timestamp" => $this->Timestamp,
-                            "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId,"PostId"=> $this->PostId));  var_dump("ok")   ;
-                 return $this;
+            return $this;     
+        } else {        
+                self::execute("UPDATE post SET  AuthorId:AuthorId, Title:Title, Body:Body, Timestamp:Timestamp,AcceptedAnswerId:AcceptedAnswerId, ParentId:ParentId WHERE PostId=:PostId ", 
+                          array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body,
+                "Timestamp"=> $this->Timestamp, "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId,"PostId"=> $this->PostId));  
+                          var_dump("ok")   ;
+                     return $this;         
         }
     }
 
@@ -166,9 +176,12 @@ class Post extends Model {
         return $newest;
     }
     public function delete($initiator) {
-        if ($this->AuthorId == $initiator->UserId ) {
-            self::execute('DELETE FROM post WHERE postid = :postid', array('postid' => $this->postid));
+        if ($this->AuthorId == $initiator->UserId  ) {
+            self::execute(("DELETE FROM post WHERE PostId =:PostId"), array("PostId" => $this->PostId));
             return $this;
+//        }elseif ($this->AuthorId == $initiator->UserId && $this->Title==NULL) {
+//            self::execute("DELETE FROM post WHERE postid = :postid ", array('postid' => $this->postid));
+//            return $this;
         }
         return false;
     }

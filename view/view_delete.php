@@ -22,11 +22,11 @@
         </div>
         <br>
         <div class="main">
-        <br><br>
+        <br>
                 <div>
                     <table id="message_list" class="message_list">
                         <tr>
-                            <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/><br><br>
+                            <img src="lib/parsedown-1.7.3/delete.png" width="90" height="50"  alt=""/><br><br>
                             <h2> are you sure ?</h2>
                         </tr>
                         <tr>
@@ -37,8 +37,17 @@
                             <td> <a href="post/am_ok_delete/<?php echo $posts->PostId; ?>">DELETE</a></td> 
                         </tr>
                     </table>
-                </div>    
-        <br><br>
+                </div>   
+               <?php if (count($errors) != 0): ?>
+                <div class='errors'>
+                    <br><br><p>Please correct the following error(s) :</p>
+                    <ul>
+                        <?php foreach ($errors as $error): ?>
+                             <li><?= $error ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+        <?php endif; ?>
         </div>    
     </body>
 </html>
