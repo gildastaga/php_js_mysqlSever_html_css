@@ -45,7 +45,9 @@
                                 <tr>
                                     <td>
                                         <a href="vote/addvote"><img src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
-                                         <a href="vote/devote"><img src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a>
+                                        <a href="vote/devote"><img src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
+                                         <a href="vote/refuseanswer"><img src="lib/parsedown-1.7.3/refuser.png" width="30" height="20"  alt=""/></a>
+                                         <a href="vote/accepteanswer"><img src="lib/parsedown-1.7.3/accepte.png" width="30" height="20" alt=""/></a>
                                      </td>
                                      <td>
                                         <li><?php echo $row->Body; ?></li><br>
