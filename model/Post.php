@@ -156,18 +156,7 @@ class Post extends Model {
     }
 
     public static function newest() {
-                $query = self::execute(("SELECT post.*, max_score
-                                FROM post, (
-                          SELECT parentid, max(score) max_score
-                          FROM (
-                              SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score
-                              FROM post LEFT JOIN vote ON vote.postid = post.postid
-                              GROUP BY post.postid
-                          ) AS tbl1
-                          GROUP by parentid
-                      ) AS q1
-                      WHERE post.postid = q1.parentid
-                      ORDER BY q1.max_score DESC, timestamp DESC "), array());
+                $query = self::execute(("SELECT * from post order by Timestamp DESC "), array());
         $data = $query->fetchAll();
         $newest = [];
         foreach ($data as $value) {
@@ -195,4 +184,21 @@ class Post extends Model {
         }
         return $result;
     }
+    public static function getJours(){
+        $query = self::execute("SELECT Timestamp from post, vote where vote.PostId=post.PostId GROUP BY PostId");
+        $data = $query->fetch();
+        $date1= $data;
+        $date2= date("Y-m-d H:i:s");
+        $nbreJours= (strtotime($date2)-strtotime($date1))/86400;
+        return $nbreJours;
+    }
+    public static function getName(){
+        $query= self::execute("SELECT UserName from user,post where user.UserId=post.AuthorId ",array("user" => $this->UserName));
+        return $query->fetchAll();
+    }
+    public static function countAnswer(){
+        $query = self::execute(("SELECT count(AcceptedAnswerId) from post group by PostId )"),array());
+        return $query->fetchAll();
+    }
+    
 }

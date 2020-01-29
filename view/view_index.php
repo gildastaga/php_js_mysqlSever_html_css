@@ -55,9 +55,9 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                             </tr>                           -->
                         <tr>
                         <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a><br></li>
-                       &nbsp &nbsp <?php echo "  ".$values->Body; ?>
-                       <p>asked <span><?php echo $values->Timestamp; ?></span>
-                      &nbsp by <?php $values->name($values->AuthorId); ?> &nbsp by &nbsp</p>
+                       &nbsp &nbsp <?php echo "  ".$values->Body; ?><br>
+                       &nbsp &nbsp <a>asked <span><?php echo $values->Timestamp; ?></span> day ago
+                           &nbsp by <?php $values->name($values->AuthorId); ?> &nbsp  (  </a>
                     </tr><br><br>                          
                         <?php endforeach; ?>  
                     </table>

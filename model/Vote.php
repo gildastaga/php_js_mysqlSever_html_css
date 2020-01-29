@@ -37,6 +37,10 @@ class Vote extends Model{
         }
         return $votes;
     }
+    public static function countVote(){
+        $query = self::execute(("SELECT count(UpDown) from vote where PostId in (SELECT PostId from post"),array());
+        return $query->fetchAll();
+    }
 
     
     
