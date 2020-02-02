@@ -121,7 +121,7 @@ class User extends Model {
     }
 
     public function delete_post($question) {
-        return $question->delete($this);
+        return $question->delete();
     }
 
     public function get_post() {

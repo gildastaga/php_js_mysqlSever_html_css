@@ -17,7 +17,7 @@ class ControllerPost extends Controller {
 //controller Question: post/question
     public function questions() {
         $user = $this->get_user_or_false();
-        $posts = Post::post();
+        $posts = Post::affichepost();
         $errors = [];
         (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
     }
@@ -47,7 +47,7 @@ class ControllerPost extends Controller {
         $user = $this->get_user_or_redirect();
         $PostId = $_GET['param1'];
         $posts = Post::get_quetion($PostId);
-        $listanswer = Post::getAllAnswerAndAutorIdbypost($PostId);
+        $listanswer = Post::get_All_Answer_by_postid($PostId);
         $errors = [];
         if (isset($_POST['Body'])) {
             $Body = $_POST['Body'];
@@ -73,8 +73,8 @@ class ControllerPost extends Controller {
     public function show() {
         $user = $this->get_user_or_false();
         $PostId = $_GET['param1'];
-        $posts = Post::get_quetion($PostId);
-        $listanswer = Post::getAllAnswerAndAutorIdbypost($PostId);
+        $posts = Post::get_quetion($PostId);        
+        $listanswer = Post::get_All_Answer_by_postid($PostId);
         $errors = [];
         if (isset($_POST['body'])) {
             $body = $_POST['body'];
@@ -88,15 +88,7 @@ class ControllerPost extends Controller {
         $user = $this->get_user_or_false();
         $PostId = $_GET['param1'];
         $errors = [];
-        $posts = Post::get_quetion($PostId);
-        if($user){// a remplace par une condition permetant de suprimer am_ok_delete
-            if ($posts->AuthorId==$user->UserId) { 
-                $user->delete_post($posts);
-                    $this->redirect("post","index");
-            } else {
-                $errors = "vous deviez etre l'auteur du post";
-            }
-        }    
+        $posts = Post::get_quetion($PostId);   
         (new View("delete"))->show(array("user" => $user,"errors" => $errors, "posts" => $posts));
     }
 
@@ -106,10 +98,10 @@ class ControllerPost extends Controller {
         $posts = Post::get_quetion($PostId);
         $errors = []; 
         if ($posts->AuthorId==$user->UserId) { 
-            $user->delete_post($posts);
-                $this->redirect("post","index");
+            $posts->delete();
+            $this->redirect("post","index");
         } else {
-            $errors = "vous deviez etre l'auteur du post";
+            $errors [] = "you had to be a member";
         }    
             (new View("delete"))->show(array("user" => $user,"errors" => $errors,"posts"=>$posts));
     }
@@ -137,13 +129,14 @@ class ControllerPost extends Controller {
                 if ($posts->AuthorId == $user->UserId) {
                     $AuthorId = $user->UserId; // ok
                     $Timestamp = date('Y-m-d H:i:s');
-                    $ParentId = $posts->PostId;
+ //                   $ParentId = $posts->PostId;
                     $PostId = $posts->PostId;
-                    $question = new Post($AuthorId, NULL, $Body, $Timestamp, NULL, $ParentId, $PostId);
+                    $question = new Post($AuthorId, NULL, $Body, $Timestamp, NULL, NULL, $PostId);
                     $errors = $question->validates();
-                    if (count($errors) == 0) {           
+                    if (count($errors) == 0) {   
+                       /// $question->update();
                         $user->write_post($question);
-                        //$this->redirect("post","index");
+                        $this->redirect("post","index");
                     }
                 } else {
                     $errors [] = "you must have been the author of the question";
@@ -161,5 +154,19 @@ class ControllerPost extends Controller {
         $errors = [];
         (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors));
     }
-
+    
+    public function accept_answer() {
+        $user = $this->get_user_or_redirect();
+        $PostId = $_GET['param1'];
+        $posts = Post::get_quetion($PostId);
+        $Body = $posts->Body;
+        $errors = [];
+        $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), $user->UserId, $posts->PostId,$posts->PostId);
+        if($posts->AuthorId==$user->UserId){ 
+            $user->write_post($answered);
+        } else {
+            $errors [] ="you had to be a member of the question to confirm an answer !";
+        }
+        (new View("index"))->show(array("user" => $user,"errors" => $errors, "posts" => $posts));
+    }
 }

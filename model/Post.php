@@ -59,16 +59,7 @@ class Post extends Model {
         return $results;
     }
 
-    // return false ou le post d'un postId
-    public static function get_quetion($PostId) {
-        $query = self::execute("SELECT * FROM post where PostId =:PostId", array("PostId" => $PostId));
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            $row = $query->fetch();
-            return new Post( $row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row["PostId"]);
-        }
-    }
+    
     
     //renvoie un tableau d'erreur(s) 
     //le tableau est vide s'il n'y a pas d'erreur.
@@ -89,11 +80,11 @@ class Post extends Model {
         }
         return $errors;
     }
-    public function name($UserId){
-        return User::get_user_by_UserId($UserId)->FullName.' '.User::get_user_by_UserId($UserId)->UserName;
+    public function name($AuthorId){
+        return User::get_user_by_UserId($AuthorId)->FullName.' '.User::get_user_by_UserId($AuthorId)->UserName;
     }
     //revoir les answer et autorid d'un post
-    public static function getAllAnswerAndAutorIdbypost($PostId){
+    public static function get_All_Answer_by_postid($PostId){
          $query = self::execute("select *  from  post where ParentId = :PostId "
                  . " ORDER BY Timestamp DESC",array("PostId" =>$PostId));
          $data = $query->fetchAll();
@@ -103,6 +94,18 @@ class Post extends Model {
             }
             return $resul;
     } 
+    
+    // return false ou le post d'un postId
+    public static function get_quetion($PostId) {
+        $query = self::execute("SELECT * FROM post where PostId =:PostId", array("PostId" => $PostId));
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            $row = $query->fetch();
+            return new Post( $row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row["PostId"]);
+        }
+    }
+    
    // renvoir le nombre de reponse sur une question  
     public function getAllAnswerByPost($PosId){
          $query = self::execute("select count(AcceptedAnswerId)as nbr_answer from  Post where PosId = :PosId ",
@@ -164,15 +167,9 @@ class Post extends Model {
         }
         return $newest;
     }
-    public function delete($initiator) {
-        if ($this->AuthorId == $initiator->UserId  ) {
+    public function delete() {
             self::execute(("DELETE FROM post WHERE PostId =:PostId"), array("PostId" => $this->PostId));
-            return $this;
-//        }elseif ($this->AuthorId == $initiator->UserId && $this->Title==NULL) {
-//            self::execute("DELETE FROM post WHERE postid = :postid ", array('postid' => $this->postid));
-//            return $this;
-        }
-        return false;
+            
     }
     
     public static function unanswere(){
@@ -196,9 +193,9 @@ class Post extends Model {
         $query= self::execute("SELECT UserName from user,post where user.UserId=post.AuthorId ",array("user" => $this->UserName));
         return $query->fetchAll();
     }
-    public static function countAnswer(){
-        $query = self::execute(("SELECT count(AcceptedAnswerId) from post group by PostId )"),array());
-        return $query->fetchAll();
+    public  function count_Answer($PostId){
+        $query = self::execute(("SELECT count(AcceptedAnswerId) as nbrvote from post  WHERE PostId =:PostId group by PostId"), array("PostId" => $PostId));
+        return $query->fetch()["nbrvote"];
     }
     
 }
