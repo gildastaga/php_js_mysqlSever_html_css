@@ -16,6 +16,9 @@ class User extends Model {
         $this->FullName = $FullName;
         $this->Email = $Email;  
     }
+    
+    
+    
      public static function validate_login($UserName, $Password) {
         $errors = [];
         $user = User::get_member_by_username($UserName);

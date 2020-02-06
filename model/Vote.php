@@ -1,71 +1,72 @@
 <?php
 
+require_once 'framework/Model.php';
+require_once "lib/parsedown-1.7.3/Parsedown.php";
 
-class Vote extends Model{
-    
+class Vote extends Model {
+
     public $UserId;
     public $PostId;
     public $UpDowm;
-    
+
     public function __construct($UserId, $PostId, $UpDowm) {
         $this->UserId = $UserId;
         $this->PostId = $PostId;
-        if ($UpDowm) {
-            $this->UpDowm = 1;
+        $this->UpDowm = $UpDowm;
+    }
+
+    public static function votes() {
+        $query = self::execute(("SELECT post.*, max_score
+                                FROM post, (
+                          SELECT parentid, max(score) max_score
+                          FROM (
+                              SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score
+                              FROM post LEFT JOIN vote ON vote.postid = post.postid
+                              GROUP BY post.postid
+                          ) AS tbl1
+                          GROUP by parentid
+                      ) AS q1
+                      WHERE post.postid = q1.parentid
+                      ORDER BY q1.max_score DESC, timestamp DESC "), array());
+        $data = $query->fetchAll();
+        $votes = [];
+        foreach ($data as $value) {
+            $votes[] = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
+        }
+        return $votes;
+    }
+
+    //ajoute un vote ou update un vote
+    public function update() {
+        if (!get_vote($this->PostId, $this->UserId)) {
+            self::execute("INSERT INTO vote(UserId, PostId, UpDowm) "
+                    . "VALUES(:UserId,:PostId, :UpDowm)", array("UserId" => $this->UserId, "PostId" => $this->PostId, "UpDowm" => $this->UpDowm));
+            return $this;
         } else {
-            $this->UpDowm = -1;
+            self::execute(("DELETE FROM vote WHERE PostId =:PostId and UserId =:UserId"), array("PostId" => $this->PostId, "UserId" => $UserId));
         }
     }
-}
 
-//<?php
-//
-//require_once "lib/parsedown-1.7.3/Parsedown.php";
-//
-//    
-//
-// public static function votes() {
-//        $query = self::execute(("SELECT post.*, max_score
-//                                FROM post, (
-//                          SELECT parentid, max(score) max_score
-//                          FROM (
-//                              SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score
-//                              FROM post LEFT JOIN vote ON vote.postid = post.postid
-//                              GROUP BY post.postid
-//                          ) AS tbl1
-//                          GROUP by parentid
-//                      ) AS q1
-//                      WHERE post.postid = q1.parentid
-//                      ORDER BY q1.max_score DESC, timestamp DESC "), array());
-//        $data = $query->fetchAll();
-//        $votes = [];
-//        foreach ($data as $value) {
-//            $votes[] = new Vote( $value["UserId"], $value["PostId"], $value["UpDown"]);
-//        }
-//        return $votes;
+    // return false ou le vote d'un postId
+    public static function get_vote($PostId, $UserId) {
+        $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId", array("PostId" => $PostId, "UserId" => $UserId));
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            $row = $query->fetch();
+            return new Vote($row["UserId"], $row["PostId"], $row["UpDowm"]);
+        }
+    }
+
+    public function nbr_vote($PostId) {
+        $query = self::execute(("SELECT SUM(UpDown) as nbrvote FROM vote  where PostId=:PostId"), array("PostId" => $PostId));
+        return $query->fetch()["nbrvote"];
+    }
+
+    //nbre de personne eyant vote pour un post
+//    public function nbr_vote($PostId) {
+//        $query = self::execute(("SELECT count(UserId) as nbrUser FROM vote  where PostId=:PostId"),
+//                array("PostId" => $PostId));
+//            return $query->fetch()["nbrUser"];    
 //    }
-//    public static function post() {
-//        $query = self::execute(("SELECT post.*, max_score FROM post,(SELECT parentid, max(score) max_score
-//            FROM (SELECT post.postId, ifnull(post.parentid, post.postId) parentid, ifnull(sum(vote.updown), 0) score
-//            FROM post LEFT JOIN vote ON vote.postId = post.postId
-//            GROUP BY post.postId) AS tbl1
-//            GROUP by parentid
-//            ) AS q1
-//            WHERE post.postId = q1.parentid
-//            ORDER BY q1.max_score DESC, timestamp DESC"), array());
-//        $data = $query->fetchAll();
-//        $results = [];
-//        foreach ($data as $row) {
-//            $results[] = new Post( $row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"],
-//                    $row["ParentId"],$row["PostId"]);
-//        }
-//        return $results;
-//    }
-//    public static function countVote(){
-//        $query = self::execute(("SELECT count(UpDown) from vote where PostId in (SELECT PostId from post"),array());
-//        return $query->fetchAll();
-//    }
-//
-//    
-//    
-//}
+}

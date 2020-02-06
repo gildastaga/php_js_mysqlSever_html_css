@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
-    <body>
+    <body class="bloc">
         <div class="bloc1">
             <div class="title">Stuck Overflow </div>
             <div>
@@ -23,7 +23,7 @@
         <br>
         <div class="main">
         <br>
-                <div>
+                <div class="delete" >
                     <table id="message_list" class="message_list">
                         <tr>
                             <img src="lib/parsedown-1.7.3/delete.png" width="90" height="50"  alt=""/><br><br>

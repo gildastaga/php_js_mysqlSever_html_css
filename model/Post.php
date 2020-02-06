@@ -2,6 +2,8 @@
 
 require_once "lib/parsedown-1.7.3/Parsedown.php";
 
+require_once "framework/model.php";
+require_once "model/User.php";
 class Post extends Model {
 
     public $PostId;
@@ -21,6 +23,25 @@ class Post extends Model {
         $this->AcceptedAnswerId = $AcceptedAnswerId;
         $this->ParentId = $Parentid;
     }
+    public function get_temp($param) {
+        $datetime1 = new DateTime($param);
+        $datetime2 = new DateTime('Y-m-d H:i:s');
+        $interval = $datetime1->diff($datetime2);
+        echo $interval->format('%R%a days');
+    }
+    public static function filter($search){
+        $query= self::execute("select * from post where 
+                 AuthorId LIKE :AuthorId or Title LIKE :Title or Body LIKE :Body
+                or AcceptedAnswerId LIKE: AcceptedAnswerId or  ParentId LIKE:ParentId ",
+                array("AuthorId"=>"%".$search."%","Title"=>"%".$search."%","Body"=>"%".$search."%","AcceptedAnswerId"=>"%".$search."%",
+                    "ParentId"=>"%".$search."%"));
+        $data=$query->fetchAll();
+        $resul=[];
+        foreach ($data as $row) {
+            $resul[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row["PostId"]);
+        }
+        return $resul;    
+    }
 
     public function markdown(){
         //$markdown = "Ceci est un *texte* **Markdown**";
@@ -30,9 +51,9 @@ class Post extends Model {
         return $html;
     }
 
-    public static function affichepost() {
+    public static function get_all_post() {
 
-        $query = self::execute("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL ORDER BY Timestamp DESC", array());
+        $query = self::execute("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL GROUP BY PostId ORDER BY Timestamp DESC", array());
         $array = $query->fetchAll();
         $resul = [];
         foreach ($array as $row) {
@@ -81,7 +102,7 @@ class Post extends Model {
         return $errors;
     }
     public function name($AuthorId){
-        return User::get_user_by_UserId($AuthorId)->FullName.' '.User::get_user_by_UserId($AuthorId)->UserName;
+        return User::get_user_by_UserId($AuthorId)->FullName.' ';
     }
     //revoir les answer et autorid d'un post
     public static function get_All_Answer_by_postid($PostId){
@@ -107,7 +128,7 @@ class Post extends Model {
     }
     
    // renvoir le nombre de reponse sur une question  
-    public function getAllAnswerByPost($PosId){
+    public function get_All_Answer_By_Post($PosId){
          $query = self::execute("select count(AcceptedAnswerId)as nbr_answer from  Post where PosId = :PosId ",
                  array("PosId" => $PosId));
          $data = $query->fetch();
@@ -150,7 +171,7 @@ class Post extends Model {
                 "Timestamp"=> $this->Timestamp, "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId));
             return $this;     
         } else {        
-                self::execute("UPDATE post SET  AuthorId:AuthorId, Title:Title, Body:Body, Timestamp:Timestamp,AcceptedAnswerId:AcceptedAnswerId, ParentId:ParentId WHERE PostId=:PostId ", 
+                self::execute("UPDATE post SET  AuthorId=:AuthorId, Title=:Title, Body=:Body, Timestamp=:Timestamp,AcceptedAnswerId=:AcceptedAnswerId, ParentId=:ParentId WHERE PostId=:PostId ", 
                           array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body,
                 "Timestamp"=> $this->Timestamp, "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId,"PostId"=> $this->PostId));  
                           var_dump("ok")   ;
@@ -158,8 +179,8 @@ class Post extends Model {
         }
     }
 
-    public static function newest() {
-                $query = self::execute(("SELECT * from post order by Timestamp DESC "), array());
+    public static function get_newest() {
+                $query = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL group by PostId ORDER BY Timestamp DESC"), array());
         $data = $query->fetchAll();
         $newest = [];
         foreach ($data as $value) {
@@ -172,7 +193,7 @@ class Post extends Model {
             
     }
     
-    public static function unanswere(){
+    public static function get_unanswere(){
         $query = self::execute("SELECT * FROM post where ParentId IS NULL and  AcceptedAnswerId IS NULL order by Timestamp DESC", array());
         $data = $query->fetchAll();
          $result = [];
@@ -194,8 +215,12 @@ class Post extends Model {
         return $query->fetchAll();
     }
     public  function count_Answer($PostId){
-        $query = self::execute(("SELECT count(AcceptedAnswerId) as nbrvote from post  WHERE PostId =:PostId group by PostId"), array("PostId" => $PostId));
-        return $query->fetch()["nbrvote"];
+        $query = self::execute(("SELECT count(AcceptedAnswerId) as nbranswer from post  WHERE PostId =:PostId group by PostId"), array("PostId" => $PostId));
+        return $query->fetch()["nbranswer"];
+    }
+    public function nbr_vote($PostId) {
+        $query = self::execute(("SELECT SUM(UpDown) as nbrvote FROM vote  where PostId=:PostId"), array("PostId" => $PostId));
+            return $query->fetch()["nbrvote"];    
     }
     
 }

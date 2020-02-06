@@ -100,3 +100,13 @@ form.link input[type="submit"] {
     text-decoration: underline;
     cursor: pointer;
 }
+/*style delete*/
+.bloc {
+    width       :700px;
+    margin      :20px auto;
+    background  :#f8f8f8;
+    border      :1px solid #888;
+}
+.delete{
+    text-align: center;
+}

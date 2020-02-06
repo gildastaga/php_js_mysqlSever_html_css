@@ -27,19 +27,18 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <div class="main"> 
             <div class="menus">
                 <form class="menus">
-                    <a href="post/index">Newest</a>
-                    <a href=""> Active</a>
-                    <a href="post/index">Unanswered</a>
-                    <a href="vote/vot">Vote</a>
+                    <a href="post/newest">Newest</a>
+                    <a> Active</a>
+                    <a href="post/unanswered">Unanswered</a>
+                    <a href="vote/index">Vote</a>
                 </form> 
             </div>   
             <div>
-                <form class="recherche">
-                    <input id="idsearch" type="search" name="" aria-label="search ">
-                    <button>search</button>
+                <form class="recherche" action="post/post_search" method="post">
+                    <input id="idsearch" type="search" name="search" aria-label="search ">
+                    <input id="post" type="submit" value="search">
                 </form>
             </div>
-            <p>tout ce qui enttre dens le base de donner dooit passer par model/user car c'est un user qui arregistre </p>
             <br><br>
             <div class="main">
                 <?php if ($posts || $questions) : ?>
@@ -48,8 +47,8 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         <tr>
                         <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a><br></li>
                         &nbsp &nbsp <?php echo "  ".$values->Body; ?><br><br>
-                       &nbsp &nbsp <a>asked <span><?php echo $values->Timestamp; ?></span> day ago
-                           &nbsp by <?php  echo $values->name($values->AuthorId); ?>( &nbsp vote(s) &nbsp, <?php echo $values->count_Answer($values->PostId); ?> Answer (s)) &nbsp   </a>
+                        &nbsp &nbsp <a>asked <span><?php echo $values->Timestamp; ?></span> day ago
+                           &nbsp by <?php  echo $values->name($values->AuthorId); ?>( &nbsp <?php echo $values->nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer($values->PostId); ?> Answer (s)) &nbsp   </a>
                     </tr><br>                         
                         <?php endforeach; ?>  
                     </table>

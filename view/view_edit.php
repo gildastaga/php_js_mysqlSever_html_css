@@ -25,8 +25,12 @@
             <br><br>
             <div>
                 <form id="post_form" action="post/postupdate/<?php echo $posts->PostId; ?>" method="post">
-                    <td>Body</td><br>
-                    <textarea id="Body" name="Body" rows='8'></textarea><br><br>
+                    <td>Title</td><br>
+                   <textarea id="Title" name="Title" rows='1'><?= $posts->Title; ?></textarea><br>
+                   <?php // if (): ?><?php // endif; ?>
+                        <td>Body</td><br>
+                        <textarea id="Body" name="Body" rows='8'><?= $posts->Body; ?></textarea><br><br>
+                    
                     <input id="post" type="submit" value="Post">
                 </form>
             </div>    
