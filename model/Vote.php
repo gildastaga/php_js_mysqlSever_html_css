@@ -7,12 +7,12 @@ class Vote extends Model {
 
     public $UserId;
     public $PostId;
-    public $UpDowm;
+    public $UpDown;
 
-    public function __construct($UserId, $PostId, $UpDowm) {
+    public function __construct($UserId, $PostId, $UpDown) {
         $this->UserId = $UserId;
         $this->PostId = $PostId;
-        $this->UpDowm = $UpDowm;
+        $this->UpDown = $UpDown;
     }
 
     public static function votes() {
@@ -38,13 +38,14 @@ class Vote extends Model {
 
     //ajoute un vote ou update un vote
     public function update() {
-        if (!get_vote($this->PostId, $this->UserId)) {
-            self::execute("INSERT INTO vote(UserId, PostId, UpDowm) "
-                    . "VALUES(:UserId,:PostId, :UpDowm)", array("UserId" => $this->UserId, "PostId" => $this->PostId, "UpDowm" => $this->UpDowm));
-            return $this;
-        } else {
-            self::execute(("DELETE FROM vote WHERE PostId =:PostId and UserId =:UserId"), array("PostId" => $this->PostId, "UserId" => $UserId));
-        }
+            self::execute("INSERT INTO vote(UserId, PostId, UpDown)VALUES(:UserId,:PostId, :UpDown)", 
+                    array("UserId" => $this->UserId, "PostId" => $this->PostId, "UpDown" => $this->UpDown));
+            return $this; 
+    }
+    public function delete() {
+            self::execute(("DELETE FROM vote WHERE  UserId =:UserId and PostId =:PostId"),
+                    array( "UserId" => $this->UserId,"PostId" => $this->PostId));
+          return $this;
     }
 
     // return false ou le vote d'un postId
@@ -54,7 +55,7 @@ class Vote extends Model {
             return false;
         } else {
             $row = $query->fetch();
-            return new Vote($row["UserId"], $row["PostId"], $row["UpDowm"]);
+            return new Vote($row["UserId"], $row["PostId"], $row["UpDown"]);
         }
     }
 

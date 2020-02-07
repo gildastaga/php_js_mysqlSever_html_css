@@ -50,50 +50,43 @@ class ControllerPost extends Controller {
         $posts = Post::get_quetion($PostId); 
         $listanswer = Post::get_All_Answer_by_postid($PostId);
         $errors = [];
-        if($user){
-            if (isset($_POST['Body'])) {
-                $Body = $_POST['Body'];
-                $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $posts->PostId);
-                $errors = $answered->validates();
-                if (count($errors) == 0) {
-                    $user->write_post($answered);
-                }
+        if (isset($_POST['Body'])) {
+            $Body = $_POST['Body'];
+            $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $PostId);
+            $errors = $answered->validates();
+            if (count($errors) == 0) {
+                $user->write_post($answered);
             }
-        }else {
-            $this->redirect("post", "index") ;
-        } 
+        }
         (new View("show"))->show(array("user" => $user, "posts" => $posts, "listanswer" => $listanswer, "errors" => $errors));
     }
-        public function postupdate() {
+    
+    public function postupdate() {
         $user = $this->get_user_or_false();
         $PostId = $_GET['param1'];
         $posts = Post::get_quetion($PostId);
-        $Body = '';
         $errors = [];
-        if ($user) {
+        
             if (isset($_POST['Title']) && isset($_POST['Body'])) {
-            $Title = $_POST['Title'];
-            $Body = $_POST['Body'];
-            $question = new Post($AuthorId, $Title, $Body,  date('Y-m-d H:i:s'), $posts->AcceptedAnswerId, $posts->ParentId,$posts->PostId);
-            $errors = $question->validate();
+                $Title = $_POST['Title'];
+                $Body = $_POST['Body'];               
+                $question = new Post($user->UserId, $Title, $Body,  date('Y-m-d H:i:s'), $posts->AcceptedAnswerId, $posts->ParentId ,$posts->PostId);
+                $errors = $question->validate();
             }
             elseif (isset($_POST['Body'])) {
                 $Body = $_POST['Body'];
-                 $question = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, NULL, $posts->PostId);
-                    $errors = $question->validates();
-                if ($posts->AuthorId == $user->UserId ) {
-                   if (count($errors) == 0) {   
+                $question = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $posts->ParentId, $posts->PostId);
+                $errors = $question->validates();
+            } var_dump($question);
+            if ($posts->AuthorId == $user->UserId ) {
+                if (count($errors) == 0) {   
                        /// $question->update();
-                        $user->write_post($question);
-                        $this->redirect("post","index");
-                    }
-                } else {
-                    $errors [] = "you must have been the author of the question";
+                    $user->write_post($question);
+                    $this->redirect("post","index");
                 }
-            }
-        }else {
-            $this->redirect("post", "index") ;
-        } 
+            } else {
+                $errors [] = "you must have been the author of the question";
+            } 
         (new View("edit"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
     }
     
@@ -135,13 +128,8 @@ class ControllerPost extends Controller {
         $posts = Post::get_quetion($PostId);
         $errors = []; 
         if ($posts->AuthorId==$user->UserId) { 
-            if($posts->ParentId!=NULL){
-                $errors[]="contact the admin";
-                $errors [] = "Integrity constraint violation :ParentId!=NULL ";
-            }else{    
-                $posts->delete();
-                $this->redirect("post","index");
-            }    
+             $posts->delete();
+             $this->redirect("post","index");    
         } else {
             $errors [] = "you had to be a member";
         }    
@@ -156,6 +144,7 @@ class ControllerPost extends Controller {
             $PostId = $_GET['param1'];
             $posts = Post::get_quetion($PostId);
             $errors = [];
+            
         (new View("edit"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors ));
     }
 
@@ -168,21 +157,34 @@ class ControllerPost extends Controller {
         (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors));
     }
     
-    public function accept_answer() {
+    public function accept_and_refuse_answer() {
         $user = $this->get_user_or_redirect();
         $PostId = $_GET['param1'];
-        $posts= Post::get_all_post();
         $post = Post::get_quetion($PostId);//ligne de la reponse
         $question= Post::get_quetion($post->ParentId);// ligne de la question
-        $errors = [];
-        $answered = new Post($user->UserId, $post->Title, $post->Body, date('Y-m-d H:i:s'), $user->UserId, $post->PostId,$post->PostId);
-        if($question->AuthorId==$user->UserId && $post->AcceptedAnswerId==NULL){ 
+        if(isset($_GET['param2'])&& $_GET['param2']==1){  
+            $id= $_GET['param3'];
+            $answered = new Post($user->UserId, $post->Title, $post->Body, date('Y-m-d H:i:s'), $user->UserId, $post->ParentId,$post->PostId);
+        }elseif($_GET['param2']!=1){
+            $id= $_GET['param2'];
+            $answered = new Post($user->UserId, $post->Title, $post->Body, date('Y-m-d H:i:s'), NULL, $post->ParentId,$post->PostId);
+        }var_dump($id);
+        if($question->AuthorId==$user->UserId ){ 
             $user->write_post($answered);
-            $this->redirect("post","index");
+            $this->redirect("post","show",$id);
         } else {
-            $errors [] ="you had to be a member of the question to confirm an answer !";
+            $errors  ="you had to be a member of the question to confirm an answer !";
+            (new View("error"))->show(Array( "error" => $errors));
         }
-        (new View("index"))->show(array("user" => $user,"errors" => $errors, "posts" => $posts));
+        
+        
+//        $posts= Post::get_all_post();
+//        
+//        $question= Post::get_quetion($post->ParentId);// ligne de la question
+//        $errors = [];
+//        $answered = new Post($user->UserId, $post->Title, $post->Body, date('Y-m-d H:i:s'), $user->UserId, $post->PostId,$post->PostId);
+//        
+       // (new View("index"))->show(array("user" => $user,"errors" => $errors, "posts" => $posts));
     }
     
     public function refuse_answer() {

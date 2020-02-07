@@ -62,25 +62,6 @@ class Post extends Model {
         return $resul;
     }
 
-    public static function post() {
-        $query = self::execute(("SELECT post.*, max_score FROM post,(SELECT parentid, max(score) max_score
-            FROM (SELECT post.postId, ifnull(post.parentid, post.postId) parentid, ifnull(sum(vote.updown), 0) score
-            FROM post LEFT JOIN vote ON vote.postId = post.postId
-            GROUP BY post.postId) AS tbl1
-            GROUP by parentid
-            ) AS q1
-            WHERE post.postId = q1.parentid
-            ORDER BY q1.max_score DESC, timestamp DESC"), array());
-        $data = $query->fetchAll();
-        $results = [];
-        foreach ($data as $row) {
-            $results[] = new Post( $row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"],
-                    $row["ParentId"],$row["PostId"]);
-        }
-        return $results;
-    }
-
-    
     
     //renvoie un tableau d'erreur(s) 
     //le tableau est vide s'il n'y a pas d'erreur.
@@ -99,6 +80,9 @@ class Post extends Model {
         if (!($this->Body)) {
             $errors[] = "Body must be filled";
         }
+        if (($this->AcceptedAnswerId)) {
+            $errors[] = "you cannot delete or modify a answer accetp";
+        }
         return $errors;
     }
     public function name($AuthorId){
@@ -106,7 +90,7 @@ class Post extends Model {
     }
     //revoir les answer et autorid d'un post
     public static function get_All_Answer_by_postid($PostId){
-         $query = self::execute("select *  from  post where ParentId = :PostId "
+         $query = self::execute("select *  from  post where ParentId =:PostId "
                  . " ORDER BY Timestamp DESC",array("PostId" =>$PostId));
          $data = $query->fetchAll();
          $resul=[];
@@ -188,13 +172,14 @@ class Post extends Model {
         }
         return $newest;
     }
+    
     public function delete() {
             self::execute(("DELETE FROM post WHERE PostId =:PostId"), array("PostId" => $this->PostId));
-            
+            return $this;
     }
     
     public static function get_unanswere(){
-        $query = self::execute("SELECT * FROM post where ParentId IS NULL and  AcceptedAnswerId IS NULL order by Timestamp DESC", array());
+        $query = self::execute("SELECT * FROM post where ParentId IS NULL and  AcceptedAnswerId IS NULL group by PostId,ParentId order by Timestamp DESC", array());
         $data = $query->fetchAll();
          $result = [];
         foreach ($data as $value) {

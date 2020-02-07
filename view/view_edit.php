@@ -25,9 +25,10 @@
             <br><br>
             <div>
                 <form id="post_form" action="post/postupdate/<?php echo $posts->PostId; ?>" method="post">
+                    <?php  if ($posts->Title): ?>
                     <td>Title</td><br>
                    <textarea id="Title" name="Title" rows='1'><?= $posts->Title; ?></textarea><br>
-                   <?php // if (): ?><?php // endif; ?>
+                   <?php endif; ?>
                         <td>Body</td><br>
                         <textarea id="Body" name="Body" rows='8'><?= $posts->Body; ?></textarea><br><br>
                     

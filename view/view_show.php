@@ -47,16 +47,17 @@
                                 <tr>
                                     <?php if ($user): ?>
                                     <td>
-                                        <a href="vote/add_vote"><img src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
-                                        <a href="vote/de_vote"><img src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
-                                         <a href="post/refuse_answer/<?php echo $row->PostId; ?>"><img src="lib/parsedown-1.7.3/refuser.png" width="30" height="20"  alt=""/></a>
-                                         <a href="post/accept_answer/<?php echo $row->PostId; ?>"><img src="lib/parsedown-1.7.3/accepte.png" width="30" height="20" alt=""/></a>
+                                        <a href="vote/add_vote/<?php echo $row->PostId; ?>/<?php echo TRUE; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
+                                        <?php echo $row->nbr_vote($row->PostId); ?> score(s)<br>
+                                        <a href="vote/add_vote/<?php echo $row->PostId; ?>/<?php echo FALSE; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
+                                         <a href="post/accept_and_refuse_answer/<?php echo $row->PostId; ?>/<?php echo FALSE; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/refuser.png" width="30" height="20"  alt=""/></a>
+                                         <a href="post/accept_and_refuse_answer/<?php echo $row->PostId; ?>/<?php echo TRUE; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/accepte.png" width="30" height="20" alt=""/></a>
                                      </td>
                                       <?php endif; ?>
                                      <td>
                                         <li><?php echo $row->Body; ?></li><br>
                                         <?php if ($user): ?>
-                                         <a href="post/edit/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
+                                         <a href="post/edit/<?php echo $row->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
                                          <a href="post/delete_confirm/<?php echo $row->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
                                          <?php endif; ?>
                                          <p>asked <span><?php echo $row->Timestamp; ?></span>
