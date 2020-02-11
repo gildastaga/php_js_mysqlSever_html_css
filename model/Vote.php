@@ -58,7 +58,7 @@ class Vote extends Model {
             return new Vote($row["UserId"], $row["PostId"], $row["UpDown"]);
         }
     }
-
+//nombre de vote par post
     public function nbr_vote($PostId) {
         $query = self::execute(("SELECT SUM(UpDown) as nbrvote FROM vote  where PostId=:PostId"), array("PostId" => $PostId));
         return $query->fetch()["nbrvote"];

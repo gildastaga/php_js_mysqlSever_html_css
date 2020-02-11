@@ -34,7 +34,7 @@
                             This process cannot be undone<br>
                             </p>
                             <td><a href="post/index">cancel</a></td> 
-                            <td> <a href="post/am_ok_delete/<?php echo $posts->PostId; ?>">DELETE</a></td> 
+                            <td> <a href="post/delete_confirm/<?php echo $posts->PostId; ?>/<?php echo TRUE; ?>">DELETE</a></td> 
                         </tr>
                     </table>
                 </div>   

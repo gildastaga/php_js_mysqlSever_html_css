@@ -18,12 +18,12 @@ class ControllerVote extends Controller {
         (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors));
     }
 
-    public function vot() {
-        $user = $this->get_user_or_redirect();
-        $posts = Vote::votes();
-        $errors = [];
-        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors));
-    }
+//    public function vot() {
+//        $user = $this->get_user_or_redirect();
+//        $posts = Vote::votes();
+//        $errors = [];
+//        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors));
+//    }
     public function add_vote () {    
         $user = $this->get_user_or_false();
         $PostId = $_GET['param1'];
@@ -36,7 +36,7 @@ class ControllerVote extends Controller {
             $id= $_GET['param2'];
             $vote = new Vote($user->UserId,$PostId,$UpDown);  
         }
-        if(!$vote->get_vote($vote->PostId, $vote->UserId)){
+        if(!Vote::get_vote($vote->PostId, $vote->UserId)){
             $vote->update();
             $this->redirect("post","show",$id);
         }else{      

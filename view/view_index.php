@@ -44,14 +44,14 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 <?php if ($posts || $questions) : ?>
                     <table id="message_list" class="message_list">
                         <?php foreach ($posts as $values): ?>                         
-                        <tr>
-                        <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a><br></li>
-                        &nbsp &nbsp <?php echo "  ".$values->Body; ?><br><br>
-                        &nbsp &nbsp <a>asked <span><?php echo $values->Timestamp; ?></span> day ago
+                        <tr> 
+                        <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
+                        &nbsp <?php echo "  ".$values->markdown(); ?>
+                        &nbsp &nbsp <a>asked <span><?php $values->temp_ago($values->Timestamp); ?></span>  ago
                            &nbsp by <?php  echo $values->name($values->AuthorId); ?>( &nbsp <?php echo $values->nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer($values->PostId); ?> Answer (s)) &nbsp   </a>
                     </tr><br>                         
                         <?php endforeach; ?>  
-                    </table>
+                    </table><br>
                 <?php endif; ?>
 
                 <?php if (count($errors) != 0): ?>

@@ -21,7 +21,14 @@ form * {
     font-family: inherit;
     font-size: inherit;
 }
-
+/*.color_ima{
+    -webkit-filter: grayscale(1);
+   filter: grayscale(1);
+}*/
+/*img{
+    -webkit-filter: grayscale(1);
+     filter: grayscale(1);
+}*/
 .menu {
     float: right;
     text-align  :right;

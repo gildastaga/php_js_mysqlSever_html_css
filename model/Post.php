@@ -24,27 +24,45 @@ class Post extends Model {
         $this->ParentId = $Parentid;
     }
     public function get_temp($param) {
-        $datetime1 = new DateTime($param);
+        $datetime1 = $param;
         $datetime2 = new DateTime('Y-m-d H:i:s');
         $interval = $datetime1->diff($datetime2);
-        echo $interval->format('%R%a days');
+        return $interval;
+    }
+    public function temp_ago($param) {
+        $datetime1 = new DateTime();
+        $datetime2 = new DateTime($param);
+        $interval = $datetime1->diff($datetime2);
+        
+        if ($interval->y != 0) {
+            echo" " . ( $interval->y ) . "yaer(s)";
+        }
+        if ($interval->m != 0) {
+            echo" " . ( $interval->m ) . "month(s)";
+        }
+        if ($interval->d != 0) {
+            echo" " . ( $interval->d ) . "day(s)";
+        }
+        if ($interval->h != 0) {
+            echo" " . ( $interval->h ) . "heure(s)";
+        }
+        if ($interval->i != 0 ||$interval->s != 0) {
+            echo" " . ( $interval->i ) . "minute(s)"." " . ( $interval->s ) . "second(s)";
+        }
+        
     }
     public static function filter($search){
-        $query= self::execute("select * from post where 
-                 AuthorId LIKE :AuthorId or Title LIKE :Title or Body LIKE :Body
-                or AcceptedAnswerId LIKE: AcceptedAnswerId or  ParentId LIKE:ParentId ",
-                array("AuthorId"=>"%".$search."%","Title"=>"%".$search."%","Body"=>"%".$search."%","AcceptedAnswerId"=>"%".$search."%",
-                    "ParentId"=>"%".$search."%"));
-        $data=$query->fetchAll();
-        $resul=[];
-        foreach ($data as $row) {
-            $resul[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row["PostId"]);
-        }
-        return $resul;    
+            $query= self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body",
+                array("Title"=>"%".$search."%","Body"=>"%".$search."%"));
+            $data=$query->fetchAll();
+            $resul=[];
+            foreach ($data as $row) {
+                $resul[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row["PostId"]);
+            }
+             return $resul;         
     }
 
     public function markdown(){
-        //$markdown = "Ceci est un *texte* **Markdown**";
         $Parsedown = new Parsedown();
         $Parsedown->setSafeMode(true);
         $html = $Parsedown->text($this->Body);
@@ -52,7 +70,6 @@ class Post extends Model {
     }
 
     public static function get_all_post() {
-
         $query = self::execute("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL GROUP BY PostId ORDER BY Timestamp DESC", array());
         $array = $query->fetchAll();
         $resul = [];
@@ -157,8 +174,7 @@ class Post extends Model {
         } else {        
                 self::execute("UPDATE post SET  AuthorId=:AuthorId, Title=:Title, Body=:Body, Timestamp=:Timestamp,AcceptedAnswerId=:AcceptedAnswerId, ParentId=:ParentId WHERE PostId=:PostId ", 
                           array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body,
-                "Timestamp"=> $this->Timestamp, "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId,"PostId"=> $this->PostId));  
-                          var_dump("ok")   ;
+                "Timestamp"=> $this->Timestamp, "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId,"PostId"=> $this->PostId));
                      return $this;         
         }
     }
@@ -207,5 +223,21 @@ class Post extends Model {
         $query = self::execute(("SELECT SUM(UpDown) as nbrvote FROM vote  where PostId=:PostId"), array("PostId" => $PostId));
             return $query->fetch()["nbrvote"];    
     }
-    
+    public function get_vote($PostId, $UserId) {
+        $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId", array("PostId" => $PostId, "UserId" => $UserId));
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return TRUE;
+        }
+    }
+     public function valeur_vote($PostId,$UserId) {
+        if($this->get_vote($PostId, $UserId)){
+             $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId", array("PostId" => $PostId, "UserId" => $UserId));
+             return $query->fetch()["UpDown"];
+        }else{
+             return FALSE;
+        }
+                                                          
+    }
 }

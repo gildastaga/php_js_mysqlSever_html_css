@@ -25,8 +25,9 @@
             <br><br>
         <table id="message_list" class="message_list">
             <?php if ($user): ?>
+            <?php echo $posts->Title; ?><br><br>
                 <tr>
-                    <?php  echo $user->UserName; ?>
+                    <?php  echo $user->get_user_by_UserId($posts->AuthorId)->UserName; ?>
                     <a href="post/edit/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
                     <a href="post/delete_confirm/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br><br>
                 </tr> 
@@ -35,27 +36,66 @@
                 <td>
                     <table> 
                         <tr>
+                            <?php if ($user): ?>
+                                <td>
+                                    <a href="vote/add_vote/<?php echo $posts->PostId; ?>/<?php echo TRUE; ?>/<?php echo $posts->PostId; ?>"><img 
+                                            <?php if($posts->get_vote($posts->PostId, $user->UserId) &&  $posts->valeur_vote($posts->PostId, $user->UserId)==1):?>                   
+                                                   style=" -webkit-filter: hue-rotate(90deg);
+                                                    filter: hue-rotate(90deg);"
+                                            <?php else: ?>
+                                                    style="-webkit-filter: grayscale(1);
+                                                            filter: grayscale(1);"
+                                            <?php endif; ?>
+                                            src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
+                                    <?php echo $posts->nbr_vote($posts->PostId); ?> score(s)<br>
+                                    <a href="vote/add_vote/<?php echo $posts->PostId; ?>/<?php echo FALSE; ?>/<?php echo $posts->PostId; ?>"><img
+                                            <?php if( $posts->get_vote($posts->PostId, $user->UserId) &&  $posts->valeur_vote($posts->PostId, $user->UserId)==-1): ?> 
+                                                              style="   -webkit-filter: hue-rotate(90deg);
+                                                                         filter: hue-rotate(90deg);"
+                                                            <?php else: ?>
+                                                             style="   -webkit-filter: grayscale(1);
+                                                                         filter: grayscale(1);"
+                                                            <?php endif; ?>
+                                             src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
+                                </td>
+                            <?php endif; ?>
                              <td>
-                                 <li><?php echo $posts->Body; ?></li> <br>
+                                 <li><?php echo $posts->markdown(); ?></li> <br>
                              </td>
                          </tr>
-                    </table>
+                    </table><br><br>
 
-                    Answer()
+                    Answer<br><br>
                         <?php foreach ($listanswer as $row): ?>
                             <table> 
                                 <tr>
                                     <?php if ($user): ?>
                                     <td>
-                                        <a href="vote/add_vote/<?php echo $row->PostId; ?>/<?php echo TRUE; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
+                                        <a href="vote/add_vote/<?php echo $row->PostId; ?>/<?php echo TRUE; ?>/<?php echo $posts->PostId; ?>"><img 
+                                                    <?php if($row->get_vote($row->PostId, $user->UserId) &&  $row->valeur_vote($row->PostId, $user->UserId)==1):?>                   
+                                                   style=" -webkit-filter: hue-rotate(90deg);
+                                                    filter: hue-rotate(90deg);"
+                                            <?php else: ?>
+                                                    style="-webkit-filter: grayscale(1);
+                                                            filter: grayscale(1);"
+                                            <?php endif; ?>
+                                                src="lib/parsedown-1.7.3/vote1.png" " width="30" height="20"  alt=""/></a><br>
                                         <?php echo $row->nbr_vote($row->PostId); ?> score(s)<br>
-                                        <a href="vote/add_vote/<?php echo $row->PostId; ?>/<?php echo FALSE; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
+                                        <a href="vote/add_vote/<?php echo $row->PostId; ?>/<?php echo FALSE; ?>/<?php echo $posts->PostId; ?>"><img 
+                                                  <?php if($row->get_vote($row->PostId, $user->UserId) &&  $row->valeur_vote($row->PostId, $user->UserId)==-1):?>                   
+                                                   style=" -webkit-filter: hue-rotate(90deg);
+                                                    filter: hue-rotate(90deg);"
+                                            <?php else: ?>
+                                                    style="-webkit-filter: grayscale(1);
+                                                            filter: grayscale(1);"
+                                            <?php endif; ?>  
+                                                src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
                                          <a href="post/accept_and_refuse_answer/<?php echo $row->PostId; ?>/<?php echo FALSE; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/refuser.png" width="30" height="20"  alt=""/></a>
                                          <a href="post/accept_and_refuse_answer/<?php echo $row->PostId; ?>/<?php echo TRUE; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/accepte.png" width="30" height="20" alt=""/></a>
                                      </td>
                                       <?php endif; ?>
                                      <td>
-                                        <li><?php echo $row->Body; ?></li><br>
+                                        <li><?php echo $row->markdown(); ?></li><br>
                                         <?php if ($user): ?>
                                          <a href="post/edit/<?php echo $row->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
                                          <a href="post/delete_confirm/<?php echo $row->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
