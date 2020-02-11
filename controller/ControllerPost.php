@@ -4,6 +4,7 @@ require_once 'model/User.php';
 require_once 'framework/View.php';
 require_once 'framework/Controller.php';
 require_once 'framework/Tools.php';
+require_once 'model/Vote.php';
 
 class ControllerPost extends Controller {
 
@@ -143,7 +144,10 @@ class ControllerPost extends Controller {
                 if($posts->AcceptedAnswerId!=NULL ){
                     $parent= Post::get_post_PostId($posts->ParentId);
                     $answered = new Post($parent->AuthorId, $parent->Title, $parent->Body, date('Y-m-d H:i:s'), NULL, $parent->ParentId,$parent->PostId);
-                    var_dump($answered);              $posts=$user->write_post($answered);      
+                    $posts=$user->write_post($answered);      
+                }
+                if($posts->nbr_vote($PostId)!=0){
+                    Vote::deletes($posts->PostId);
                 }
                 $post = $posts->delete();
                 if($post->ParentId == NULL){

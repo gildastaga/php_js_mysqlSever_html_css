@@ -47,6 +47,11 @@ class Vote extends Model {
                     array( "UserId" => $this->UserId,"PostId" => $this->PostId));
           return $this;
     }
+    public static function deletes($PostId) {
+           $query = self::execute(("DELETE FROM vote WHERE   PostId =:PostId"),
+                    array( "PostId" => $PostId));
+          return $query;
+    }
 
     // return false ou le vote d'un postId
     public static function get_vote($PostId, $UserId) {
