@@ -4,13 +4,18 @@
 }
 
 body {
+    background-image: url(/lib/fonds.jpg) no-repeat;
+    width       :900px;
     margin      :20px auto;
     background  :#f8f8f8;
-    border      :1px solid #888;
+    border      :1px solid #888;   
 }
 
 html {
-    background  :#fff
+    background: url(/lib/parsedown-1.7.3/fonds.png) no-repeat;
+    background-size: cover;
+/*    background-image:url(/lib/fonds.jpg);*/
+/*    background  :#fff;*/
 }
 
 .main {
@@ -21,15 +26,9 @@ form * {
     font-family: inherit;
     font-size: inherit;
 }
-/*.color_ima{
-    -webkit-filter: grayscale(1);
-   filter: grayscale(1);
-}*/
-/*img{
-    -webkit-filter: grayscale(1);
-     filter: grayscale(1);
-}*/
 .menu {
+    margin-top: -20px;
+    padding    :20px;
     float: right;
     text-align  :right;
 }

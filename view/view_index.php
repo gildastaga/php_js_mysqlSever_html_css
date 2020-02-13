@@ -2,7 +2,7 @@
 require_once "lib/parsedown-1.7.3/Parsedown.php";
 ?>
 <!DOCTYPE html>
-<html>
+<html style="background: url(/lib/fonds.jpg) no-repeat;">
     <head>
         <meta charset="UTF-8">
         <title>Stuck Overflow </title>
@@ -12,16 +12,14 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
     </head>
     <body>
         <div class="bloc1">
-            <div class="title">Stuck Overflow </div>
-            <div>
-                <form class="menu">
-                    <?php if (!$user): ?>
-                        <?php include('menu.html'); ?>
-                    <?php else: ?>
-                        <?php include('menus.html'); ?>
-                    <?php endif; ?>
-                </form>   
-            </div>
+            <form class="title">Stuck Overflow </form>
+            <form class="menu">
+                <?php if (!$user): ?>
+                    <?php include('menu.html'); ?>
+                <?php else: ?>
+                    <?php include('menus.html'); ?>
+                <?php endif; ?>
+            </form>              
         </div>
         <br>
         <div class="main"> 
@@ -39,7 +37,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                     <input id="post" type="submit" value="search">
                 </form>
             </div>
-            <br><br>
+            <br><br><br><br>
             <div class="main">
                 <?php if ($posts || $questions) : ?>
                     <table id="message_list" class="message_list">
@@ -47,7 +45,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         <tr> 
                         <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
                         &nbsp <?php echo "  ".$values->markdown(); ?>
-                        &nbsp &nbsp <a>asked <span><?php $values->temp_ago($values->Timestamp); ?></span>  ago
+                        &nbsp &nbsp <a>asked <span><?php  echo $values->temp_ago($values->Timestamp)[0];?></span>  ago
                            &nbsp by <?php  echo $values->name($values->AuthorId); ?>( &nbsp <?php echo $values->nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer($values->PostId); ?> Answer (s)) &nbsp   </a>
                     </tr><br>                         
                         <?php endforeach; ?>  

@@ -7,26 +7,25 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <div class="title">Stuck Overflow </div>
-            <div class="menu">
-                <br>
-                <a href="post/index">home</a>
-            </div>
+        <div class="bloc1">
+            <div class="title">Stuck Overflow </div>
+            <div class="menu"><a href="post/index">home</a></div>
+        </div>
             <div class="main">
                 <form id="loginForm"action="user/login" method="post">
                     <center>
-                        <h1>SIGN IN</h1>
-                    </center>
-                    <table>
-                        <tr>
-                            <td>UserName</td>
-                            <td><input id="UserName" name="UserName" type="text" value="<?= $UserName ?>"></td>
-                        </tr>
-                        <tr>
-                            <td>Password:</td>
-                            <td><input id="Password" name="Password" type="password" value="<?= $Password ?>"></td>
-                        </tr>
-                    </table>
+                        <h1>SIGN IN</h1>                    
+                        <table>
+                            <tr>
+                                <td>UserName</td>
+                                <td><input id="UserName" name="UserName" type="text" value="<?= $UserName ?>"></td>
+                            </tr>
+                            <tr>
+                                <td>Password:</td>
+                                <td><input id="Password" name="Password" type="password" value="<?= $Password ?>"></td>
+                            </tr>
+                        </table>
+                    </center>    
                     <br><br>
                     <input type="submit" value="Log In">
 

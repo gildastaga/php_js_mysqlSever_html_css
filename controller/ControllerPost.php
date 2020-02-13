@@ -46,15 +46,14 @@ class ControllerPost extends Controller {
         $Body = '';
         $errors = [];
         if (isset($_POST['Title']) && isset($_POST['Body'])) {
-            $Title = $_POST['Title'];
-            $Body = $_POST['Body'];
-            
-            $AuthorId = $user->UserId; 
+            $Title = Tools::sanitize( $_POST['Title']);
+            $Body = Tools::sanitize($_POST['Body']); 
             $Timestamp = date('Y-m-d H:i:s');
-            $question = new Post($AuthorId, $Title, $Body, $Timestamp, NULL, NULL);
-            $errors = $question->validate();
+            $question = new Post($user->UserId, $Title, $Body, $Timestamp, NULL, NULL);
+            $errors = $question->validate();            
             if (count($errors) == 0) {
                 $user->write_post($question);
+                $this->redirect("post", "index");
             }
         }
         (new View("ask_a_question"))->show(array("user" => $user, "Body" => $Body, "Title" => $Title, "errors" => $errors));
@@ -64,13 +63,13 @@ class ControllerPost extends Controller {
     //controller detallePost post/show/postid$posts
     public function show() {
         $user = $this->get_user_or_false();
-        $PostId = $_GET['param1'];
+        $PostId = Tools::sanitize($_GET['param1']);
         $posts = Post::get_quetion($PostId);        
         $author= User::get_user_by_UserId($posts->AuthorId);
         $listanswer = Post::get_All_Answer_by_postid($PostId);
         $errors = [];
         if (isset($_POST['Body'])) {
-            $Body = $_POST['Body'];
+            $Body = Tools::sanitize($_POST['Body']);
             $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $PostId);
             $errors = $answered->validates();
             if (count($errors) == 0) {
@@ -84,12 +83,12 @@ class ControllerPost extends Controller {
     //controller post :post/anwer
     public function addanswer() {
         $user = $this->get_user_or_redirect();
-        $PostId = $_GET['param1'];
+        $PostId = Tools::sanitize($_GET['param1']);
         $posts = Post::get_quetion($PostId); 
         $listanswer = Post::get_All_Answer_by_postid($PostId);
         $errors = [];
         if (isset($_POST['Body'])) {
-            $Body = $_POST['Body'];
+            $Body = Tools::sanitize($_POST['Body']);
             $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $PostId);
             $errors = $answered->validates();
             if (count($errors) == 0) {
@@ -102,18 +101,18 @@ class ControllerPost extends Controller {
     
     public function postupdate() {
         $user = $this->get_user_or_false();
-        $PostId = $_GET['param1'];
+        $PostId = Tools::sanitize($_GET['param1']);
         $posts = Post::get_quetion($PostId);
         $errors = [];
         
             if (isset($_POST['Title']) && isset($_POST['Body'])) {
-                $Title = $_POST['Title'];
-                $Body = $_POST['Body'];               
+                $Title = Tools::sanitize($_POST['Title']);
+                $Body = Tools::sanitize($_POST['Body']);               
                 $question = new Post($user->UserId, $Title, $Body,  date('Y-m-d H:i:s'), $posts->AcceptedAnswerId, $posts->ParentId ,$posts->PostId);
                 $errors = $question->validate();
             }
             elseif (isset($_POST['Body'])) {
-                $Body = $_POST['Body'];
+                $Body = Tools::sanitize($_POST['Body']);
                 $question = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $posts->ParentId, $posts->PostId);
                 $errors = $question->validates();
             }
@@ -136,7 +135,7 @@ class ControllerPost extends Controller {
     // controller delete
     public function delete_confirm() {    
         $user = $this->get_user_or_false();
-        $PostId = $_GET['param1'];
+        $PostId = Tools::sanitize($_GET['param1']);
         $errors = [];
         $posts = Post::get_quetion($PostId);
         if(isset($_GET['param2'])){
@@ -166,7 +165,7 @@ class ControllerPost extends Controller {
     //control edit 
     public function edit() {
         $user = $this->get_user_or_false();
-            $PostId = $_GET['param1'];
+            $PostId = Tools::sanitize($_GET['param1']);
             $posts = Post::get_quetion($PostId);
             $errors = [];
             
@@ -179,11 +178,10 @@ class ControllerPost extends Controller {
         $post = Post::get_quetion($PostId);//ligne de la reponse
         $question= Post::get_quetion($post->ParentId);// ligne de la question
         if(isset($_GET['param2'])&& $_GET['param2']==1){  
-            $id= $_GET['param3'];
-            
+            $id= Tools::sanitize($_GET['param3']);           
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), $post->PostId, $question->ParentId,$question->PostId);
         }elseif($_GET['param2']!=1){
-            $id= $_GET['param2'];
+            $id= Tools::sanitize($_GET['param2']);
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), NULL, $question->ParentId,$question->PostId);
         }
         if($question->AuthorId==$user->UserId ){ 
@@ -196,11 +194,11 @@ class ControllerPost extends Controller {
     }
     
     public function search() {
-        $user= $this->get_user_or_redirect();
+        $user= $this->get_user_or_false();
         if(isset($_GET["param1"])){
             $filter=Utils::url_safe_decode($_GET["param1"]);
             if(!$filter){
-                Tools::abort("mauvais parametre");
+                Tools::abort("the parameter does not exist");
             }
             $posts= Post::filter($filter);  $errors=[]; 
             (new View("index"))->show(array( "posts" => $posts,"user"=>$user,"errors" => $errors));
@@ -209,7 +207,14 @@ class ControllerPost extends Controller {
     
     public function post_search() {
         if(isset($_POST["search"])){
-            $filter= $_POST['search'];
+            $param=Tools::sanitize($_POST['search']);
+            $filter='';
+            if(User::get_member_by_username($param)){
+              $user=User::get_member_by_username($param);
+               $filter =$user->UserId;
+            } else {
+              $filter= $param;  
+            }
             $this->redirect("post", "search", Utils::url_safe_encode($filter));
         }
     }

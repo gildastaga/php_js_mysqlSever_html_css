@@ -15,13 +15,13 @@ class Post extends Model {
     public $ParentId;
 
     public function __construct($AuthorId, $Title, $Body, $Timestamp, $AcceptedAnswerId, $Parentid, $PostId = -1) {
-        $this->PostId = $PostId;
         $this->AuthorId = $AuthorId;
         $this->Title = $Title;
         $this->Body = $Body;
         $this->Timestamp = $Timestamp;
         $this->AcceptedAnswerId = $AcceptedAnswerId;
         $this->ParentId = $Parentid;
+        $this->PostId = $PostId;
     }
     public function get_temp($param) {
         $datetime1 = $param;
@@ -33,26 +33,29 @@ class Post extends Model {
         $datetime1 = new DateTime();
         $datetime2 = new DateTime($param);
         $interval = $datetime1->diff($datetime2);
-        
+        $tempago = array();
         if ($interval->y != 0) {
-            echo" " . ( $interval->y ) . "yaer(s)";
+           $tempago [] =" " . ( $interval->y ) . " yaer(s)";
         }
         if ($interval->m != 0) {
-            echo" " . ( $interval->m ) . "month(s)";
+            $tempago [] =" " . ( $interval->m ) . " month(s)";
         }
         if ($interval->d != 0) {
-            echo" " . ( $interval->d ) . "day(s)";
+            $tempago [] =" " . ( $interval->d ) . " day(s)";
         }
         if ($interval->h != 0) {
-            echo" " . ( $interval->h ) . "heure(s)";
+            $tempago [] =" " . ( $interval->h ) . " heure(s)";
         }
-        if ($interval->i != 0 ||$interval->s != 0) {
-            echo" " . ( $interval->i ) . "minute(s)"." " . ( $interval->s ) . "second(s)";
+        if ($interval->i != 0 ) {
+            $tempago [] =" " . ( $interval->i ) . " minute(s)";
         }
-        
+        if($interval->s != 0){
+            $tempago [] =" " . ( $interval->s ) . " second(s)";
+        }
+        return $tempago;
     }
     public static function filter($search){
-            $query= self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body",
+            $query= self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body ",
                 array("Title"=>"%".$search."%","Body"=>"%".$search."%"));
             $data=$query->fetchAll();
             $resul=[];
@@ -165,12 +168,12 @@ class Post extends Model {
 
     //ajoute un post ou update un post
     public function update() {
-        if ($this->PostId == -1) {           
+        if ($this->PostId == -1) {                
             self::execute("INSERT INTO post(AuthorId,Title,Body,Timestamp,AcceptedAnswerId,ParentId) "
                     . "VALUES(:AuthorId,:Title,:Body,:Timestamp,:AcceptedAnswerId,:ParentId)", 
                 array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body,
                 "Timestamp"=> $this->Timestamp, "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId));
-            return $this;     
+            return $this;            
         } else {        
                 self::execute("UPDATE post SET  AuthorId=:AuthorId, Title=:Title, Body=:Body, Timestamp=:Timestamp,AcceptedAnswerId=:AcceptedAnswerId, ParentId=:ParentId WHERE PostId=:PostId ", 
                           array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body,
