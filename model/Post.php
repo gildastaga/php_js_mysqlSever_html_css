@@ -23,15 +23,10 @@ class Post extends Model {
         $this->ParentId = $Parentid;
         $this->PostId = $PostId;
     }
-    public function get_temp($param) {
-        $datetime1 = $param;
-        $datetime2 = new DateTime('Y-m-d H:i:s');
-        $interval = $datetime1->diff($datetime2);
-        return $interval;
-    }
-    public function temp_ago($param) {
+
+    public function temp_ago() {
         $datetime1 = new DateTime();
-        $datetime2 = new DateTime($param);
+        $datetime2 = new DateTime($this->Timestamp);
         $interval = $datetime1->diff($datetime2);
         $tempago = array();
         if ($interval->y != 0) {
@@ -52,9 +47,12 @@ class Post extends Model {
         if($interval->s != 0){
             $tempago [] =" " . ( $interval->s ) . " second(s)";
         }
+        if($interval->s < 1){
+            $tempago [] ="a l'instant";
+        }
         return $tempago;
     }
-    public static function filter($search){
+    public static function get_filter($search){
             $query= self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body ",
                 array("Title"=>"%".$search."%","Body"=>"%".$search."%"));
             $data=$query->fetchAll();
@@ -105,13 +103,13 @@ class Post extends Model {
         }
         return $errors;
     }
-    public function name($AuthorId){
-        return User::get_user_by_UserId($AuthorId)->FullName.' ';
+    public function name(){
+        return User::get_user_by_UserId($this->AuthorId)->FullName.' ';
     }
-    //revoir les answer et autorid d'un post
-    public static function get_All_Answer_by_postid($PostId){
+    //revoir les answer d'un post
+    public  function get_All_Answer_by_postid(){
          $query = self::execute("select *  from  post where ParentId =:PostId "
-                 . " ORDER BY Timestamp DESC",array("PostId" =>$PostId));
+                 . " ORDER BY Timestamp DESC",array("PostId" => $this->PostId));
          $data = $query->fetchAll();
          $resul=[];
             foreach ($data as $row) {
@@ -119,6 +117,17 @@ class Post extends Model {
             }
             return $resul;
     } 
+    
+     // renvoir le nombre de reponse sur une question  
+    public function get_nbre_Answer_By_Post(){
+         $query = self::execute("select count(ParentId)as nbr_answer from  Post where ParentId = :ParentId ",
+                 array("ParentId" => $this->PosId));
+         $data = $query->fetch();
+         if($data!=0){
+            return $data["nbr_answer"];
+         }
+         return 0;  
+    }   
     
     // return false ou le post d'un postId
     public static function get_quetion($PostId) {
@@ -131,15 +140,7 @@ class Post extends Model {
         }
     }
     
-   // renvoir le nombre de reponse sur une question  
-    public function get_All_Answer_By_Post($PosId){
-         $query = self::execute("select count(AcceptedAnswerId)as nbr_answer from  Post where PosId = :PosId ",
-                 array("PosId" => $PosId));
-         $data = $query->fetch();
-         return $data;
-    }   
-
-    //renvoie la question d'un postid si trouver si non false
+     //renvoie le post d'un postid si trouver si non false
     public static function get_post_PostId($PostId) {
         $query = self::execute("select * from post  where PostId =:PostId", array("PostId" => $PostId));
         if ($query->rowCount() == 0) {
@@ -149,7 +150,6 @@ class Post extends Model {
             return new Post( $row['AuthorId'],$row['Title'], $row['Body'], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"],$row['PostId']);
         }
     }
-
 
     //renvoie tous les post d'un auteur ou false si null
     public static function getAllPost_by_user($user) {
@@ -206,41 +206,45 @@ class Post extends Model {
         }
         return $result;
     }
-    public static function getJours(){
-        $query = self::execute("SELECT Timestamp from post, vote where vote.PostId=post.PostId GROUP BY PostId");
-        $data = $query->fetch();
-        $date1= $data;
-        $date2= date("Y-m-d H:i:s");
-        $nbreJours= (strtotime($date2)-strtotime($date1))/86400;
-        return $nbreJours;
-    }
-    public static function getName(){
-        $query= self::execute("SELECT UserName from user,post where user.UserId=post.AuthorId ",array("user" => $this->UserName));
-        return $query->fetchAll();
-    }
-    public  function count_Answer($PostId){
-        $query = self::execute(("SELECT count(AcceptedAnswerId) as nbranswer from post  WHERE PostId =:PostId group by PostId"), array("PostId" => $PostId));
+    
+    public  function count_Answer(){
+        $query = self::execute(("SELECT count(AcceptedAnswerId) as nbranswer from post  WHERE PostId =:PostId group by PostId"),
+                array("PostId" => $this->PostId));
         return $query->fetch()["nbranswer"];
     }
-    public function nbr_vote($PostId) {
-        $query = self::execute(("SELECT SUM(UpDown) as nbrvote FROM vote  where PostId=:PostId"), array("PostId" => $PostId));
-            return $query->fetch()["nbrvote"];    
+    public function nbr_vote() {
+        $query = self::execute(("SELECT SUM(UpDown) as nbrvote FROM vote  where PostId=:PostId"),
+                array("PostId" => $this->PostId));
+            $votenbr=$query->fetch();
+        if($votenbr["nbrvote"]==0){
+                return 0;
+            }else{
+            return $votenbr["nbrvote"];  
+            }
     }
-    public function get_vote($PostId, $UserId) {
-        $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId", array("PostId" => $PostId, "UserId" => $UserId));
+    public function get_vote() {
+        $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId",
+                array("PostId" => $this->PostId, "UserId" => $this->AuthorId));
         if ($query->rowCount() == 0) {
             return false;
         } else {
             return TRUE;
         }
     }
-     public function valeur_vote($PostId,$UserId) {
-        if($this->get_vote($PostId, $UserId)){
-             $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId", array("PostId" => $PostId, "UserId" => $UserId));
+     public function valeur_vote() {
+        if($this->get_vote()){
+             $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId",
+                     array("PostId" => $this->PostId, "UserId" => $this->AuthorId));
              return $query->fetch()["UpDown"];
         }else{
              return FALSE;
+        }                                                      
+    }
+    public static function delete_all_vote_in_fille($answers) {
+        foreach ($answers as $ligne ){
+            if($ligne->nbr_vote()!=0){
+                Vote::deletes($ligne->PostId);
+            }   
         }
-                                                          
     }
 }

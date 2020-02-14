@@ -9,7 +9,8 @@
     </head>
     <body class="bloc">
         <div class="bloc1">
-            <div class="title">Stuck Overflow </div>
+            <div class="title"><?php if($posts->Title!=NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>">Home</a>
+             <?php else: ?> <a href="post/show/<?php echo $posts->ParentId;?>">Home</a> <?php endif; ?>Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>
@@ -33,7 +34,8 @@
                             <p> Do you really want to delete this post? <br><br>
                             This process cannot be undone<br>
                             </p>
-                            <td><a href="post/index">cancel</a></td> 
+                            <td><?php if($posts->ParentId==NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>">cancel</a>
+             <?php else: ?> <a href="post/show/<?php echo $posts->ParentId;?>">cancel</a> <?php endif; ?></td> 
                             <td> <a href="post/delete_confirm/<?php echo $posts->PostId; ?>/<?php echo TRUE; ?>">DELETE</a></td> 
                         </tr>
                     </table>

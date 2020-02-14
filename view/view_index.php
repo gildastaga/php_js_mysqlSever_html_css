@@ -38,20 +38,17 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 </form>
             </div>
             <br><br><br><br>
-            <div class="main">
-                <?php if ($posts || $questions) : ?>
+            <div class="main">                
                     <table id="message_list" class="message_list">
                         <?php foreach ($posts as $values): ?>                         
                         <tr> 
                         <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
                         &nbsp <?php echo "  ".$values->markdown(); ?>
-                        &nbsp &nbsp <a>asked <span><?php  echo $values->temp_ago($values->Timestamp)[0];?></span>  ago
-                           &nbsp by <?php  echo $values->name($values->AuthorId); ?>( &nbsp <?php echo $values->nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer($values->PostId); ?> Answer (s)) &nbsp   </a>
+                        &nbsp &nbsp <a>asked <span><?php  echo $values->temp_ago()[0];?></span>  ago
+                           &nbsp by <?php  echo $values->name(); ?>( &nbsp <?php echo $values->nbr_vote(); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp   </a>
                     </tr><br>                         
                         <?php endforeach; ?>  
                     </table><br>
-                <?php endif; ?>
-
                 <?php if (count($errors) != 0): ?>
                     <div class='errors'>
                         <br><br><p>Please correct the following error(s) :</p>

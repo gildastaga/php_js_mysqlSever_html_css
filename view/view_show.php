@@ -9,7 +9,7 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title">Stuck Overflow </div>
+            <div class="title"><a href="post/index">Home</a> Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>
@@ -21,13 +21,12 @@
             </div>
         </div>
         <br>
-        <div class="main">
-            <br><br>
+        <div class="main">         
         <table id="message_list" class="message_list">
-            <?php if ($user): ?>
+            <?php if ($user): ?>            
             <?php echo $posts->Title; ?><br><br>
                 <tr>
-                    <?php  echo $user->get_user_by_UserId($posts->AuthorId)->UserName; ?>
+                   Post by  <?php  echo $user->get_user_by_UserId($posts->AuthorId)->UserName; ?>
                     <a href="post/edit/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
                     <a href="post/delete_confirm/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br><br>
                 </tr> 
@@ -39,7 +38,7 @@
                             <?php if ($user): ?>
                                 <td>
                                     <a href="vote/add_vote/<?php echo $posts->PostId; ?>/<?php echo TRUE; ?>/<?php echo $posts->PostId; ?>"><img 
-                                            <?php if($posts->get_vote($posts->PostId, $user->UserId) &&  $posts->valeur_vote($posts->PostId, $user->UserId)==1):?>                   
+                                            <?php if($posts->get_vote() &&  $posts->valeur_vote()==1):?>                   
                                                    style=" -webkit-filter: hue-rotate(90deg);
                                                     filter: hue-rotate(90deg);"
                                             <?php else: ?>
@@ -49,7 +48,7 @@
                                             src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
                                     <?php echo $posts->nbr_vote($posts->PostId); ?> score(s)<br>
                                     <a href="vote/add_vote/<?php echo $posts->PostId; ?>/<?php echo FALSE; ?>/<?php echo $posts->PostId; ?>"><img
-                                            <?php if( $posts->get_vote($posts->PostId, $user->UserId) &&  $posts->valeur_vote($posts->PostId, $user->UserId)==-1): ?> 
+                                            <?php if( $posts->get_vote() &&  $posts->valeur_vote($posts->PostId, $user->UserId)==-1): ?> 
                                                               style="   -webkit-filter: hue-rotate(90deg);
                                                                          filter: hue-rotate(90deg);"
                                                             <?php else: ?>
@@ -59,20 +58,21 @@
                                              src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
                                 </td>
                             <?php endif; ?>
+                        <h6> body post </h6>   
                              <td>
                                  <li><?php echo $posts->markdown(); ?></li> <br>
                              </td>
                          </tr>
                     </table><br><br>
 
-                    Answer<br><br>
+                    <h6> Post response's list</h6> <br><br>
                         <?php foreach ($listanswer as $row): ?>
                             <table> 
                                 <tr>
                                     <?php if ($user): ?>
                                     <td>
                                         <a href="vote/add_vote/<?php echo $row->PostId; ?>/<?php echo TRUE; ?>/<?php echo $posts->PostId; ?>"><img 
-                                                   <?php if($row->get_vote($row->PostId, $user->UserId) &&  $row->valeur_vote($row->PostId, $user->UserId)==1):?>                   
+                                            <?php if($row->get_vote() &&  $row->valeur_vote()==1):?>                   
                                                    style=" -webkit-filter: hue-rotate(90deg);
                                                             filter: hue-rotate(90deg);"
                                             <?php else: ?>
@@ -80,9 +80,9 @@
                                                             filter: grayscale(1);"
                                             <?php endif; ?>
                                                 src="lib/parsedown-1.7.3/vote1.png" " width="30" height="20"  alt=""/></a><br>
-                                        <?php echo $row->nbr_vote($row->PostId); ?> score(s)<br>
+                                        <?php echo $row->nbr_vote(); ?> score(s)<br>
                                         <a href="vote/add_vote/<?php echo $row->PostId; ?>/<?php echo FALSE; ?>/<?php echo $posts->PostId; ?>"><img 
-                                                  <?php if($row->get_vote($row->PostId, $user->UserId) &&  $row->valeur_vote($row->PostId, $user->UserId)==-1):?>                   
+                                                  <?php if($row->get_vote() &&  $row->valeur_vote()==-1):?>                   
                                                    style=" -webkit-filter: hue-rotate(90deg);
                                                     filter: hue-rotate(90deg);"
                                             <?php else: ?>
@@ -112,20 +112,21 @@
                                          <a href="post/edit/<?php echo $row->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
                                          <a href="post/delete_confirm/<?php echo $row->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
                                          <?php endif; ?>
-                                         <p>asked <span><?php echo $row->temp_ago($row->Timestamp)[0]; ?></span>
-                                          &nbsp by <?php echo $row->name($row->AuthorId); ?> &nbsp by &nbsp</p>
+                                         <p>asked <span><?php echo $row->temp_ago()[0]; ?></span>
+                                          &nbsp by <?php echo $row->name(); ?> &nbsp by &nbsp</p>
                                      </td>
                                  </tr>
                             </table>
                        <?php endforeach;?>
                     <?php // endif; ?><br><br><br>
                     
-                    
-                    Add your Anwer<br>
-                    <form id="post_form" action="post/addanswer/<?php echo $posts->PostId; ?>" method="post">                 
-                        <textarea id="Body" name="Body" rows='8'></textarea><br><br>
-                        <input id="post" type="submit" value="put your Answer">
-                    </form>
+                    <?php if($user):  ?>
+                        Add your Anwer<br>
+                        <form id="post_form" action="post/show/<?php echo $posts->PostId; ?>" method="post">                 
+                            <textarea id="Body" name="Body" rows='8'></textarea><br><br>
+                            <input id="post" type="submit" value="put your Answer">
+                        </form>
+                     <?php endif;?>   
                     <br><br>
                 </td>
             </tr>

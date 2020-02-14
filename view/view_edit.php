@@ -9,7 +9,8 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title">Stuck Overflow </div>
+            <div class="title"><?php if($posts->Title!=NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>">Home</a>
+             <?php else: ?> <a href="post/show/<?php echo $posts->ParentId;?>">Home</a> <?php endif; ?>Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>

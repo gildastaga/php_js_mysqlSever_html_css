@@ -61,12 +61,12 @@ class ControllerPost extends Controller {
     
     //detallePost
     //controller detallePost post/show/postid$posts
-    public function show() {
+    public function show() {        
         $user = $this->get_user_or_false();
         $PostId = Tools::sanitize($_GET['param1']);
-        $posts = Post::get_quetion($PostId);        
-        $author= User::get_user_by_UserId($posts->AuthorId);
-        $listanswer = Post::get_All_Answer_by_postid($PostId);
+        $posts = Post::get_post_PostId($PostId);        
+        $author= User::get_user_by_UserId($posts->AuthorId);//post parent 
+        $listanswer = $posts->get_All_Answer_by_postid();// post fille
         $errors = [];
         if (isset($_POST['Body'])) {
             $Body = Tools::sanitize($_POST['Body']);
@@ -79,32 +79,12 @@ class ControllerPost extends Controller {
         }
         (new View("show"))->show(array("user" => $user,"author"=>$author, "posts" => $posts, "errors" => $errors, "listanswer" => $listanswer));
     }
-
-    //controller post :post/anwer
-    public function addanswer() {
-        $user = $this->get_user_or_redirect();
-        $PostId = Tools::sanitize($_GET['param1']);
-        $posts = Post::get_quetion($PostId); 
-        $listanswer = Post::get_All_Answer_by_postid($PostId);
-        $errors = [];
-        if (isset($_POST['Body'])) {
-            $Body = Tools::sanitize($_POST['Body']);
-            $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $PostId);
-            $errors = $answered->validates();
-            if (count($errors) == 0) {
-                $user->write_post($answered);
-                $this->redirect("post", "show", $PostId);
-            }
-        }
-        (new View("show"))->show(array("user" => $user, "posts" => $posts, "listanswer" => $listanswer, "errors" => $errors));
-    }
-    
+     
     public function postupdate() {
         $user = $this->get_user_or_false();
         $PostId = Tools::sanitize($_GET['param1']);
-        $posts = Post::get_quetion($PostId);
-        $errors = [];
-        
+        $posts = Post::get_post_PostId($PostId);
+        $errors = [];        
             if (isset($_POST['Title']) && isset($_POST['Body'])) {
                 $Title = Tools::sanitize($_POST['Title']);
                 $Body = Tools::sanitize($_POST['Body']);               
@@ -127,26 +107,29 @@ class ControllerPost extends Controller {
                     }
                 }
             } else {
-                $errors [] = "you must have been the author of the question";
+                $errors [] = "you must have been the author of the post";
             } 
         (new View("edit"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
     }
 
     // controller delete
-    public function delete_confirm() {    
+    public function delete_confirm() {    var_dump($_GET);
         $user = $this->get_user_or_false();
         $PostId = Tools::sanitize($_GET['param1']);
         $errors = [];
-        $posts = Post::get_quetion($PostId);
+        $posts = Post::get_post_PostId($PostId);
         if(isset($_GET['param2'])){
             if ($posts->AuthorId==$user->UserId) { 
                 if($posts->AcceptedAnswerId!=NULL ){
                     $parent= Post::get_post_PostId($posts->ParentId);
                     $answered = new Post($parent->AuthorId, $parent->Title, $parent->Body, date('Y-m-d H:i:s'), NULL, $parent->ParentId,$parent->PostId);
                     $posts=$user->write_post($answered);      
-                }
-                if($posts->nbr_vote($PostId)!=0){
+                }                
+                if($posts->nbr_vote()!=0){
                     Vote::deletes($posts->PostId);
+                }
+                if($posts->get_All_Answer_by_postid()!=NULL){
+                    Tools::abort("!!!Cannot delete or update a parent row: a foreign key constraint fails");
                 }
                 $post = $posts->delete();
                 if($post->ParentId == NULL){
@@ -166,7 +149,7 @@ class ControllerPost extends Controller {
     public function edit() {
         $user = $this->get_user_or_false();
             $PostId = Tools::sanitize($_GET['param1']);
-            $posts = Post::get_quetion($PostId);
+            $posts = Post::get_post_PostId($PostId);
             $errors = [];
             
         (new View("edit"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors ));
@@ -175,47 +158,48 @@ class ControllerPost extends Controller {
     public function accept_and_refuse_answer() {
         $user = $this->get_user_or_redirect();
         $PostId = Tools::sanitize($_GET['param1']);
-        $post = Post::get_quetion($PostId);//ligne de la reponse
-        $question= Post::get_quetion($post->ParentId);// ligne de la question
+        $post = Post::get_post_PostId($PostId);//ligne de la reponse
+        $question= Post::get_post_PostId($post->ParentId);// ligne de la question
+        $refuse=FALSE;
         if(isset($_GET['param2'])&& $_GET['param2']==1){  
             $id= Tools::sanitize($_GET['param3']);           
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), $post->PostId, $question->ParentId,$question->PostId);
         }elseif($_GET['param2']!=1){
+            $refuse=true;
             $id= Tools::sanitize($_GET['param2']);
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), NULL, $question->ParentId,$question->PostId);
         }
         if($question->AuthorId==$user->UserId ){ 
             $user->write_post($answered);
-            $this->redirect("post","show",$id);
-        } else {
-            $errors  ="you had to be a member of the question to confirm an answer !";
-            (new View("error"))->show(Array( "error" => $errors));
-        }
-    }
-    
-    public function search() {
-        $user= $this->get_user_or_false();
-        if(isset($_GET["param1"])){
-            $filter=Utils::url_safe_decode($_GET["param1"]);
-            if(!$filter){
-                Tools::abort("the parameter does not exist");
+            if (!$refuse) {
+                $this->redirect("post", "show", $id);
+            } else {
+                $this->redirect("post", "show", $id, $refuse);
             }
-            $posts= Post::filter($filter);  $errors=[]; 
-            (new View("index"))->show(array( "posts" => $posts,"user"=>$user,"errors" => $errors));
+        } else {
+            Tools::abort( "you had to be a member of the question to confirm an answer !");
         }
     }
     
     public function post_search() {
+        $user= $this->get_user_or_false();
         if(isset($_POST["search"])){
             $param=Tools::sanitize($_POST['search']);
             $filter='';
             if(User::get_member_by_username($param)){
-              $user=User::get_member_by_username($param);
-               $filter =$user->UserId;
+                $user=User::get_member_by_username($param);
+                $filter =$user->UserId;
             } else {
-              $filter= $param;  
+                $filter= $param;  
             }
-            $this->redirect("post", "search", Utils::url_safe_encode($filter));
+            $mot=Utils::url_safe_encode($filter);
+            $filters=Utils::url_safe_decode($mot);
+            if(!$filters){
+                $this->redirect($_GET[0], $_GET[1], $_GET[2], $_GET[3], $_GET[4]);
+               // Tools::abort("the parameter does not exist");
+            }
+            $posts= Post::get_filter($filters);  $errors=[]; 
+        (new View("index"))->show(array( "posts" => $posts,"user"=>$user,"errors" => $errors));
         }
     }
    

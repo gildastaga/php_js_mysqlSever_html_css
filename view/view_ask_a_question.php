@@ -9,7 +9,7 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title">Stuck Overflow </div>
+            <div class="title"><a href="post/index">Home</a> Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>
@@ -21,7 +21,7 @@
             </div>
         </div>
         <br>
-        <div class="main">
+        <div class="main">   
         <br><br>
                 <div>
                     <form id="post_form" action="post/Ak_a_question" method="post">
