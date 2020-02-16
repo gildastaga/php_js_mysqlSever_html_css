@@ -2,7 +2,7 @@
 require_once "lib/parsedown-1.7.3/Parsedown.php";
 ?>
 <!DOCTYPE html>
-<html style="background: url(/lib/fonds.jpg) no-repeat;">
+<html>
     <head>
         <meta charset="UTF-8">
         <title>Stuck Overflow </title>

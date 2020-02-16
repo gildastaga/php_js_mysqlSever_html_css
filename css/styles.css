@@ -4,9 +4,7 @@
 }
 
 body {
-    background: url("/lib/fonds.jpg") no-repeat;
     width       :900px;
-   
     margin      :20px auto;
     background  :#f8f8f8;
     border      :1px solid #888; 
@@ -14,6 +12,7 @@ body {
 }
 
 html {
+    background-image: url (src="lib/parsedown-1.7.3/fond.png" alt="Markdown fond") no-repeat ;
     background: url(/lib/parsedown-1.7.3/fond.png) no-repeat;
     background-size: cover;
 /*    background-image:url(/lib/fonds.jpg);*/

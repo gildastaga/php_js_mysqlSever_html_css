@@ -9,7 +9,7 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title"><a href="post/index">Home</a> Stuck Overflow </div>
+            <div class="title"><a href="post/index"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>

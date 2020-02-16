@@ -9,8 +9,8 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title"><?php if($posts->Title!=NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>
-             <?php else: ?> <a href="post/show/<?php echo $posts->ParentId;?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> <?php endif; ?>Stuck Overflow </div>
+            <div class="title"><?php if ($posts->Title != NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>
+                <?php else: ?> <a href="post/show/<?php echo $posts->ParentId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> <?php endif; ?>Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>
@@ -26,18 +26,18 @@
             <br><br>
             <div>
                 <form id="post_form" action="post/postupdate/<?php echo $posts->PostId; ?>" method="post">
-                    <?php  if ($posts->Title): ?>
-                    <td>Title</td><br>
-                   <textarea id="Title" name="Title" rows='1'><?= $posts->Title; ?></textarea><br>
-                   <?php endif; ?>
-                        <td>Body</td><br>
-                        <textarea id="Body" name="Body" rows='8'><?= $posts->Body; ?></textarea><br><br>
-                    
+                    <?php if ($posts->Title): ?>
+                        <td>Title</td><br>
+                        <textarea id="Title" name="Title" rows='1'><?= $posts->Title; ?></textarea><br>
+                    <?php endif; ?>
+                    <td>Body</td><br>
+                    <textarea id="Body" name="Body" rows='8'><?= $posts->Body; ?></textarea><br><br>
+
                     <input id="post" type="submit" value="Post">
                 </form>
             </div>    
             <br> 
-            <?php  if (count($errors) != 0): ?>
+            <?php if (count($errors) != 0): ?>
                 <div class='errors'>
                     <br><p>Please correct the following error(s) :</p>
                     <ul>

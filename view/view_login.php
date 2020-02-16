@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title">Stuck Overflow </div>
+            <div class="title"><a href="post/index"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>Stuck Overflow </div>
             <div class="menu"><a href="post/index">home</a></div>
         </div>
             <div class="main">
