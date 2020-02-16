@@ -12,7 +12,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
     </head>
     <body>
         <div class="bloc1">
-            <form class="title">Stuck Overflow </form>
+            <form class="title"><?php if($t): ?><a href="post/index"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> <?php endif;?>Stuck Overflow </form>
             <form class="menu">
                 <?php if (!$user): ?>
                     <?php include('menu.html'); ?>

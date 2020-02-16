@@ -14,8 +14,9 @@ class ControllerVote extends Controller {
     public function index() {
         $user = $this->get_user_or_false();
         $posts = Vote::votes();
+        $t=FALSE;
         $errors = [];
-        (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors));
+        (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors,"t"=>$t));
     }
 
 //    public function vot() {

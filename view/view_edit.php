@@ -9,8 +9,8 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title"><?php if($posts->Title!=NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>">Home</a>
-             <?php else: ?> <a href="post/show/<?php echo $posts->ParentId;?>">Home</a> <?php endif; ?>Stuck Overflow </div>
+            <div class="title"><?php if($posts->Title!=NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>
+             <?php else: ?> <a href="post/show/<?php echo $posts->ParentId;?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> <?php endif; ?>Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>

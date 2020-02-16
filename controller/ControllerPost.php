@@ -12,7 +12,8 @@ class ControllerPost extends Controller {
         $user = $this->get_user_or_false();
         $posts = Post::get_all_post();
         $errors = [];
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
+        $t=FALSE;
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors,"t"=>$t));
     }
 
 //controller post: post/question
@@ -20,7 +21,8 @@ class ControllerPost extends Controller {
         $user = $this->get_user_or_false();
         $posts = Post::get_all_post();
         $errors = [];
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
+        $t=FALSE;
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors,"t"=>$t));
     }
     
     //controller post :post/unanswered
@@ -28,15 +30,17 @@ class ControllerPost extends Controller {
         $user = $this->get_user_or_false();
         $posts = Post::get_unanswere();
         $errors = [];
-        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors));
+        $t=FALSE;
+        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors,"t"=>$t));
     }
     
      //controller neswest :post/neswet
     public function newest() {
         $user = $this->get_user_or_false();
         $posts = Post::get_newest();
+        $t=FALSE;
         $errors = [];
-        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors));
+        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors,"t"=>$t));
     }
     
     //controller post :post/ask a question
@@ -77,6 +81,7 @@ class ControllerPost extends Controller {
                 $this->redirect("post", "show", $PostId);
             }
         }
+        
         (new View("show"))->show(array("user" => $user,"author"=>$author, "posts" => $posts, "errors" => $errors, "listanswer" => $listanswer));
     }
      
@@ -113,7 +118,7 @@ class ControllerPost extends Controller {
     }
 
     // controller delete
-    public function delete_confirm() {    var_dump($_GET);
+    public function delete_confirm() {
         $user = $this->get_user_or_false();
         $PostId = Tools::sanitize($_GET['param1']);
         $errors = [];
@@ -158,24 +163,19 @@ class ControllerPost extends Controller {
     public function accept_and_refuse_answer() {
         $user = $this->get_user_or_redirect();
         $PostId = Tools::sanitize($_GET['param1']);
-        $post = Post::get_post_PostId($PostId);//ligne de la reponse
-        $question= Post::get_post_PostId($post->ParentId);// ligne de la question
-        $refuse=FALSE;
+        $post = Post::get_post_PostId($PostId);//ligne de la reponse (fille)
+        $question= Post::get_post_PostId($post->ParentId);// post parent 
+        $refuse='';
         if(isset($_GET['param2'])&& $_GET['param2']==1){  
             $id= Tools::sanitize($_GET['param3']);           
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), $post->PostId, $question->ParentId,$question->PostId);
         }elseif($_GET['param2']!=1){
-            $refuse=true;
             $id= Tools::sanitize($_GET['param2']);
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), NULL, $question->ParentId,$question->PostId);
         }
         if($question->AuthorId==$user->UserId ){ 
             $user->write_post($answered);
-            if (!$refuse) {
-                $this->redirect("post", "show", $id);
-            } else {
-                $this->redirect("post", "show", $id, $refuse);
-            }
+            $this->redirect("post", "show", $id);
         } else {
             Tools::abort( "you had to be a member of the question to confirm an answer !");
         }
@@ -183,6 +183,7 @@ class ControllerPost extends Controller {
     
     public function post_search() {
         $user= $this->get_user_or_false();
+        $t=true;
         if(isset($_POST["search"])){
             $param=Tools::sanitize($_POST['search']);
             $filter='';
@@ -199,7 +200,7 @@ class ControllerPost extends Controller {
                // Tools::abort("the parameter does not exist");
             }
             $posts= Post::get_filter($filters);  $errors=[]; 
-        (new View("index"))->show(array( "posts" => $posts,"user"=>$user,"errors" => $errors));
+        (new View("index"))->show(array( "posts" => $posts,"user"=>$user,"errors" => $errors,"t"=>$t));
         }
     }
    

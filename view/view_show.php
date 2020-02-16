@@ -9,7 +9,7 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title"><a href="post/index">Home</a> Stuck Overflow </div>
+            <div class="title"><a href="post/index"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>
@@ -95,7 +95,7 @@
                                                         style="-webkit-filter: grayscale(1); filter: grayscale(1);"
                                                         src="lib/parsedown-1.7.3/refuser.png" width="30" height="20"  alt=""/></a>
                                                 <a href="post/accept_and_refuse_answer/<?php echo $row->PostId; ?>/<?php echo TRUE; ?>/<?php echo $posts->PostId; ?>"><img
-                                            <?php if($posts->AcceptedAnswerId !=NULL ):?>                   
+                                            <?php if($posts->AcceptedAnswerId !=NULLs ):?>                   
                                                    style=" -webkit-filter: hue-rotate(90deg);
                                                     filter: hue-rotate(90deg);"
                                             <?php else: ?>

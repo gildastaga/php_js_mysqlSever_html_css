@@ -25,9 +25,9 @@
         <br><br>
                 <div>
                     <form id="post_form" action="post/Ak_a_question" method="post">
-                        <td>Title</td><br>
+                        <td>Title</td>
                         <textarea id="Title" name="Title" rows='1'></textarea><br>  
-                        <td>Body</td><br>
+                        <td>Body</td>
                         <textarea id="Body" name="Body" rows='8'></textarea><br><br>
                         <input id="post" type="submit" value="publish your question">
                     </form>
