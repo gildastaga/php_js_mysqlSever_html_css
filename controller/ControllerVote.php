@@ -39,7 +39,7 @@ class ControllerVote extends Controller {
         }
         if(!Vote::get_vote($vote->PostId, $vote->UserId)){
             $vote->update();
-            $this->redirect("post","show",$id);
+            $this->redirect("post","show",$id);//$id permet de retourner sur la meme parge 
         }else{      
             $vote->delete();    
              $this->redirect("post","show",$id);

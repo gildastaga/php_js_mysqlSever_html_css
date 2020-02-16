@@ -1,9 +1,10 @@
 <?php
 
 require_once "lib/parsedown-1.7.3/Parsedown.php";
-
 require_once "framework/model.php";
 require_once "model/User.php";
+
+
 class Post extends Model {
 
     public $PostId;
@@ -97,9 +98,6 @@ class Post extends Model {
         $errors = array();
         if (!($this->Body)) {
             $errors[] = "Body must be filled";
-        }
-        if (($this->AcceptedAnswerId)) {
-            $errors[] = "you cannot delete or modify a answer accetp";
         }
         return $errors;
     }
