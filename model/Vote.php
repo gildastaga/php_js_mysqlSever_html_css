@@ -29,11 +29,11 @@ class Vote extends Model {
                       WHERE post.postid = q1.parentid
                       ORDER BY q1.max_score DESC, timestamp DESC "), array());
         $data = $query->fetchAll();
-        $votes = [];
+        $post = [];
         foreach ($data as $value) {
-            $votes[] = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
+            $post[] = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
         }
-        return $votes;
+        return $post;
     }
 
     //ajoute un vote ou update un vote
@@ -63,6 +63,16 @@ class Vote extends Model {
             return new Vote($row["UserId"], $row["PostId"], $row["UpDown"]);
         }
     }
+    
+    public static function get_quetion($PostId,$UserId) {
+        $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId=:UserId", array("PostId" => $PostId,"UserId"=>$UserId));
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            $row = $query->fetch();
+            return new Vote($row["UserId"], $row["PostId"], $row["UpDown"]);
+        }
+    } 
 //nombre de vote par post
     public function nbr_vote($PostId) {
         $query = self::execute(("SELECT SUM(UpDown) as nbrvote FROM vote  where PostId=:PostId"), array("PostId" => $PostId));

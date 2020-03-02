@@ -30,22 +30,22 @@ class Post extends Model {
         $interval = $datetime1->diff($datetime2);
         $tempago = array();
         if ($interval->y != 0) {
-            $tempago [] = " " . ( $interval->y ) . " yaer(s)";
+            $tempago [] = " " . ( $interval->y ) . " yaer(s) ago";
         }
         if ($interval->m != 0) {
-            $tempago [] = " " . ( $interval->m ) . " month(s)";
+            $tempago [] = " " . ( $interval->m ) . " month(s) ago";
         }
         if ($interval->d != 0) {
-            $tempago [] = " " . ( $interval->d ) . " day(s)";
+            $tempago [] = " " . ( $interval->d ) . " day(s) ago";
         }
         if ($interval->h != 0) {
-            $tempago [] = " " . ( $interval->h ) . " heure(s)";
+            $tempago [] = " " . ( $interval->h ) . " heure(s) ago";
         }
         if ($interval->i != 0) {
-            $tempago [] = " " . ( $interval->i ) . " minute(s)";
+            $tempago [] = " " . ( $interval->i ) . " minute(s) ago";
         }
         if ($interval->s != 0) {
-            $tempago [] = " " . ( $interval->s ) . " second(s)";
+            $tempago [] = " " . ( $interval->s ) . " second(s) ago";
         }
         if ($interval->s < 1) {
             $tempago [] = "a l'instant";
@@ -54,13 +54,17 @@ class Post extends Model {
     }
 
     public static function get_filter($search) {
-        $query = self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body ", array("Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));
-        $data = $query->fetchAll();
-        $resul = [];
-        foreach ($data as $row) {
-            $resul[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+        $query = self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body ", array("Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));       
+        $resul = [];       
+        if($query->rowCount() == 0){
+            return 0;
+        } else {
+            $data = $query->fetchAll();
+            foreach ($data as $row) {
+                $resul[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+            }
+            return $resul;
         }
-        return $resul;
     }
 
     public function markdown() {
@@ -225,16 +229,17 @@ class Post extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    public function valeur_vote() {
-        if ($this->get_vote()) {
-            $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId", array("PostId" => $this->PostId, "UserId" => $this->AuthorId));
-            return $query->fetch()["UpDown"];
+    public function valeur_vote($PostId,$AuthorId) {
+        $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId", array("PostId" => $PostId, "UserId" => $AuthorId));
+        if ($query->rowCount() == 0) {
+            return false;
         } else {
-            return FALSE;
+           $row = $query->fetchAll();
+            return new Vote($row["UserId"], $row["PostId"], $row["UpDown"]);
         }
     }
 

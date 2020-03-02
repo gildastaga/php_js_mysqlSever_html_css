@@ -165,23 +165,25 @@ class ControllerPost extends Controller {
         $post = Post::get_post_PostId($PostId); //ligne de la reponse (fille)
         $question = Post::get_post_PostId($post->ParentId); // post parent 
         if (isset($_GET['param2']) && $_GET['param2'] == 1) {
-            $id = Tools::sanitize($_GET['param3']);
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), $post->PostId, $question->ParentId, $question->PostId);
-        } elseif ($_GET['param2'] != 1) {
-            $id = Tools::sanitize($_GET['param2']);
+        } else{
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), NULL, $question->ParentId, $question->PostId);
         }
         if ($question->AuthorId == $user->UserId) {
             $user->write_post($answered);
-            $this->redirect("post", "show", $id);
+            $this->redirect("post", "show", $post->ParentId);
         } else {
             Tools::abort("you had to be a member of the post to confirm or refuse answer !");
         }
     }
 
-    public function post_search() {
-        $user = $this->get_user_or_false();
-        $t = true;
+    public function post_search() {        
+       $user = $this->get_user_or_false();
+       if (isset($_GET["param1"])) {
+            $filter = Utils::url_safe_decode($_GET["param1"]);
+            if (!$filter)
+                Tools::abort("Bad url parameter");
+        }
         if (isset($_POST["search"])) {
             $param = Tools::sanitize($_POST['search']);
             $filter = '';
@@ -191,15 +193,15 @@ class ControllerPost extends Controller {
             } else {
                 $filter = $param;
             }
-            $mot = Utils::url_safe_encode($filter);
+            $mot = trim(Utils::url_safe_encode($filter));
             $filters = Utils::url_safe_decode($mot);
-            if (!$filters) {
-                $this->redirect($_GET[0], $_GET[1], $_GET[2], $_GET[3], $_GET[4]);
-                // Tools::abort("the parameter does not exist");
-            }
             $posts = Post::get_filter($filters);
+            if (!$filters||$posts==0) {
+                $this->redirect("post","index");
+            }           
+           
             $errors = [];
-            (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors, "t" => $t));
+            (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors));
         }
     }
 

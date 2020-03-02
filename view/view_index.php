@@ -12,7 +12,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
     </head>
     <body>
         <div class="bloc1">
-            <form class="title"><?php if($t): ?><a href="post/index"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> <?php endif;?>Stuck Overflow </form>
+            <form class="title">Stuck Overflow </form>
             <form class="menu">
                 <?php if (!$user): ?>
                     <?php include('menu.html'); ?>
@@ -32,7 +32,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 </form> 
             </div>   
             <div>
-                <form class="recherche" action="post/post_search" method="post">
+                <form class="recherche" action="post/post_search" method="post" method="get">
                     <input id="idsearch" type="search" name="search" aria-label="search ">
                     <input id="post" type="submit" value="search">
                 </form>
@@ -42,11 +42,11 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                     <table id="message_list" class="message_list">
                         <?php foreach ($posts as $values): ?>                         
                         <tr> 
-                        <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
-                        &nbsp <?php echo "  ".$values->markdown(); ?>
-                        &nbsp &nbsp <a>asked <span><?php  echo $values->temp_ago()[0];?></span>  ago
-                           &nbsp by <?php  echo $values->name(); ?>( &nbsp <?php echo $values->nbr_vote(); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp   </a>
-                    </tr><br>                         
+                            <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
+                            &nbsp <?php echo "  ".$values->markdown(); ?>
+                            &nbsp &nbsp <a>asked <span><?php  echo $values->temp_ago()[0];?></span> 
+                               &nbsp by <?php  echo $values->name(); ?>( &nbsp <?php echo $values->nbr_vote(); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp </a>
+                        </tr><br><br>                          
                         <?php endforeach; ?>  
                     </table><br>
                 <?php if (count($errors) != 0): ?>
