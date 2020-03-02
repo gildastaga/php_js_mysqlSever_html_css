@@ -224,25 +224,6 @@ class Post extends Model {
         }
     }
 
-    public function get_vote() {
-        $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId", array("PostId" => $this->PostId, "UserId" => $this->AuthorId));
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public function valeur_vote($PostId,$AuthorId) {
-        $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId =:UserId", array("PostId" => $PostId, "UserId" => $AuthorId));
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-           $row = $query->fetchAll();
-            return new Vote($row["UserId"], $row["PostId"], $row["UpDown"]);
-        }
-    }
-
     public static function delete_all_vote_in_fille($answers) {
         foreach ($answers as $ligne) {
             if ($ligne->nbr_vote() != 0) {
