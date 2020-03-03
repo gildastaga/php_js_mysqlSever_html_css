@@ -9,7 +9,7 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title"> Stuck Overflow </div>
+            <div class="title"> <a href="post/index"><img src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>
@@ -27,8 +27,10 @@
                     <?php echo $posts->Title; ?><br><br>
                     <tr>
                         Post by  <?php echo $user->get_user_by_UserId($posts->AuthorId)->UserName; ?>
-                    <a href="post/edit/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
-                    <a href="post/delete_confirm/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br><br>
+                        <?php if($user->UserId==$posts->AuthorId): ?>
+                            <a href="post/edit/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
+                            <a href="post/delete_confirm/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br><br>
+                        <?php endif; ?>
                     </tr> 
                 <?php endif; ?>
                 <tr>
@@ -108,7 +110,7 @@
                                     <?php // endif; ?>
                                     <td>
                                 <li><?php echo $reponse->markdown(); ?></li><br>
-                                <?php if ($user): ?>
+                                <?php if ($user && $user->UserId==$reponse->AuthorId): ?>
                                     <a href="post/edit/<?php echo $reponse->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
                                     <a href="post/delete_confirm/<?php echo $reponse->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
                                 <?php endif; ?>

@@ -61,7 +61,13 @@ class Post extends Model {
         } else {
             $data = $query->fetchAll();
             foreach ($data as $row) {
-                $resul[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+                $post = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+                if($post->ParentId!=null){
+                  $postParent= Post::get_quetion($post->ParentId);
+                  $resul[]=$postParent;
+                }else{
+                    $resul[]=$post;
+                }
             }
             return $resul;
         }

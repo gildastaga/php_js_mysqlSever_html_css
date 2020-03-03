@@ -39,7 +39,6 @@ class ControllerUser extends Controller {
         $Email = '';
         $errors = [];
         if (isset($_POST['UserName']) && isset($_POST['Password']) && isset($_POST['Password_confirm']) && isset($_POST['FullName']) && isset($_POST['Email'])) {
-
             $UserName = trim($_POST['UserName']);
             $Password = $_POST['Password'];
             $Password_confirm = $_POST['Password_confirm'];
@@ -51,7 +50,8 @@ class ControllerUser extends Controller {
             $errors = array_merge($errors, User::validate_passwords($Password, $Password_confirm));
             if (count($errors) == 0) {
                 $user->update();
-                $this->log_user($user);
+                $use= User::get_member_by_username($user->UserName);
+                $this->log_user($use);
             }
         }
         (new View("signup"))->show(array( "UserName" => $UserName, "FullName" => $FullName, "Password" => $Password,

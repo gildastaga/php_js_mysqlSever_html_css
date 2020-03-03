@@ -3,6 +3,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
 ?>
 <!DOCTYPE html>
 <html>
+    
     <head>
         <meta charset="UTF-8">
         <title>Stuck Overflow </title>

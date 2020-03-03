@@ -62,16 +62,6 @@ class Vote extends Model {
             $row = $query->fetch();
             return new Vote($row["UserId"], $row["PostId"], $row["UpDown"]);
         }
-    }
-    
-    public static function get_quetion($PostId,$UserId) {
-        $query = self::execute("SELECT * FROM vote where PostId =:PostId and UserId=:UserId", array("PostId" => $PostId,"UserId"=>$UserId));
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            $row = $query->fetch();
-            return new Vote($row["UserId"], $row["PostId"], $row["UpDown"]);
-        }
     } 
 //nombre de vote par post
     public function nbr_vote($PostId) {
