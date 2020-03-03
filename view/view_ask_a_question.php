@@ -26,9 +26,9 @@
                 <div>
                     <form id="post_form" action="post/Ak_a_question" method="post">
                         <td>Title</td>
-                        <textarea id="Title" name="Title" rows='1'></textarea><br>  
+                        <textarea id="Title" name="Title" rows='1'> <?= $Title; ?> </textarea><br>  
                         <td>Body</td>
-                        <textarea id="Body" name="Body" rows='8'></textarea><br><br>
+                        <textarea id="Body" name="Body" rows='8'> <?= $Body; ?> </textarea><br><br>
                         <input id="post" type="submit" value="publish your question">
                     </form>
                 </div>    
