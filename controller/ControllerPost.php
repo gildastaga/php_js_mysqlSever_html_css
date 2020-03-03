@@ -54,14 +54,16 @@ class ControllerPost extends Controller {
             $Title = Tools::sanitize($_POST['Title']);
             $Body = Tools::sanitize($_POST['Body']);
             $Timestamp = date('Y-m-d H:i:s');
-            $question = new Post($user->UserId, $Title, $Body, $Timestamp, NULL, NULL);
-            $errors = $question->validate();
+            $post = new Post($user->UserId, $Title, $Body, $Timestamp, NULL, NULL);
+            $errors = $post->validate();
             if (count($errors) == 0) {
-                $user->write_post($question);
+                $user->write_post($post);
                 $this->redirect("post", "index");
-            }
+            } 
+            
+            
         }
-        (new View("ask_a_question"))->show(array("user" => $user, "Body" => $Body, "Title" => $Title, "errors" => $errors));
+        (new View("ask_a_question"))->show(array("user" => $user , "Body" => $Body, "Title" => $Title, "errors" => $errors));
     }
 
     //detallePost
