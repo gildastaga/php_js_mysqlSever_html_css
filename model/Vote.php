@@ -15,27 +15,6 @@ class Vote extends Model {
         $this->UpDown = $UpDown;
     }
 
-    public static function votes() {
-        $query = self::execute(("SELECT post.*, max_score
-                                FROM post, (
-                          SELECT parentid, max(score) max_score
-                          FROM (
-                              SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score
-                              FROM post LEFT JOIN vote ON vote.postid = post.postid
-                              GROUP BY post.postid
-                          ) AS tbl1
-                          GROUP by parentid
-                      ) AS q1
-                      WHERE post.postid = q1.parentid
-                      ORDER BY q1.max_score DESC, timestamp DESC "), array());
-        $data = $query->fetchAll();
-        $post = [];
-        foreach ($data as $value) {
-            $post[] = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
-        }
-        return $post;
-    }
-
     //ajoute un vote ou update un vote
     public function update() {
             self::execute("INSERT INTO vote(UserId, PostId, UpDown)VALUES(:UserId,:PostId, :UpDown)", 

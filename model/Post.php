@@ -220,8 +220,8 @@ class Post extends Model {
         return $query->fetch()["nbranswer"];
     }
 
-    public function nbr_vote() {
-        $query = self::execute(("SELECT SUM(UpDown) as nbrvote FROM vote  where PostId=:PostId"), array("PostId" => $this->PostId));
+    public static function nbr_vote($PostId) {
+        $query = self::execute(("SELECT SUM(UpDown) as nbrvote FROM vote  where PostId=:PostId"), array("PostId" => $PostId));
         $votenbr = $query->fetch();
         if ($votenbr["nbrvote"] == 0) {
             return 0;
@@ -237,5 +237,25 @@ class Post extends Model {
             }
         }
     }
-
+    
+    public static function getvotes() {
+        $query = self::execute(("SELECT post.*, max_score
+                                FROM post, (
+                          SELECT parentid, max(score) max_score
+                          FROM (
+                              SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score
+                              FROM post LEFT JOIN vote ON vote.postid = post.postid
+                              GROUP BY post.postid
+                          ) AS tbl1
+                          GROUP by parentid
+                      ) AS q1
+                      WHERE post.postid = q1.parentid
+                      ORDER BY q1.max_score DESC, timestamp DESC "), array());
+        $data = $query->fetchAll();
+        $post = [];
+        foreach ($data as $value) {
+            $post[] = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
+        }
+        return $post;
+    }
 }

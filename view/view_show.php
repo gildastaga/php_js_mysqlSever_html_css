@@ -48,7 +48,7 @@
                                                     filter: grayscale(1);"
                                                 <?php endif; ?>
                                                 src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
-                                        <?php echo $posts->nbr_vote($posts->PostId); ?> score(s)<br>
+                                        <?php echo Post::nbr_vote($posts->PostId); ?> score(s)<br>
                                         <a href="vote/add_vote/<?php echo $posts->PostId; ?>"><img
                                             <?php if (Vote::get_vote($posts->PostId,$user->UserId) && Vote::get_vote($posts->PostId,$user->UserId)->UpDown== -1): ?> 
                                                     style=" -webkit-filter: hue-rotate(90deg);
@@ -82,7 +82,7 @@
                                                         filter: grayscale(1);"
                                                 <?php endif; ?>
                                                     src="lib/parsedown-1.7.3/vote1.png"  width="30" height="20"  alt=""/></a><br>
-                                            <?php echo $reponse->nbr_vote(); ?> score(s)<br>
+                                            <?php echo Post::nbr_vote($reponse->PostId); ?> score(s)<br>
                                             <a href="vote/add_vote/<?php echo $reponse->PostId; ?>"><img 
                                                 <?php if (Vote::get_vote($reponse->PostId,$user->UserId) && Vote::get_vote($reponse->PostId,$user->UserId)->UpDown== -1): ?>                   
                                                         style=" -webkit-filter: hue-rotate(90deg);

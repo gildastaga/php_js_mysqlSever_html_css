@@ -127,8 +127,8 @@ class ControllerPost extends Controller {
         $posts = Post::get_post_PostId($PostId);
         if (isset($_GET['param2'])) {
             if ($posts->AuthorId == $user->UserId) {
+                $parent = Post::get_post_PostId($posts->ParentId);
                 if ($posts->AcceptedAnswerId != NULL) {
-                    $parent = Post::get_post_PostId($posts->ParentId);
                     $answered = new Post($parent->AuthorId, $parent->Title, $parent->Body, date('Y-m-d H:i:s'), NULL, $parent->ParentId, $parent->PostId);
                     $posts = $user->write_post($answered);
                 }
@@ -137,6 +137,9 @@ class ControllerPost extends Controller {
                 }
                 if ($posts->get_All_Answer_by_postid() != NULL) {
                     Tools::abort("!!!Cannot delete or update a parent row: a foreign key constraint fails");
+                }
+                if($posts->PostId===$parent->AcceptedAnswerId ){
+                    Tools::abort("!!!Cannot delete a post accepte");
                 }
                 $post = $posts->delete();
                 if ($post->ParentId == NULL) {
