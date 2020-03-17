@@ -6,6 +6,7 @@ require_once 'framework/View.php';
 require_once 'framework/Controller.php';
 require_once 'framework/Tools.php';
 require_once 'model/Vote.php';
+require_once 'model/Tag.php';
 
 class ControllerPost extends Controller {
 
@@ -13,14 +14,20 @@ class ControllerPost extends Controller {
         $user = $this->get_user_or_false();
         $posts = Post::get_all_post();
         $errors = [];
-        $t = FALSE;
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "t" => $t));
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
     }
 
 //controller post: post/question
     public function questions() {
         $user = $this->get_user_or_false();
         $posts = Post::get_all_post();
+        $errors = [];
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
+    }
+    //controler post/active
+    public function active() {
+        $user = $this->get_user_or_false();
+        $posts = Post::getactive();
         $errors = [];
         $t = FALSE;
         (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "t" => $t));
@@ -31,8 +38,7 @@ class ControllerPost extends Controller {
         $user = $this->get_user_or_false();
         $posts = Post::get_unanswere();
         $errors = [];
-        $t = FALSE;
-        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "t" => $t));
+        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors));
     }
 
     //controller neswest :post/neswet
@@ -45,11 +51,12 @@ class ControllerPost extends Controller {
     }
 
     //controller post :post/ask a question
-    public function Ak_a_question() {
+    public function Ak_a_question() { 
         $user = $this->get_user_or_redirect();
         $Title = '';
         $Body = '';
         $errors = [];
+        $tag= Tag::get_all_tag();
         if (isset($_POST['Title']) && isset($_POST['Body'])) {
             $Title = Tools::sanitize($_POST['Title']);
             $Body = Tools::sanitize($_POST['Body']);
@@ -57,13 +64,21 @@ class ControllerPost extends Controller {
             $post = new Post($user->UserId, $Title, $Body, $Timestamp, NULL, NULL);
             $errors = $post->validate();
             if (count($errors) == 0) {
-                $user->write_post($post);
-                $this->redirect("post", "index");
-            } 
-            
-            
+                $post->update();
+                if(!isset($_POST['TagName'])){
+                $this->redirect("post","index");
+                } else {
+                    $lasinset= Post::get_lasinset();
+                    $taglis= ($_POST['TagName']);                    
+                    foreach ($taglis as $value){
+                        $tagassocie= Tag::get_tagbytagname($value);
+                        Tag::associer_post_tag($lasinset, $tagassocie->TagId);
+                    }
+                    $this->redirect("post","index");
+                }
+            }
         }
-        (new View("ask_a_question"))->show(array("user" => $user , "Body" => $Body, "Title" => $Title, "errors" => $errors));
+        (new View("ask_a_question"))->show(array("user" => $user , "Body" => $Body, "Title" => $Title, "errors" => $errors,"tag"=>$tag));
     }
 
     //detallePost
@@ -74,10 +89,12 @@ class ControllerPost extends Controller {
         $posts = Post::get_post_PostId($PostId);
         $author = User::get_user_by_UserId($posts->AuthorId); //post parent 
         $listanswer = $posts->get_All_Answer_by_postid(); // post fille
+        $tag= Tag::get_tag_bypostId($PostId);
+        $tags= Tag::get_all_tag();
         $errors = [];
         if (isset($_POST['Body'])) {
             $Body = Tools::sanitize($_POST['Body']);
-            $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $PostId);
+            $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL,$posts->PostId);           
             $errors = $answered->validates();
             if (count($errors) == 0) {
                 $user->write_post($answered);
@@ -85,7 +102,8 @@ class ControllerPost extends Controller {
             }
         }
 
-        (new View("show"))->show(array("user" => $user, "author" => $author, "posts" => $posts, "errors" => $errors, "listanswer" => $listanswer));
+        (new View("show"))->show(array("user" => $user, "author" => $author, "posts" => $posts, 
+            "errors" => $errors, "listanswer" => $listanswer,"tag"=>$tag,"tags"=>$tags));
     }
 
     public function postupdate() {
@@ -128,25 +146,24 @@ class ControllerPost extends Controller {
         if (isset($_GET['param2'])) {
             if ($posts->AuthorId == $user->UserId) {
                 $parent = Post::get_post_PostId($posts->ParentId);
-                if ($posts->AcceptedAnswerId != NULL) {
-                    $answered = new Post($parent->AuthorId, $parent->Title, $parent->Body, date('Y-m-d H:i:s'), NULL, $parent->ParentId, $parent->PostId);
-                    $posts = $user->write_post($answered);
-                }
-                if ($posts->nbr_vote() != 0) {
-                    Vote::deletes($posts->PostId);
-                }
-                if ($posts->get_All_Answer_by_postid() != NULL) {
-                    Tools::abort("!!!Cannot delete or update a parent row: a foreign key constraint fails");
-                }
+//                if ($posts->AcceptedAnswerId != NULL) {
+//                    $answered = new Post($parent->AuthorId, $parent->Title, $parent->Body, date('Y-m-d H:i:s'), NULL, $parent->ParentId, $parent->PostId);
+//                    $posts = $user->write_post($answered);
+//                }
                 if($posts->PostId===$parent->AcceptedAnswerId ){
                     Tools::abort("!!!Cannot delete a post accepte");
-                }
-                $post = $posts->delete();
-                if ($post->ParentId == NULL) {
-                    $this->redirect("post", "index");
-                } else {
-                    $this->redirect("post", "show", $post->ParentId);
-                }
+                }else{
+                    if (Post::nbr_vote($posts->PostId) != 0) {
+                        Vote::deletes($posts->PostId);    
+                    }
+                    $postdelet= Post::get_post_PostId($posts->PostId);
+                    $post = $postdelet->delete();                   
+                    if ($post->ParentId == NULL) {
+                        $this->redirect("post", "index");
+                    } else {
+                        $this->redirect("post", "show", $post->ParentId);
+                    }
+                }    
             } else {
                 $errors [] = "you had to be a author of post";
             }
@@ -171,15 +188,19 @@ class ControllerPost extends Controller {
         $question = Post::get_post_PostId($post->ParentId); // post parent 
         if (isset($_GET['param2']) && $_GET['param2'] == 1) {
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), $post->PostId, $question->ParentId, $question->PostId);
-        } else{
+        } else if(!isset($_GET['param2'])){
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), NULL, $question->ParentId, $question->PostId);
         }
+        $reponsethis=new Post($post->AuthorId, $post->Title, $post->Body, date('Y-m-d H:i:s'), $post->AcceptedAnswerId,$post->ParentId,$post->PostId);
         if ($question->AuthorId == $user->UserId) {
             $user->write_post($answered);
+            $user->write_post($reponsethis);
             $this->redirect("post", "show", $post->ParentId);
         } else {
             Tools::abort("you had to be a member of the post to confirm or refuse answer !");
         }
+        (new View("show"))->show(array("user" => $user, "posts" => $post,));
+
     }
 
     public function post_search() {        
@@ -208,6 +229,19 @@ class ControllerPost extends Controller {
             $errors = [];
             (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors));
         }
+    }
+    public function by_tag() {
+        $user = $this->get_user_or_false();
+        $tag="";
+        $errors = [];
+        if(isset($_GET['param1'])){
+        $TagId = Tools::sanitize($_GET['param1']);
+        $tag = Tag::get_tag($TagId);
+        } else {
+           $tag->TagId =13;
+        }
+        $posts= Post::get_AllPost_byTag($tag->TagId);
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors,"tag"=>$tag));
     }
 
 }

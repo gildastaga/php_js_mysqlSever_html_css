@@ -27,9 +27,10 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
             <div class="menus">
                 <form class="menus">
                     <a href="post/newest">Newest</a>
-                    <a> Active</a>
+                    <a href="post/active"> Active</a>
                     <a href="post/unanswered">Unanswered</a>
                     <a href="vote/index">Vote</a>
+                    <a href="post/by_tag">by tag</a>
                 </form> 
             </div>   
             <div>
@@ -44,9 +45,13 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         <?php foreach ($posts as $values): ?>                         
                         <tr> 
                             <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
-                            &nbsp <?php echo "  ".$values->markdown(); ?>
-                            &nbsp &nbsp <a>asked <span><?php  echo $values->temp_ago()[0];?></span> 
-                                &nbsp by <?php  echo $values->name(); ?>(<?php echo Post::nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp </a>
+                            &nbsp <?php  "  ".$values->markdown(); ?>
+                            <br>&nbsp &nbsp asked <span><?php  echo $values->temp_ago()[0];?></span> 
+                                &nbsp by <?php  echo $values->name(); ?>(<?php echo Post::nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp
+                                    <?php $taglispost= Tag::get_tag_bypostId($values->PostId) ;  ?>
+                                    <?php  foreach ($taglispost as $row): ?>
+                                        <a href="post/by_tag/<?= $row->TagId ?>"><?= $row->TagName ?></a>&nbsp
+                                    <?php endforeach; ?>
                         </tr><br><br>                          
                         <?php endforeach; ?>  
                     </table><br>

@@ -54,19 +54,19 @@ class Post extends Model {
     }
 
     public static function get_filter($search) {
-        $query = self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body ", array("Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));       
-        $resul = [];       
-        if($query->rowCount() == 0){
+        $query = self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body ", array("Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));
+        $resul = [];
+        if ($query->rowCount() == 0) {
             return 0;
         } else {
             $data = $query->fetchAll();
             foreach ($data as $row) {
                 $post = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
-                if($post->ParentId!=null){
-                  $postParent= Post::get_quetion($post->ParentId);
-                  $resul[]=$postParent;
-                }else{
-                    $resul[]=$post;
+                if ($post->ParentId != null) {
+                    $postParent = Post::get_quetion($post->ParentId);
+                    $resul[] = $postParent;
+                } else {
+                    $resul[] = $post;
                 }
             }
             return $resul;
@@ -89,7 +89,7 @@ class Post extends Model {
         }
         return $resul;
     }
-    
+
     public static function get_newest() {
         $query = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL group by PostId ORDER BY Timestamp DESC"), array());
         $data = $query->fetchAll();
@@ -198,9 +198,14 @@ class Post extends Model {
         }
     }
 
-    
-
     public function delete() {
+        $query=self::execute(("select * FROM posttag WHERE PostId =:PostId"), array("PostId" => $this->PostId));
+        $data = $query->fetchAll();
+        foreach ($data as $value) {
+            if($value["PostId"]== $this->PostId){
+                self::execute(("DELETE FROM posttag WHERE PostId =:PostId"), array("PostId" => $this->PostId));
+            }
+        }
         self::execute(("DELETE FROM post WHERE PostId =:PostId"), array("PostId" => $this->PostId));
         return $this;
     }
@@ -237,7 +242,7 @@ class Post extends Model {
             }
         }
     }
-    
+
     public static function getvotes() {
         $query = self::execute(("SELECT post.*, max_score
                                 FROM post, (
@@ -257,5 +262,67 @@ class Post extends Model {
             $post[] = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
         }
         return $post;
+    }
+
+    public static function getactive() {
+        $query = self::execute(("select question.PostId, question.AuthorId, question.Title, question.Body, question.ParentId, question.Timestamp, question.AcceptedAnswerId 
+                from post as question, 
+                     (select post_updates.postId, max(post_updates.timestamp) as timestamp from (
+                        select q.postId as postId, q.timestamp from post q where q.parentId is null
+                        UNION
+                        select a.parentId as postId, a.timestamp from post a where a.parentId is not null
+                        UNION
+                        select c.postId as postId, c.timestamp from comment c 
+                        UNION 
+                        select a.parentId as postId, c.timestamp 
+                        from post a, comment c 
+                        WHERE c.postId = a.postId and a.parentId is not null
+                        ) as post_updates
+                      group by post_updates.postId) as last_post_update
+                where question.postId = last_post_update.postId and question.parentId is null
+                order by last_post_update.timestamp DESC"), array());
+        $data = $query->fetchAll();
+        $post = [];
+        foreach ($data as $value) {
+            $post[] = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
+        }
+        return $post;
+    }
+
+    public function get_posttag($PostId) {
+        $query = self::execute("select *  from  posttag where TagId =:PostId ", array("PostId" => $this->PostId));
+        $data = $query->fetchAll();
+        return $data;
+    }
+    
+    public static function get_post_bytag($TagId) {
+        $query = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL where PostId=:TagId group by PostId ORDER BY Timestamp DESC"),
+                array("TagId"=>$TagId));
+        $data = $query->fetchAll();
+        $postByTag = [];
+        foreach ($data as $value) {
+            $postByTag[] = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
+        }
+        return $postByTag;
+    }
+    public function functionName($param) {
+        
+    }
+    public static function get_AllPost_byTag($TagId) {
+        $query = self::execute(("SELECT * FROM posttag  where TagId=:TagId"), array("TagId" => $TagId));
+        $data = $query->fetchAll();
+        $postByTag = [];
+        foreach ($data as $value) {
+            $query1 = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL and PostId=:PostId group by PostId ORDER BY Timestamp DESC"),
+                                                 array("PostId"=>$value["PostId"]));
+            $data1 =$query1->fetchAll();
+            foreach ($data1 as $row) {
+                $postByTag[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+            }         
+        }
+        return $postByTag;
+    }
+    public static function get_lasinset() {
+        return Model::lastInsertId();
     }
 }

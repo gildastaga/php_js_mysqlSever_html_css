@@ -8,15 +8,15 @@ body {
     margin      :20px auto;
     background  :#f8f8f8;
     border      :1px solid #888; 
-    
+
 }
 
 html {
     background-image: url (src="lib/parsedown-1.7.3/fond.png" ) no-repeat ;
     background: url(/lib/parsedown-1.7.3/fond.png) no-repeat;
     background-size: cover;
-/*    background-image:url(/lib/fonds.jpg);*/
-/*    background  :#fff;*/
+    /*    background-image:url(/lib/fonds.jpg);*/
+    /*    background  :#fff;*/
 }
 
 .main {
@@ -28,14 +28,19 @@ form * {
     font-size: inherit;
 }
 .menu {
-    margin-top: -20px;
+    margin-top: -30px;
     padding    :20px;
     float: right;
     text-align  :right;
 }
-.menus {
-    float: left;
-    text-align  :left;
+
+.sous{
+    display: none;
+    background-color: white;
+    box-shadow: 0px 1px 2px #ccc;
+}
+nav  >ul li :hover .sous{
+    display: block;
 }
 .recherche{
     float: right;
@@ -50,10 +55,19 @@ form * {
 .title {
     float: left;
     text-align  :left;
-   background  :blue;
+    background  :blue;
     color       :white;
 }
+.menu ul{
+    list-style-type: none;
+}
+.menu ul li{
+    float: left;
+    position: relative;
+}
+.menu > a::after{
 
+}
 .menu a {
     display           :inline;
     border            :1px solid #100;
@@ -116,4 +130,27 @@ form.link input[type="submit"] {
 }
 .delete{
     text-align: center;
+}
+
+.taglist {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+.taglist li {
+  float: left;
+  display: inline-block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+#TagName{
+    height:30px;
+    width:200px;
+}
+#addtag{
+    background-image: url(lib/parsedown-1.7.3/plus.png);
+    color: red;
 }

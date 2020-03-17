@@ -1,7 +1,16 @@
-<div class="menu">  
-    <a href="post/Ak_a_question">Ak a question</a>
-    <a href="post/questions">Questions</a>
-    <a > <img src="lib/parsedown-1.7.3/user.png" width="30" height="20"  alt=""/><?= $user->UserName; ?></a>
-    <a href="user/log_out"><img src="lib/parsedown-1.7.3/logout.png" width="30" height="20"  alt=""/></a> 
-</div>
- 
+<nav>  
+    <div class="menu">  
+        <ul>
+            <li><a href="post/Ak_a_question">Ak a question</a></li>
+            <li><a href="post/questions">Questions</a></li>
+            <li><a href="tag">tags</a></li>
+            <li><a > <img src="lib/parsedown-1.7.3/user.png" width="30" height="20"  alt=""/><?= $user->UserName; ?></a>
+                <ul class="sous">
+                    <li><a>Update_profil</a></li>
+                    <li><a>Log_out</a></li>
+                </ul>
+            </li>
+            <li><a href="user/log_out"><img src="lib/parsedown-1.7.3/logout.png" width="30" height="20"  alt=""/></a></li>
+        </ul>
+    </div>
+</nav> 

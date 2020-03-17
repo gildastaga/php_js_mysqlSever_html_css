@@ -27,20 +27,36 @@
                     <?php echo $posts->Title; ?><br><br>
                     <tr>
                         Post by  <?php echo $user->get_user_by_UserId($posts->AuthorId)->UserName; ?>
-                        <?php if($user->UserId==$posts->AuthorId): ?>
-                            <a href="post/edit/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
-                            <a href="post/delete_confirm/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br><br>
-                        <?php endif; ?>
+                        <?php if ($user->UserId == $posts->AuthorId || $user->Role == "admin"): ?>
+                        <a href="post/edit/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
+                        <a href="post/delete_confirm/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
+                    <?php endif; ?><br>
+                    <?php foreach ($tag as $row): ?>
+                        <?php if ($user->Role == "admin"): ?>
+                            <a href="tag/delete_tag/<?php echo $row->TagId; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="15" height="10"  alt=""/></a>
+                        <?php endif; ?>    
+                        <a href="post/by_tag/<?php echo $row->TagId; ?>"><?= $row->TagName . ' '; ?></a>
+                    <?php endforeach; ?>
+                    <?php if ($user->UserId == $posts->AuthorId || $user->Role == "admin"): ?>    
+                        <form action="tag/asso_tag_post/<?php echo $posts->PostId; ?>" method="post">
+                            <select name="TagId">
+                                <?php foreach ($tags as $rows): ?>
+                                    <option value=<?php echo $rows->TagId; ?> ><?php echo $rows->TagName; ?></option>
+                                <?php endforeach; ?> 
+                            </select>        
+                            <input  type="image" img src="lib/parsedown-1.7.3/plus.png" width="30" height="20"  alt="">
+                        </form>   
+                    <?php endif; ?>
                     </tr> 
-                <?php endif; ?>
+                <?php endif; ?><br><br>
                 <tr>
                     <td>
                         <table> 
                             <tr>
                                 <?php if ($user): ?>
-                                <td> 
+                                    <td> 
                                         <a href="vote/add_vote/<?php echo $posts->PostId; ?>/<?php echo TRUE; ?>"><img 
-                                            <?php if (Vote::get_vote($posts->PostId,$user->UserId) && Vote::get_vote($posts->PostId,$user->UserId)->UpDown== 1): ?>                  
+                                            <?php if (Vote::get_vote($posts->PostId, $user->UserId) && Vote::get_vote($posts->PostId, $user->UserId)->UpDown == 1): ?>                  
                                                     style=" -webkit-filter: hue-rotate(90deg);
                                                     filter: hue-rotate(90deg);"
                                                 <?php else: ?>
@@ -50,7 +66,7 @@
                                                 src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
                                         <?php echo Post::nbr_vote($posts->PostId); ?> score(s)<br>
                                         <a href="vote/add_vote/<?php echo $posts->PostId; ?>"><img
-                                            <?php if (Vote::get_vote($posts->PostId,$user->UserId) && Vote::get_vote($posts->PostId,$user->UserId)->UpDown== -1): ?> 
+                                            <?php if (Vote::get_vote($posts->PostId, $user->UserId) && Vote::get_vote($posts->PostId, $user->UserId)->UpDown == -1): ?> 
                                                     style=" -webkit-filter: hue-rotate(90deg);
                                                     filter: hue-rotate(90deg);"
                                                 <?php else: ?>
@@ -74,17 +90,17 @@
                                     <?php if ($user): ?>
                                         <td>
                                             <a href="vote/add_vote/<?php echo $reponse->PostId; ?>/<?php echo TRUE; ?>"><img 
-                                                <?php if (Vote::get_vote($reponse->PostId,$user->UserId)  && Vote::get_vote($reponse->PostId,$user->UserId)->UpDown == 1 ): ?>                   
+                                                <?php if (Vote::get_vote($reponse->PostId, $user->UserId) && Vote::get_vote($reponse->PostId, $user->UserId)->UpDown == 1): ?>                   
                                                         style=" -webkit-filter: hue-rotate(90deg);
                                                         filter: hue-rotate(90deg);"
-                                                <?php else: ?>
+                                                    <?php else: ?>
                                                         style="-webkit-filter: grayscale(1);
                                                         filter: grayscale(1);"
-                                                <?php endif; ?>
+                                                    <?php endif; ?>
                                                     src="lib/parsedown-1.7.3/vote1.png"  width="30" height="20"  alt=""/></a><br>
                                             <?php echo Post::nbr_vote($reponse->PostId); ?> score(s)<br>
                                             <a href="vote/add_vote/<?php echo $reponse->PostId; ?>"><img 
-                                                <?php if (Vote::get_vote($reponse->PostId,$user->UserId) && Vote::get_vote($reponse->PostId,$user->UserId)->UpDown== -1): ?>                   
+                                                <?php if (Vote::get_vote($reponse->PostId, $user->UserId) && Vote::get_vote($reponse->PostId, $user->UserId)->UpDown == -1): ?>                   
                                                         style=" -webkit-filter: hue-rotate(90deg);
                                                         filter: hue-rotate(90deg);"
                                                     <?php else: ?>
@@ -97,7 +113,7 @@
                                                     style="-webkit-filter: grayscale(1); filter: grayscale(1);"
                                                     src="lib/parsedown-1.7.3/refuser.png" width="30" height="20"  alt=""/></a>
                                             <a href="post/accept_and_refuse_answer/<?php echo $reponse->PostId; ?>/<?php echo TRUE; ?>"><img
-                                                <?php if ($posts->AcceptedAnswerId == $reponse->PostId ): ?>                   
+                                                <?php if ($posts->AcceptedAnswerId == $reponse->PostId): ?>                   
                                                         style=" -webkit-filter: hue-rotate(90deg);
                                                         filter: hue-rotate(90deg);"
                                                     <?php else: ?>
@@ -110,7 +126,7 @@
                                     <?php // endif; ?>
                                     <td>
                                 <li><?php echo $reponse->markdown(); ?></li><br>
-                                <?php if ($user && $user->UserId==$reponse->AuthorId): ?>
+                                <?php if ($user && $user->UserId == $reponse->AuthorId): ?>
                                     <a href="post/edit/<?php echo $reponse->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
                                     <a href="post/delete_confirm/<?php echo $reponse->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
                                 <?php endif; ?>

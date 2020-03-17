@@ -10,13 +10,16 @@ class User extends Model {
     public $FullName;
     public $Email;
     public $UserId;
-
-    public function __construct($UserName, $hashed_password, $FullName, $Email, $UserId = -1) {
+    public $Role;
+//    public $tab=[user,admin];
+    
+    public function __construct($UserName, $hashed_password, $FullName, $Email,$Role="user", $UserId = -1) {
         $this->UserId = $UserId;
         $this->UserName = $UserName;
         $this->hashed_password = $hashed_password;
         $this->FullName = $FullName;
         $this->Email = $Email;
+        $this->Role=$Role;          
     }
 
     public static function validate_login($UserName, $Password) {
@@ -89,9 +92,11 @@ class User extends Model {
 
     public function update() {
         if (self::get_member_by_username($this->UserName)) {
-            self::execute("UPDATE User SET  UserName=:UserName,Password=:Password, FullName=:FullName, Email=:Email  WHERE UserId:UserId ", array("UserName" => $this->UserName, "Password" => $this->hashed_password, "FullName" => $this->FullName, "Email" => $this->Email));
+            self::execute("UPDATE User SET  UserName=:UserName,Password=:Password, FullName=:FullName, Email=:Email,Role=:Role  WHERE UserId:UserId ",
+                    array("UserName" => $this->UserName, "Password" => $this->hashed_password, "FullName" => $this->FullName, "Email" => $this->Email,"role"=> $this->role));
         } else {
-            self::execute("INSERT INTO User(UserName,Password,FullName,Email) VALUES(:UserName,:Password,:FullName,:Email)", array("UserName" => $this->UserName, "Password" => $this->hashed_password, "FullName" => $this->FullName, "Email" => $this->Email));
+            self::execute("INSERT INTO User(UserName,Password,FullName,Email,Role) VALUES(:UserName,:Password,:FullName,:Email,:Role)",
+                    array("UserName" => $this->UserName, "Password" => $this->hashed_password, "FullName" => $this->FullName, "Email" => $this->Email,"Role"=> $this->Role));
         }
         return $this;
     }
@@ -102,7 +107,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"], $data["UserId"]);
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"],$data["Role"], $data["UserId"]);
         }
     }
 
@@ -112,7 +117,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"], $data["UserId"]);
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"],$data["Role"], $data["UserId"]);
         }
     }
 
