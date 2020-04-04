@@ -6,6 +6,7 @@ require_once 'framework/View.php';
 require_once 'framework/Controller.php';
 require_once 'framework/Tools.php';
 require_once 'model/Vote.php';
+require_once 'model/Comment.php';
 require_once 'model/Tag.php';
 
 class ControllerPost extends Controller {
@@ -91,6 +92,7 @@ class ControllerPost extends Controller {
         $listanswer = $posts->get_All_Answer_by_postid(); // post fille
         $tag= Tag::get_tag_bypostId($PostId);
         $tags= Tag::get_all_tag();
+        $comment= Comment::get_all_comment($PostId);        
         $errors = [];
         if (isset($_POST['Body'])) {
             $Body = Tools::sanitize($_POST['Body']);
@@ -103,7 +105,7 @@ class ControllerPost extends Controller {
         }
 
         (new View("show"))->show(array("user" => $user, "author" => $author, "posts" => $posts, 
-            "errors" => $errors, "listanswer" => $listanswer,"tag"=>$tag,"tags"=>$tags));
+            "errors" => $errors, "listanswer" => $listanswer,"tag"=>$tag,"tags"=>$tags,"comment"=>$comment));
     }
 
     public function postupdate() {
@@ -143,6 +145,8 @@ class ControllerPost extends Controller {
         $PostId = Tools::sanitize($_GET['param1']);
         $errors = [];
         $posts = Post::get_post_PostId($PostId);
+        $comment=NULL;
+        $tagdelete=NULL;
         if (isset($_GET['param2'])) {
             if ($posts->AuthorId == $user->UserId) {
                 $parent = Post::get_post_PostId($posts->ParentId);
@@ -168,7 +172,7 @@ class ControllerPost extends Controller {
                 $errors [] = "you had to be a author of post";
             }
         }
-        (new View("delete"))->show(array("user" => $user, "errors" => $errors, "posts" => $posts));
+        (new View("delete"))->show(array("user" => $user, "errors" => $errors,"tagdelete"=>$tagdelete, "posts" => $posts,"comment"=>$comment));
     }
 
     //control edit 

@@ -51,8 +51,8 @@ class Comment extends Model {
         return $tempago;
     }
     
-    public static function get_all_comment() {
-        $query = self::execute("select * from comment  GROUP BY CommentId ORDER BY Timestamp DESC", array());
+    public static function get_all_comment($PostId) {
+        $query = self::execute("select * from comment where PostId=:PostId  ORDER BY Timestamp DESC", array("PostId"=>$PostId));
         $array = $query->fetchAll();
         $resul = [];
         foreach ($array as $row) {
@@ -93,18 +93,22 @@ class Comment extends Model {
         }
     }
     
-    //ajoute un post ou update un post
+    //ajout ou  update un comment
     public function update() {
         if ($this->CommentId == -1) {
-            self::execute("INSERT INTO post(UserId,PostId,Body,Timestamp)"
-                    . "VALUES(:UserId,:PostId,:Body,:Timestamp)",
+            self::execute("INSERT INTO comment(UserId,PostId,Body,Timestamp)VALUES(:UserId,:PostId,:Body,:Timestamp)",
                     array("UserId" => $this->UserId, "PostId" => $this->PostId, "Body" => $this->Body,"Timestamp" => $this->Timestamp));
             return $this;
         } else {
-            self::execute("UPDATE post SET  AuthorId=:AuthorId, Title=:Title, Body=:Body, Timestamp=:Timestamp,AcceptedAnswerId=:AcceptedAnswerId, ParentId=:ParentId WHERE PostId=:PostId ",
-                    array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body,
-                "Timestamp" => $this->Timestamp, "AcceptedAnswerId" => $this->AcceptedAnswerId, "ParentId" => $this->ParentId, "CommentId" => $this->CommentId));
+            self::execute("UPDATE comment SET  UserId=:UserId, PostId=:PostId, Body=:Body, Timestamp=:Timestamp WHERE CommentId=:CommentId ",
+                    array("UserId" => $this->UserId, "PostId" => $this->PostId, "Body" => $this->Body,
+                "Timestamp" => $this->Timestamp, "CommentId" => $this->CommentId));
             return $this;
         }
+    }
+    
+    public function delete() {
+        self::execute(("DELETE FROM comment WHERE CommentId =:CommentId"), array("CommentId" => $this->CommentId));
+        return $this;
     }
 }

@@ -56,19 +56,21 @@ class ControllerTag extends Controller{
     
     public function delete_tag() {
         $user = $this->get_user_or_redirect();
-        $tag= Tag::get_all_tag();
         $TagId= Tools::sanitize($_GET['param1']);
+        $posts=NULL;
+        $comment=NULL;
         $errors = [];
         $tagdelete= Tag::get_tag($TagId);
-        if(!isset($_GET['param2'])){
+        if(isset($_GET['param2']) && ($_GET['param2'])==1 ){ 
             $user->delete_post($tagdelete);
             $this->redirect("tag", "index");
-        } else {
+        } 
+        if(isset($_GET['param2']) && ($_GET['param2'])!=1){
             $tagdelete->dissocier_post_tag();
             $param2=Tools::sanitize($_GET['param2']);
             $this->redirect("post","show", $param2);
-        }
-        (new View("tag"))->show(array("user" => $user ,"errors" => $errors,"tag"=>$tag));
+        }    
+        (new View("delete"))->show(array("user" => $user, "errors" => $errors, "posts" => $posts,"comment"=>$comment,"tagdelete"=>$tagdelete));
     }
     
     public function asso_tag_post() {

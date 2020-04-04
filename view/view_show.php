@@ -23,6 +23,7 @@
         <br>
         <div class="main">         
             <table id="message_list" class="message_list">
+
                 <?php if ($user): ?>            
                     <?php echo $posts->Title; ?><br><br>
                     <tr>
@@ -33,7 +34,7 @@
                     <?php endif; ?><br>
                     <?php foreach ($tag as $row): ?>
                         <?php if ($user->Role == "admin"): ?>
-                            <a href="tag/delete_tag/<?php echo $row->TagId; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="15" height="10"  alt=""/></a>
+                            <a href="tag/delete_tag/<?php echo $row->TagId; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/croix.png" width="15" height="10"  alt=""/></a>
                         <?php endif; ?>    
                         <a href="post/by_tag/<?php echo $row->TagId; ?>"><?= $row->TagName . ' '; ?></a>
                     <?php endforeach; ?>
@@ -78,7 +79,31 @@
                                 <?php endif; ?>
                             <h6> body post </h6>   
                             <td>
-                            <li><?php echo $posts->markdown(); ?></li> <br>
+                                <h3>comment by post</h3><br><br>
+                                <?php foreach ($comment as $values): ?>
+                                <tr>
+                                <li> <?php echo $values->Body; ?></li>
+                                <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
+                                &nbsp by <?php echo $values->name(); ?> &nbsp &nbsp
+                                <?php if ($user): ?>
+                                    <?php if ($user->Role == "admin" || $values->UserId == $user->UserId): ?>
+                                        <a href="comment/edit_comment/<?php echo $values->CommentId; ?>">
+                                            <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""> </a>            
+                                        <a href="comment/delete_comment/<?php echo $values->CommentId; ?>">
+                                            <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
+                                    <?php endif; ?>
+                                    <?php endif; ?><br> 
+                                </tr>     
+                                <?php endforeach; ?><br>
+                                <?php if ($user): ?>
+                                Add your Comment<br>
+                                <form id="post_form" action="comment/add_comment/<?php echo $posts->PostId; ?>" method="post">                 
+                                    <textarea id="Body" name="Body" rows='2'></textarea><br><br>
+                                    <input id="post" type="submit" value="Comment">
+                                </form>
+                                <?php endif; ?><br><br>
+
+                                <li><?php echo $posts->markdown(); ?></li> <br>
                             </td>
                             </tr>
                         </table><br><br>
@@ -123,8 +148,33 @@
                                                     src="lib/parsedown-1.7.3/accepte.png" width="30" height="20" alt=""/></a>
                                             <?php endif; ?>
                                     </td>
-                                    <?php // endif; ?>
+                                    <?php $reponsecomment = Comment::get_all_comment($reponse->PostId); ?>
                                     <td>
+                                        <?php if (count($reponsecomment) != 0): ?>
+                                            <h4> comment list</h4>
+                                            <?php foreach ($reponsecomment as $values): ?>
+                                                <div class="comment">
+                                                    <li> <?php echo $values->Body; ?></li>
+                                                    <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
+                                                    &nbsp by <?php echo $values->name(); ?> &nbsp &nbsp
+                                                    <?php if ($user): ?>
+                                                        <?php if ($user->Role == "admin" || $values->UserId == $user->UserId): ?>
+                                                            <a href="comment/edit_comment/<?php echo $values->CommentId; ?>">
+                                                                <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""> </a>            
+                                                            <a href="comment/delete_comment/<?php echo $values->CommentId; ?>">
+                                                                <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
+                                                        <?php endif; ?><br> 
+                                                    <?php endif; ?>    
+                                                </div>     
+                                            <?php endforeach; ?><br> 
+                                        <?php endif; ?>     
+                                        <?php if ($user && count($listanswer) != 0): ?><br>
+                                            &nbsp &nbsp you can Add a Comment on the answer<br><br>
+                                            <form id="post_form" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
+                                                <textarea id="Body" name="Body" rows='2'></textarea><br>
+                                                <input id="post" type="submit" value="Comment">
+                                            </form>
+                                        <?php endif; ?><br><br>
                                 <li><?php echo $reponse->markdown(); ?></li><br>
                                 <?php if ($user && $user->UserId == $reponse->AuthorId): ?>
                                     <a href="post/edit/<?php echo $reponse->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
@@ -135,17 +185,14 @@
                         </td>
                     </tr>
                 </table>
-            <?php endforeach; ?>
-            <?php // endif; ?><br><br><br>
-
+            <?php endforeach; ?><br><br><br>
             <?php if ($user): ?>
                 Add your Anwer<br>
                 <form id="post_form" action="post/show/<?php echo $posts->PostId; ?>" method="post">                 
                     <textarea id="Body" name="Body" rows='8'></textarea><br><br>
                     <input id="post" type="submit" value="put your Answer">
                 </form>
-            <?php endif; ?>   
-            <br><br>
+            <?php endif; ?><br><br>
             </td>
             </tr>
             </table>

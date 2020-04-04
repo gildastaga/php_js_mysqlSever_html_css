@@ -9,8 +9,7 @@
     </head>
     <body>
         <div class="bloc1">
-            <div class="title"><?php if ($posts->Title != NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>
-                <?php else: ?> <a href="post/show/<?php echo $posts->ParentId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> <?php endif; ?>Stuck Overflow </div>
+            <div class="title"><a href="post/show/ <?php echo $comment->PostId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>Stuck Overflow </div>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>
@@ -25,14 +24,9 @@
         <div class="main">
             <br><br>
             <div>
-                <form id="post_form" action="post/postupdate/<?php echo $posts->PostId; ?>" method="post">
-                    <?php if ($posts->Title): ?>
-                        <td>Title</td><br>
-                        <textarea id="Title" name="Title" rows='1'><?= $posts->Title; ?></textarea><br>
-                    <?php endif; ?>
+                <form id="post_form" action="comment/add_comment/<?php echo $comment->CommentId; ?>/<?php echo TRUE; ?>" method="post">
                     <td>Body</td><br>
-                    <textarea id="Body" name="Body" rows='8'><?= $posts->Body; ?></textarea><br><br>
-
+                    <textarea id="Body" name="Body" rows='3'><?= $comment->Body; ?></textarea><br><br>
                     <input id="post" type="submit" value="Save">
                 </form>
             </div>    

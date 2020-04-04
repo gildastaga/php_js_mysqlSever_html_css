@@ -3,7 +3,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
 ?>
 <!DOCTYPE html>
 <html>
-    
+
     <head>
         <meta charset="UTF-8">
         <title>Stuck Overflow </title>
@@ -41,20 +41,20 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
             </div>
             <br><br><br><br>
             <div class="main">                
-                    <table id="message_list" class="message_list">
-                        <?php foreach ($posts as $values): ?>                         
+                <table id="message_list" class="message_list">
+                    <?php foreach ($posts as $values): ?>                         
                         <tr> 
-                            <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
-                            &nbsp <?php  "  ".$values->markdown(); ?>
-                            <br>&nbsp &nbsp asked <span><?php  echo $values->temp_ago()[0];?></span> 
-                                &nbsp by <?php  echo $values->name(); ?>(<?php echo Post::nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp
-                                    <?php $taglispost= Tag::get_tag_bypostId($values->PostId) ;  ?>
-                                    <?php  foreach ($taglispost as $row): ?>
-                                        <a href="post/by_tag/<?= $row->TagId ?>"><?= $row->TagName ?></a>&nbsp
-                                    <?php endforeach; ?>
+                        <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
+                        &nbsp <?= "  " . $values->markdown(); ?>
+                        <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
+                        &nbsp by <?php echo $values->name(); ?>(<?php echo Post::nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp
+                        <?php $taglispost = Tag::get_tag_bypostId($values->PostId); ?>
+                        <?php foreach ($taglispost as $row): ?>
+                            <a href="post/by_tag/<?= $row->TagId ?>"><?= $row->TagName ?></a>&nbsp
+                        <?php endforeach; ?>
                         </tr><br><br>                          
-                        <?php endforeach; ?>  
-                    </table><br>
+                    <?php endforeach; ?>  
+                </table><br>
                 <?php if (count($errors) != 0): ?>
                     <div class='errors'>
                         <br><br><p>Please correct the following error(s) :</p>
@@ -65,6 +65,16 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         </ul>
                     </div>
                 <?php endif; ?>
+                <div class="pagination">
+                    <a href="#">prev &laquo;</a>
+                    <a href="#">1</a>
+                    <a class="active" href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#">4</a>
+                    <a href="#">5</a>
+                    <a href="#">6</a>
+                    <a href="#">&raquo;next</a>
+                </div> 
             </div>            
         </div>
     </body>

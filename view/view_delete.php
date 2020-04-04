@@ -9,8 +9,13 @@
     </head>
     <body class="bloc">
         <div class="bloc1">
-            <div class="title"><?php if($posts->Title!=NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>
-             <?php else: ?> <a href="post/show/<?php echo $posts->ParentId;?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> <?php endif; ?>Stuck Overflow </div>
+            <?php if($posts): ?>
+                <div class="title"><?php if($posts->Title!=NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>
+                 <?php else: ?> <a href="post/show/<?php echo $posts->ParentId;?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a> <?php endif; ?>Stuck Overflow 
+                </div>
+            <?php else: ?>
+                <div class="title"><a href="post/show/ <?php echo $comment->PostId; ?>"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>Stuck Overflow </div>   
+            <?php endif; ?>
             <div>
                 <form class="menu">
                     <?php if (!$user): ?>
@@ -34,9 +39,34 @@
                             <p> Do you really want to delete this post? <br><br>
                             This process cannot be undone<br>
                             </p>
-                            <td><?php if($posts->ParentId==NULL): ?><a href="post/show/ <?php echo $posts->PostId; ?>">cancel</a>
-             <?php else: ?> <a href="post/show/<?php echo $posts->ParentId;?>">cancel</a> <?php endif; ?></td> 
-                            <td> <a href="post/delete_confirm/<?php echo $posts->PostId; ?>/<?php echo TRUE; ?>">DELETE</a></td> 
+                            <?php if($posts!=null): ?>
+                                <td>
+                                    <?php if($posts->ParentId==NULL): ?>
+                                        <a href="post/show/ <?php echo $posts->PostId; ?>">cancel</a>
+                                    <?php else: ?> 
+                                        <a href="post/show/<?php echo $posts->ParentId;?>">cancel</a>
+                                    <?php endif; ?>
+                                </td> 
+                                <td> 
+                                    <a href="post/delete_confirm/<?php echo $posts->PostId; ?>/<?php echo TRUE; ?>">DELETE</a>
+                                </td> 
+                            <?php endif; ?>
+                            <?php if($comment!=null): ?>
+                                <td>
+                                    <a href="post/show/<?php echo $comment->PostId; ?>">cancel</a>
+                                </td> 
+                                <td> 
+                                    <a href="comment/delete_comment/<?php echo $comment->CommentId; ?>/<?php echo TRUE; ?>">DELETE</a>
+                                </td>
+                            <?php endif; ?>
+                            <?php if($tagdelete!=null): ?>
+                                <td>
+                                    <a href="tag/index/">cancel</a>
+                                </td> 
+                                <td>
+                                    <a href="tag/delete_tag/<?php echo $tagdelete->TagId; ?>/<?php echo TRUE; ?>">DELETE</a>
+                                </td>
+                            <?php endif; ?>    
                         </tr>
                     </table>
                 </div>   

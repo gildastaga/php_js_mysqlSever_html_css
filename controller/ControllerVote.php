@@ -17,7 +17,8 @@ class ControllerVote extends Controller {
         (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors));
     }
     public function add_vote() {
-        $user = $this->get_user_or_false();        
+        $user = $this->get_user_or_false(); 
+        $PostId= Tools::sanitize($_GET['param1']);;
         $post= Post::get_post_PostId($PostId);
        
         if (isset($_GET['param2']) && $_GET['param2'] == 1) {
