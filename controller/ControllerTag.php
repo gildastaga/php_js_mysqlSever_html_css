@@ -33,7 +33,7 @@ class ControllerTag extends Controller{
             $TagName = Tools::sanitize($_POST['TagName']); 
             $tags = new Tag($TagName,$tagedit->TagId);
         }
-        if (isset($_POST['TagName']) && !isset($_GET['param1'] )) {
+        if (isset($_POST['TagName']) && !isset($_GET['param1'] )) {           
             $TagName = Tools::sanitize($_POST['TagName']); 
             $tags = new Tag($TagName);
         }

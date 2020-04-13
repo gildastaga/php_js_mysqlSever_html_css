@@ -66,14 +66,17 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                     </div>
                 <?php endif; ?>
                 <div class="pagination">
-                    <a href="#">prev &laquo;</a>
-                    <a href="#">1</a>
-                    <a class="active" href="#">2</a>
-                    <a href="#">3</a>
-                    <a href="#">4</a>
-                    <a href="#">5</a>
-                    <a href="#">6</a>
-                    <a href="#">&raquo;next</a>
+                    <li class="page-item <?= ($currentPage<=1)? "disabled" : ""?>">
+                        <a class="page-link ml-auto" href="post/<?=$action.'/'.($currentPage-1) ?>">prev &laquo; </a>
+                    </li>
+                    <?php for($page_i=1;$page_i<=$nbr;$page_i++): ?>
+                        <li class="page-item <?= ($currentPage==$page_i)? "disabled" : ""?>">
+                            <a class="page-link ml-auto" href="post/<?=$action.'/'.$page_i ?>"><?= $page_i; ?> </a>
+                        </li>
+                    <?php endfor;?>
+                    <li class="page-item <?= ($currentPage>=$nbr)? "disabled" : ""?>">
+                        <a class="page-link ml-auto" href="post/<?=$action.'/'.($currentPage+1) ?>">&raquo;next </a>
+                    </li>
                 </div> 
             </div>            
         </div>

@@ -12,9 +12,13 @@ class ControllerVote extends Controller {
 
     public function index() {
         $user = $this->get_user_or_false();
-        $posts = Post::getvotes();
+        $nbpage=5;
+        $currentPage=(int)($_GET['param1']??1);
+        $offset=$nbpage*($currentPage -1);
+        $nbr=ceil(count(Post::get_total())/$nbpage);
+        $posts = Post::getvotes($nbpage,$offset);
         $errors = [];
-        (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors));
+        (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors,"currentPage"=>$currentPage,"nbr"=>$nbr,"action"=>"index"));
     }
     public function add_vote() {
         $user = $this->get_user_or_false(); 

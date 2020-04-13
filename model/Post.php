@@ -80,8 +80,8 @@ class Post extends Model {
         return $html;
     }
 
-    public static function get_all_post() {
-        $query = self::execute("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL GROUP BY PostId ORDER BY Timestamp DESC", array());
+    public static function get_all_post($nbpage,$offset) {
+        $query = self::execute("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL GROUP BY PostId ORDER BY Timestamp DESC LIMIT $nbpage OFFSET $offset ", array());
         $array = $query->fetchAll();
         $resul = [];
         foreach ($array as $row) {
@@ -90,8 +90,8 @@ class Post extends Model {
         return $resul;
     }
 
-    public static function get_newest() {
-        $query = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL group by PostId ORDER BY Timestamp DESC"), array());
+    public static function get_newest($nbpage,$offset) {
+        $query = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL group by PostId ORDER BY Timestamp DESC LIMIT $nbpage OFFSET $offset "), array());
         $data = $query->fetchAll();
         $newest = [];
         foreach ($data as $value) {
@@ -210,8 +210,8 @@ class Post extends Model {
         return $this;
     }
 
-    public static function get_unanswere() {
-        $query = self::execute("SELECT * FROM post where ParentId IS NULL and  AcceptedAnswerId IS NULL group by PostId,ParentId order by Timestamp DESC", array());
+    public static function get_unanswere($nbpage,$offset) {
+        $query = self::execute("SELECT * FROM post where ParentId IS NULL and  AcceptedAnswerId IS NULL group by PostId,ParentId order by Timestamp DESC LIMIT $nbpage OFFSET $offset ", array());
         $data = $query->fetchAll();
         $result = [];
         foreach ($data as $value) {
@@ -243,7 +243,7 @@ class Post extends Model {
         }
     }
 
-    public static function getvotes() {
+    public static function getvotes($nbpage,$offset) {
         $query = self::execute(("SELECT post.*, max_score
                                 FROM post, (
                           SELECT parentid, max(score) max_score
@@ -255,7 +255,7 @@ class Post extends Model {
                           GROUP by parentid
                       ) AS q1
                       WHERE post.postid = q1.parentid
-                      ORDER BY q1.max_score DESC, timestamp DESC "), array());
+                      ORDER BY q1.max_score DESC, timestamp DESC LIMIT $nbpage OFFSET $offset "), array());
         $data = $query->fetchAll();
         $post = [];
         foreach ($data as $value) {
@@ -264,7 +264,7 @@ class Post extends Model {
         return $post;
     }
 
-    public static function getactive() {
+    public static function getactive($nbpage,$offset) {
         $query = self::execute(("select question.PostId, question.AuthorId, question.Title, question.Body, question.ParentId, question.Timestamp, question.AcceptedAnswerId 
                 from post as question, 
                      (select post_updates.postId, max(post_updates.timestamp) as timestamp from (
@@ -280,7 +280,7 @@ class Post extends Model {
                         ) as post_updates
                       group by post_updates.postId) as last_post_update
                 where question.postId = last_post_update.postId and question.parentId is null
-                order by last_post_update.timestamp DESC"), array());
+                order by last_post_update.timestamp DESC LIMIT $nbpage OFFSET $offset "), array());
         $data = $query->fetchAll();
         $post = [];
         foreach ($data as $value) {
@@ -305,9 +305,6 @@ class Post extends Model {
         }
         return $postByTag;
     }
-    public function functionName($param) {
-        
-    }
     public static function get_AllPost_byTag($TagId) {
         $query = self::execute(("SELECT * FROM posttag  where TagId=:TagId"), array("TagId" => $TagId));
         $data = $query->fetchAll();
@@ -324,5 +321,23 @@ class Post extends Model {
     }
     public static function get_lasinset() {
         return Model::lastInsertId();
+    }
+    public static function get_total() {
+       $query= self::execute("select *from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL",array());
+       return  $query->fetchAll();
+    }
+    public static function get_AllPost_byTa() {
+        $query = self::execute(("SELECT * FROM posttag "), array());
+        $data = $query->fetchAll();
+        $postByTag = [];
+        foreach ($data as $value) {
+            $query1 = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL and PostId=:PostId group by PostId ORDER BY Timestamp DESC"),
+                                                 array("PostId"=>$value["PostId"]));
+            $data1 =$query1->fetchAll();
+            foreach ($data1 as $row) {
+                $postByTag[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+            }         
+        }
+        return $postByTag;
     }
 }

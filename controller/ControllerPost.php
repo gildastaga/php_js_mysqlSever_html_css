@@ -13,73 +13,99 @@ class ControllerPost extends Controller {
 
     public function index() {
         $user = $this->get_user_or_false();
-        $posts = Post::get_all_post();
+        $nbpage = 5;
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage * ($currentPage - 1);
+        $nbr = ceil(count(Post::get_total()) / $nbpage);
+        $posts = Post::get_all_post($nbpage, $offset);
         $errors = [];
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "index"));
     }
 
 //controller post: post/question
     public function questions() {
         $user = $this->get_user_or_false();
-        $posts = Post::get_all_post();
+        $nbpage = 5;
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage * ($currentPage - 1);
+        $nbr = ceil(count(Post::get_total()) / $nbpage);
+        $posts = Post::get_all_post($nbpage, $offset);
         $errors = [];
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "questions"));
     }
+
     //controler post/active
     public function active() {
         $user = $this->get_user_or_false();
-        $posts = Post::getactive();
+        $nbpage = 5;
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage * ($currentPage - 1);
+        $nbr = ceil(count(Post::get_total()) / $nbpage);
+        $posts = Post::getactive($nbpage, $offset);
         $errors = [];
         $t = FALSE;
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "t" => $t));
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "active"));
     }
 
     //controller post :post/unanswered
     public function unanswered() {
         $user = $this->get_user_or_false();
-        $posts = Post::get_unanswere();
+        $nbpage = 5;
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage * ($currentPage - 1);
+        $nbr = ceil(count(Post::get_total()) / $nbpage);
+        $posts = Post::get_unanswere($nbpage, $offset);
         $errors = [];
-        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors));
+        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "unanswered"));
     }
 
     //controller neswest :post/neswet
     public function newest() {
         $user = $this->get_user_or_false();
-        $posts = Post::get_newest();
-        $t = FALSE;
+        $nbpage = 5;
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage * ($currentPage - 1);
+        $nbr = ceil(count(Post::get_total()) / $nbpage);
+        $posts = Post::get_newest($nbpage, $offset);
         $errors = [];
-        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "t" => $t));
+        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "newest"));
     }
 
     //controller post :post/ask a question
-    public function Ak_a_question() { 
+    public function Ak_a_question() {
         $user = $this->get_user_or_redirect();
         $Title = '';
         $Body = '';
         $errors = [];
-        $tag= Tag::get_all_tag();
+        $tag = Tag::get_all_tag();
         if (isset($_POST['Title']) && isset($_POST['Body'])) {
             $Title = Tools::sanitize($_POST['Title']);
             $Body = Tools::sanitize($_POST['Body']);
             $Timestamp = date('Y-m-d H:i:s');
             $post = new Post($user->UserId, $Title, $Body, $Timestamp, NULL, NULL);
             $errors = $post->validate();
-            if (count($errors) == 0) {
-                $post->update();
-                if(!isset($_POST['TagName'])){
-                $this->redirect("post","index");
+            if (count($errors) == 0) {  
+                if (!isset($_POST['TagName'])) {
+                   // $post->update();
+                  //  $this->redirect("post", "index");
                 } else {
-                    $lasinset= Post::get_lasinset();
-                    $taglis= ($_POST['TagName']);                    
-                    foreach ($taglis as $value){
-                        $tagassocie= Tag::get_tagbytagname($value);
-                        Tag::associer_post_tag($lasinset, $tagassocie->TagId);
-                    }
-                    $this->redirect("post","index");
+                    $taglis = ($_POST['TagName']);                    
+                    if(count($taglis)<=Configuration ::get("max_tags")){
+                        $post->update();
+                        $lasinset = Post::get_lasinset();
+                        foreach ($taglis as $value) {
+                            $tagassocie = Tag::get_tagbytagname($value);
+                            Tag::associer_post_tag($lasinset, $tagassocie->TagId);
+                        }
+                        $this->redirect("post", "index");
+                    } else {                        
+                        $max_tag=Configuration ::get("max_tags");                       
+                        $errors [] = "you can add max : ". $max_tag." ";
+                    }    
                 }
             }
         }
-        (new View("ask_a_question"))->show(array("user" => $user , "Body" => $Body, "Title" => $Title, "errors" => $errors,"tag"=>$tag));
+        (new View("ask_a_question"))->show(array("user" => $user, "Body" => $Body, "Title" => $Title, "errors" => $errors, "tag" => $tag));
     }
 
     //detallePost
@@ -90,13 +116,13 @@ class ControllerPost extends Controller {
         $posts = Post::get_post_PostId($PostId);
         $author = User::get_user_by_UserId($posts->AuthorId); //post parent 
         $listanswer = $posts->get_All_Answer_by_postid(); // post fille
-        $tag= Tag::get_tag_bypostId($PostId);
-        $tags= Tag::get_all_tag();
-        $comment= Comment::get_all_comment($PostId);        
+        $tag = Tag::get_tag_bypostId($PostId);
+        $tags = Tag::get_all_tag();
+        $comment = Comment::get_all_comment($PostId);
         $errors = [];
         if (isset($_POST['Body'])) {
             $Body = Tools::sanitize($_POST['Body']);
-            $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL,$posts->PostId);           
+            $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $posts->PostId);
             $errors = $answered->validates();
             if (count($errors) == 0) {
                 $user->write_post($answered);
@@ -104,8 +130,8 @@ class ControllerPost extends Controller {
             }
         }
 
-        (new View("show"))->show(array("user" => $user, "author" => $author, "posts" => $posts, 
-            "errors" => $errors, "listanswer" => $listanswer,"tag"=>$tag,"tags"=>$tags,"comment"=>$comment));
+        (new View("show"))->show(array("user" => $user, "author" => $author, "posts" => $posts,
+            "errors" => $errors, "listanswer" => $listanswer, "tag" => $tag, "tags" => $tags, "comment" => $comment));
     }
 
     public function postupdate() {
@@ -145,8 +171,8 @@ class ControllerPost extends Controller {
         $PostId = Tools::sanitize($_GET['param1']);
         $errors = [];
         $posts = Post::get_post_PostId($PostId);
-        $comment=NULL;
-        $tagdelete=NULL;
+        $comment = NULL;
+        $tagdelete = NULL;
         if (isset($_GET['param2'])) {
             if ($posts->AuthorId == $user->UserId) {
                 $parent = Post::get_post_PostId($posts->ParentId);
@@ -154,25 +180,25 @@ class ControllerPost extends Controller {
 //                    $answered = new Post($parent->AuthorId, $parent->Title, $parent->Body, date('Y-m-d H:i:s'), NULL, $parent->ParentId, $parent->PostId);
 //                    $posts = $user->write_post($answered);
 //                }
-                if($posts->PostId===$parent->AcceptedAnswerId ){
+                if ($posts->PostId === $parent->AcceptedAnswerId) {
                     Tools::abort("!!!Cannot delete a post accepte");
-                }else{
+                } else {
                     if (Post::nbr_vote($posts->PostId) != 0) {
-                        Vote::deletes($posts->PostId);    
+                        Vote::deletes($posts->PostId);
                     }
-                    $postdelet= Post::get_post_PostId($posts->PostId);
-                    $post = $postdelet->delete();                   
+                    $postdelet = Post::get_post_PostId($posts->PostId);
+                    $post = $postdelet->delete();
                     if ($post->ParentId == NULL) {
                         $this->redirect("post", "index");
                     } else {
                         $this->redirect("post", "show", $post->ParentId);
                     }
-                }    
+                }
             } else {
                 $errors [] = "you had to be a author of post";
             }
         }
-        (new View("delete"))->show(array("user" => $user, "errors" => $errors,"tagdelete"=>$tagdelete, "posts" => $posts,"comment"=>$comment));
+        (new View("delete"))->show(array("user" => $user, "errors" => $errors, "tagdelete" => $tagdelete, "posts" => $posts, "comment" => $comment));
     }
 
     //control edit 
@@ -181,7 +207,6 @@ class ControllerPost extends Controller {
         $PostId = Tools::sanitize($_GET['param1']);
         $posts = Post::get_post_PostId($PostId);
         $errors = [];
-
         (new View("edit"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors));
     }
 
@@ -192,10 +217,10 @@ class ControllerPost extends Controller {
         $question = Post::get_post_PostId($post->ParentId); // post parent 
         if (isset($_GET['param2']) && $_GET['param2'] == 1) {
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), $post->PostId, $question->ParentId, $question->PostId);
-        } else if(!isset($_GET['param2'])){
+        } else if (!isset($_GET['param2'])) {
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), NULL, $question->ParentId, $question->PostId);
         }
-        $reponsethis=new Post($post->AuthorId, $post->Title, $post->Body, date('Y-m-d H:i:s'), $post->AcceptedAnswerId,$post->ParentId,$post->PostId);
+        $reponsethis = new Post($post->AuthorId, $post->Title, $post->Body, date('Y-m-d H:i:s'), $post->AcceptedAnswerId, $post->ParentId, $post->PostId);
         if ($question->AuthorId == $user->UserId) {
             $user->write_post($answered);
             $user->write_post($reponsethis);
@@ -204,19 +229,18 @@ class ControllerPost extends Controller {
             Tools::abort("you had to be a member of the post to confirm or refuse answer !");
         }
         (new View("show"))->show(array("user" => $user, "posts" => $post,));
-
     }
 
-    public function post_search() {        
-       $user = $this->get_user_or_false();
-       if (isset($_GET["param1"])) {
+    public function post_search() {
+        $user = $this->get_user_or_false();
+        if (isset($_GET["param1"])) {
             $filter = Utils::url_safe_decode($_GET["param1"]);
             if (!$filter)
                 Tools::abort("Bad url parameter");
         }
         if (isset($_POST["search"])) {
             $param = Tools::sanitize($_POST['search']);
-            $filter = '';
+            $filter = '';$nbr=1;
             if (User::get_member_by_username($param)) {
                 $user = User::get_member_by_username($param);
                 $filter = $user->UserId;
@@ -226,26 +250,29 @@ class ControllerPost extends Controller {
             $mot = trim(Utils::url_safe_encode($filter));
             $filters = Utils::url_safe_decode($mot);
             $posts = Post::get_filter($filters);
-            if (!$filters||$posts==0) {
-                $this->redirect("post","index");
-            }           
-           
+            if (!$filters || $posts == 0) {
+                $this->redirect("post", "index");
+            }
             $errors = [];
-            (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors));
+            (new View("index"))->show(array("posts" => $posts,"nbr"=>$nbr, "user" => $user, "errors" => $errors));
         }
     }
+
     public function by_tag() {
         $user = $this->get_user_or_false();
-        $tag="";
+        $nbr = 1;
+        $posts = "";
+        $tag = "";
         $errors = [];
-        if(isset($_GET['param1'])){
-        $TagId = Tools::sanitize($_GET['param1']);
-        $tag = Tag::get_tag($TagId);
+        if (isset($_GET['param1'])) {
+            $TagId = Tools::sanitize($_GET['param1']);
+            $tag = Tag::get_tag($TagId);
+            $posts = Post::get_AllPost_byTag($tag->TagId);
         } else {
-           $tag->TagId =13;
+            $posts = Post::get_AllPost_byTa();
         }
-        $posts= Post::get_AllPost_byTag($tag->TagId);
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors,"tag"=>$tag));
+
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "tag" => $tag, "nbr" => $nbr));
     }
 
 }
