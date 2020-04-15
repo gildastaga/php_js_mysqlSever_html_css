@@ -66,16 +66,24 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                     </div>
                 <?php endif; ?>
                 <div class="pagination">
-                    <li class="page-item <?= ($currentPage<=1)? "disabled" : ""?>">
-                        <a class="page-link ml-auto" href="post/<?=$action.'/'.($currentPage-1) ?>">prev &laquo; </a>
+                    <li  style="page-item <?= ($currentPage>1) ? " -webkit-filter:blur(90deg);
+                                                        filter: blur(90deg);" :
+                                                        "none" ?>">
+                        <a  style="page-link ml-auto" href="post/<?=$action.'/'.($currentPage-1) ?>">prev &laquo; </a>
                     </li>
                     <?php for($page_i=1;$page_i<=$nbr;$page_i++): ?>
-                        <li class="page-item <?= ($currentPage==$page_i)? "disabled" : ""?>">
-                            <a class="page-link ml-auto" href="post/<?=$action.'/'.$page_i ?>"><?= $page_i; ?> </a>
+                        <li  style="page-item <?= ($currentPage==$page_i)? " -webkit-filter: blur(90deg);
+                                                        filter: blur(90deg);" :
+                                                        "-webkit-filter: grayscale(1);
+                                                        filter: grayscale(1);" ?>">
+                            <a  style="page-link ml-auto" href="post/<?=$action.'/'.$page_i ?>"><?= $page_i; ?> </a>
                         </li>
                     <?php endfor;?>
-                    <li class="page-item <?= ($currentPage>=$nbr)? "disabled" : ""?>">
-                        <a class="page-link ml-auto" href="post/<?=$action.'/'.($currentPage+1) ?>">&raquo;next </a>
+                        <li style="page-item <?= ($currentPage<$nbr)? " -webkit-filter: blur(90deg);
+                                                        filter: blur(90deg);" :
+                                                        "-webkit-filter: grayscale(1);
+                                                        filter: grayscale(1);" ?>">
+                        <a  style="page-link ml-auto" href="post/<?=$action.'/'.($currentPage+1) ?>">&raquo;next </a>
                     </li>
                 </div> 
             </div>            
