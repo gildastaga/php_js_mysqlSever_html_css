@@ -233,6 +233,10 @@ class ControllerPost extends Controller {
 
     public function post_search() {
         $user = $this->get_user_or_false();
+        $nbpage = 5;
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage * ($currentPage - 1);
+        $nbr = ceil(count(Post::get_total()) / $nbpage); 
         if (isset($_GET["param1"])) {
             $filter = Utils::url_safe_decode($_GET["param1"]);
             if (!$filter)
@@ -240,7 +244,7 @@ class ControllerPost extends Controller {
         }
         if (isset($_POST["search"])) {
             $param = Tools::sanitize($_POST['search']);
-            $filter = '';$nbr=1;
+            $filter = '';
             if (User::get_member_by_username($param)) {
                 $user = User::get_member_by_username($param);
                 $filter = $user->UserId;
@@ -249,30 +253,32 @@ class ControllerPost extends Controller {
             }
             $mot = trim(Utils::url_safe_encode($filter));
             $filters = Utils::url_safe_decode($mot);
-            $posts = Post::get_filter($filters);
+            $posts = Post::get_filter($filters,$nbpage,$offset);
             if (!$filters || $posts == 0) {
                 $this->redirect("post", "index");
             }
             $errors = [];
-            (new View("index"))->show(array("posts" => $posts,"nbr"=>$nbr, "user" => $user, "errors" => $errors));
+            (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "post_search"));
         }
     }
 
     public function by_tag() {
         $user = $this->get_user_or_false();
-        $nbr = 1;
+        $nbpage = 5;
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage * ($currentPage - 1);
+        $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = "";
         $tag = "";
         $errors = [];
         if (isset($_GET['param1'])) {
             $TagId = Tools::sanitize($_GET['param1']);
             $tag = Tag::get_tag($TagId);
-            $posts = Post::get_AllPost_byTag($tag->TagId);
+            $posts = Post::get_AllPost_byTag($tag->TagId,$nbpage,$offset);
         } else {
-            $posts = Post::get_AllPost_byTa();
+            $posts = Post::get_AllPost_byTa($nbpage,$offset);
         }
-
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "tag" => $tag, "nbr" => $nbr));
+            (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "by_tag"));
     }
 
 }

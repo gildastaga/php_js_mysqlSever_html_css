@@ -53,8 +53,8 @@ class Post extends Model {
         return $tempago;
     }
 
-    public static function get_filter($search) {
-        $query = self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body ", array("Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));
+    public static function get_filter($search,$nbpage,$offset) {
+        $query = self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body LIMIT $nbpage OFFSET $offset ", array("Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));
         $resul = [];
         if ($query->rowCount() == 0) {
             return 0;
@@ -305,12 +305,12 @@ class Post extends Model {
         }
         return $postByTag;
     }
-    public static function get_AllPost_byTag($TagId) {
-        $query = self::execute(("SELECT * FROM posttag  where TagId=:TagId"), array("TagId" => $TagId));
+    public static function get_AllPost_byTag($TagId,$nbpage,$offset) {
+        $query = self::execute(("SELECT * FROM posttag  where TagId=:TagId LIMIT $nbpage OFFSET $offset"), array("TagId" => $TagId));
         $data = $query->fetchAll();
         $postByTag = [];
         foreach ($data as $value) {
-            $query1 = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL and PostId=:PostId group by PostId ORDER BY Timestamp DESC"),
+            $query1 = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL and PostId=:PostId group by PostId ORDER BY Timestamp DESC LIMIT $nbpage OFFSET $offset"),
                                                  array("PostId"=>$value["PostId"]));
             $data1 =$query1->fetchAll();
             foreach ($data1 as $row) {
@@ -326,12 +326,12 @@ class Post extends Model {
        $query= self::execute("select *from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL",array());
        return  $query->fetchAll();
     }
-    public static function get_AllPost_byTa() {
-        $query = self::execute(("SELECT * FROM posttag "), array());
+    public static function get_AllPost_byTa($nbpage,$offset) {
+        $query = self::execute(("SELECT * FROM posttag LIMIT $nbpage OFFSET $offset"), array());
         $data = $query->fetchAll();
         $postByTag = [];
         foreach ($data as $value) {
-            $query1 = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL and PostId=:PostId group by PostId ORDER BY Timestamp DESC"),
+            $query1 = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL and PostId=:PostId group by PostId ORDER BY Timestamp DESC LIMIT $nbpage OFFSET $offset "),
                                                  array("PostId"=>$value["PostId"]));
             $data1 =$query1->fetchAll();
             foreach ($data1 as $row) {
