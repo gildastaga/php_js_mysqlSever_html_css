@@ -82,8 +82,12 @@ class ControllerTag extends Controller{
             if(Tag::ixist_association($posts->PostId, $tagassocie->TagId)){
                 $this->redirect("post","show", $PostId);
             } else {  
-                Tag::associer_post_tag($posts->PostId, $tagassocie->TagId);  
-                $this->redirect("post","show", $PostId);
+                if($posts->nbr_tag_bypost($posts->PostId)<Configuration ::get("max_tags")){
+                    Tag::associer_post_tag($posts->PostId, $tagassocie->TagId);  
+                    $this->redirect("post","show", $PostId);
+                } else {
+                    $this->redirect("post","show", $PostId);
+                }
             }
         }
     }

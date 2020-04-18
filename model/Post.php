@@ -340,4 +340,14 @@ class Post extends Model {
         }
         return $postByTag;
     }
+    
+    public  function nbr_tag_bypost($PostId) {
+        $query = self::execute(("SELECT count(TagId) as nbpost FROM posttag  where PostId=:PostId"), array("PostId" =>$PostId));
+        $nbr = $query->fetch();
+        if ($nbr["nbpost"] == 0) {
+            return 0;
+        } else {
+            return $nbr["nbpost"];
+        }
+    }
 }

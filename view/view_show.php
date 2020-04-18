@@ -33,7 +33,7 @@
                         <a href="post/delete_confirm/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
                     <?php endif; ?><br>
                     <?php foreach ($tag as $row): ?>
-                        <?php if ($user->Role == "admin"): ?>
+                        <?php if ($user->UserId == $posts->AuthorId ||$user->Role == "admin"): ?>
                             <a href="tag/delete_tag/<?php echo $row->TagId; ?>/<?php echo $posts->PostId; ?>"><img src="lib/parsedown-1.7.3/croix.png" width="15" height="10"  alt=""/></a>
                         <?php endif; ?>    
                         <a href="post/by_tag/<?php echo $row->TagId; ?>"><?= $row->TagName . ' '; ?></a>
