@@ -274,7 +274,7 @@ class ControllerPost extends Controller {
         if (isset($_GET['param1'])) {
             $TagId = Tools::sanitize($_GET['param1']);
             $tag = Tag::get_tag($TagId);
-            $posts = Post::get_AllPost_byTag($tag->TagId,$nbpage,$offset);
+            $posts = Post::get_AllPost_byTag($tag->TagId,$nbpage,$offset);            
         } else {
             $posts = Post::get_AllPost_byTa($nbpage,$offset);
         }

@@ -305,18 +305,31 @@ class Post extends Model {
         }
         return $postByTag;
     }
-    public static function get_AllPost_byTag($TagId,$nbpage,$offset) {
-        $query = self::execute(("SELECT * FROM posttag  where TagId=:TagId LIMIT $nbpage OFFSET $offset"), array("TagId" => $TagId));
-        $data = $query->fetchAll();
+    public static function get_AllPost_byTas($TagId,$nbpage,$offset) {
+        $query = self::execute(("SELECT * FROM posttag where TagId=:TagId "), array("TagId"=>$TagId));
+        $data = $query->fetchAll();   
         $postByTag = [];
         foreach ($data as $value) {
-            $query1 = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL and PostId=:PostId group by PostId ORDER BY Timestamp DESC LIMIT $nbpage OFFSET $offset"),
+            $query1 = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL and PostId=:PostId group by PostId ORDER BY Timestamp DESC  "),
                                                  array("PostId"=>$value["PostId"]));
             $data1 =$query1->fetchAll();
             foreach ($data1 as $row) {
                 $postByTag[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
             }         
         }
+        return $postByTag;
+    }
+    public static function get_AllPost_byTag($TagId,$nbpage,$offset) {        
+//        $query = self::execute(("select * from  posttag  where TagId=:TagId"),array("TagId"=>$TagId));
+//        $data = $query->fetchAll();
+        $query = self::execute(("select * from post,posttag "
+                . "where post.postid=posttag.postid  and  post.Body IS NOT NULL and post.Title IS NOT NULL and post.ParentId IS NULL "
+                . "and posttag.TagId=:TagId GROUP BY post.PostId ORDER BY Timestamp DESC "),array("TagId"=>$TagId));
+        $data = $query->fetchAll();        
+        $postByTag = [];        
+        foreach ($data as $row) {
+            $postByTag[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+        }         
         return $postByTag;
     }
     public static function get_lasinset() {

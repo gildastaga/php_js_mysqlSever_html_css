@@ -10,6 +10,28 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        
+        <script>
+            let TagName;
+            document.onreadystatechange = function () {
+                if (document.readyState === 'complete') {
+                    TagName = document.getElementById("TagName");
+                }
+            };
+            function checkTagName(){
+                let ok = true;
+                errTagName.innerHTML = "";
+                if(TagName.value.length <= 0){
+                    errTagName.innerHTML += "<p>TagName must start by a letter and must contain only letters and users.</p>";  
+                    ok = false;
+                }
+                return ok;
+            }
+            function checkAll(){
+                let ok = checkTagName();
+                return ok;
+            }
+        </script>
     </head>
     <body>
         <div class="bloc1">
@@ -29,7 +51,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
             <table id="message_list" class="message_list">
                 <tr>
                     <th>TagName</th>
-                    <?php if ( $user->Role =="admin"): ?>
+                    <?php if ($user && $user->Role =="admin"): ?>
                         <th>action</th>
                     <?php endif; ?>    
                  </tr> 
@@ -39,7 +61,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                             <?php echo $values->TagName; ?>
                             <a href="post/by_tag/<?php echo $values->TagId;?>">(<?php echo Tag::nbr_post_bytag($values->TagId) . ' Posts'; ?>  ) </a>
                         </td>
-                        <?php if ($user->Role =="admin"): ?>
+                        <?php if ($user&&$user->Role =="admin"): ?>
                             <td>
                                 <form id="post_form" action="tag/add_tag/<?php echo $values->TagId;?>" method="post">
                                     <textarea id="TagName" name="TagName" > <?= $values->TagName;?></textarea>
@@ -51,12 +73,13 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                            </td>
                         <?php endif; ?>   
                     </tr>     
-                <?php endforeach; ?>      
+                <?php endforeach; ?>  
             </table><br>
-            <?php if ( $user->Role =="admin"): ?>
-                <form action="tag/add_tag" method="post">
-                    <textarea id="TagName" name="TagName" rows='1'> <?= "new tag name"; ?> </textarea>
+            <?php if ($user&& $user->Role =="admin"): ?>
+                <form action="tag/add_tag" method="post" onsubmit="return checkAll();" >
+                    <textarea id="TagName" name="TagName" rows='1' oninput='checkTagName();' value="<?= $TagName ?>" > <?= "new tag name"; ?> </textarea>
                     <input  type="image" img src="lib/parsedown-1.7.3/plus.png" width="30" height="20"  alt="">
+                    <div class="errors" id="errTagName"></div>
                 </form>
             <?php endif; ?>
             <?php if($errors!=NULL ||count($errors) != 0): ?>

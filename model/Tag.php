@@ -79,8 +79,7 @@ class Tag extends Model {
         }
     }
     public static function get_tag_bypostId($PostId) {        
-        $query = self::execute(("select * from  posttag  where PostId=:PostId"),
-                array("PostId"=>$PostId));
+        $query = self::execute(("select * from  posttag  where PostId=:PostId"),array("PostId"=>$PostId));
         $data = $query->fetchAll();
         $TagbyPosid = [];
         foreach ($data as $value) {
