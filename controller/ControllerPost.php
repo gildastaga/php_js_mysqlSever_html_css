@@ -299,4 +299,14 @@ class ControllerPost extends Controller {
         }
         echo $res;
     }
+    public function search_available_service(){
+        $res = "true";
+        if(isset($_POST["search"]) && $_POST["search"] !== ""){
+            $search = Post::get_Title($_POST["search"]);
+            if(!$search){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
 }

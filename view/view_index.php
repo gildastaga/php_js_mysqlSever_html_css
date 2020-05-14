@@ -10,6 +10,29 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
+        <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
+        <script>
+            $(function (){
+                $('#recherche').validate({ 
+                    rules: {
+                        search: {
+                            remote: {
+                                url: 'post/search_available_service',
+                                type: 'post',
+                                data:  {
+                                    search: function() {
+                                         return $("#search").val();
+                                    }
+                                }
+                            },
+                            required: true
+                        }
+                    }  
+                  });      
+                $("input:text:first").focus();    
+            })
+        </script>
     </head>
     <body>
         <div class="bloc1">
@@ -34,8 +57,8 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 </form> 
             </div>   
             <div>
-                <form class="recherche" action="post/post_search" method="post" method="get">
-                    <input id="idsearch" type="search" name="search"   aria-label="search ">
+                <form class="recherche" id="recherche" action="post/post_search" method="post" method="get">
+                    <input id="search" type="search" name="search"   aria-label="search ">
                     <input id="post" type="submit" value="search">
                 </form>
             </div>

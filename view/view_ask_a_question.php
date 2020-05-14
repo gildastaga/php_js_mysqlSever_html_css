@@ -6,6 +6,8 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
+        <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
         <script>
             $.validator.addMethod("regex", function (value, element, pattern) {
                 if (pattern instanceof Array) {
