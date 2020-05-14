@@ -91,5 +91,15 @@ class ControllerTag extends Controller{
             }
         }
     }
+    public function TagName_available_service(){
+        $res = "true";
+        if(isset($_POST["TagName"]) && $_POST["TagName"] !== ""){
+            $TagName = Tag::get_tagbytagname($_POST["TagName"]);
+            if($TagName){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
     
 }

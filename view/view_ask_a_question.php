@@ -7,57 +7,47 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
         <script>
-            let Title,checkbox,Body;
-            document.onreadystatechange = function () {
-                if (document.readyState === 'complete') {
-                    Title = document.getElementById("Title");
-                    checkbox = document.getElementById("checkbox");
-                    Body = document.getElementById("Body");
+            $.validator.addMethod("regex", function (value, element, pattern) {
+                if (pattern instanceof Array) {
+                    for(p of pattern) {
+                        if (!p.test(value))
+                            return false;
+                    }
+                    return true;
+                } else {
+                    return pattern.test(value);
                 }
-            };
-            function checkTitle(){
-                let ok = true;
-                errTitle.innerHTML = "";
-                if(!(/^.{3,16}$/).test(Title.value)){
-                    errTitle.innerHTML += "<p>Title length must be between 3 and 16.</p>";
-                    ok = false;
-                }
-                if(Title.value.length > 0 && !(/^[a-zA-Z][a-zA-Z0-9]*$/).test(Title.value)){
-                    errTitle.innerHTML += "<p>Title must start by a letter and must contain only letters and users.</p>";  
-                    ok = false;
-                }
-                return ok;
-            }
-            
-            function checkcheckbox(){
-                let ok = true; 
-                errcheckbox.innerHTML = "";
-                if( TagName.length>4  ){
-                    errcheckbox.innerHTML += "<p>checkbox  used 5 tag max</p>";  
-                    ok = false;
-                }
-                return ok;
-            }
-            function checkBody(){
-                let ok = true;
-                errBody.innerHTML = "";
-                if(!(/^.{3,16}$/).test(Body.value)){
-                    errBody.innerHTML += "<p>Body length must be between 3 and 16.</p>";
-                    ok = false;
-                }
-                if(Body.value.length === 0 && !(/^[a-zA-Z][a-zA-Z0-9]*$/).test(FullName.value)){
-                    errBody.innerHTML += "<p>Body must start by a letter and must contain only letters and users.</p>";  
-                    ok = false;
-                }
-                return ok;
-            }
-            
-            function checkAll(){
-                let ok = checkTitle();
-                ok = checkcheckbox() && ok;
-                ok = checkBody() && ok;
-                return ok;
-            }
+            });
+            $(function (){
+                $('#askform').validate({ 
+                    rules: {
+                        Title: {
+                            remote: {
+                                url: 'post/Title_available_service',
+                                type: 'post',
+                                data:  {
+                                    Title: function() {
+                                         return $("#Title").val();
+                                    }
+                                }
+                            },
+                            required: true,
+                            minlength: 3,
+                            maxlength: 16,
+                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
+                        }
+                    } ,  
+                    messages: {
+                        Title: {
+                            remote: 'this Title is already taken',
+                            required: 'required Title',
+                            minlength: 'minimum 3 characters',
+                            maxlength: 'maximum 16 characters',
+                            regex: 'bad format for Title',
+                        }
+                  });      
+                $("input:text:first").focus();    
+            });
         </script>
     </head>
     <body>

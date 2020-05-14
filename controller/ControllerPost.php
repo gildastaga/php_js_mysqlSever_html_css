@@ -288,5 +288,15 @@ class ControllerPost extends Controller {
         }
             (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "by_tag"));
     }
-
+    
+    public function Title_available_service(){
+        $res = "true";
+        if(isset($_POST["Title"]) && $_POST["Title"] !== ""){
+            $Title = Post::get_Title($_POST["Title"]);
+            if($Title){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
 }

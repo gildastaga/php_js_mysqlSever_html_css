@@ -1,5 +1,5 @@
 $(function (){
-    validate_tag();
+    $("input:text:first").focus();
 });
 $.validator.addMethod("regex", function (value, element, pattern) {
     if (pattern instanceof Array) {
@@ -21,28 +21,28 @@ function_validate_tag(){
                     url: 'tag/TagName_available_service',
                     type: 'post',
                     data:  {
-                    TagName: function() {
-                        return $("#TagName").val();
-                    }
+                        TagName: function() {
+                            return $("#TagName").val();
+                        }
                     }
                 },
                 required: true,
                 minlength: 3,
                 maxlength: 16,
-                regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
+                regex: /^[a-zA-Z][a-zA-Z0-9]*$/;
             }
         },
         messages: {
             TagName: {
-                remote: 'this UserName is already taken',
+                remote: 'this TagName is already taken',
                 required: 'required',
                 minlength: 'minimum 3 characters',
                 maxlength: 'maximum 16 characters',
-                regex: 'bad format for UserName',
+                regex: 'bad format for TagName',
             }
         }
     });
-    $("input:text:first").focus();
+    
 };
 
 

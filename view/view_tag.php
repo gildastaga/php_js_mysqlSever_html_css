@@ -12,7 +12,49 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="js/tag.js" type="text/javascript"></script>
+        <script>
+            $.validator.addMethod("regex", function (value, element, pattern) {
+                if (pattern instanceof Array) {
+                    for(p of pattern) {
+                        if (!p.test(value))
+                            return false;
+                    }
+                    return true;
+                } else {
+                    return pattern.test(value);
+                }
+            });
+            $(function (){
+                $('#tagform').validate({ 
+                    rules: {
+                        TagName: {
+                            remote: {
+                                url: 'tag/TagName_available_service',
+                                type: 'post',
+                                data:  {
+                                    TagName: function() {
+                                         return $("#TagName").val();
+                                    }
+                                }
+                            },
+                            required: true,
+                            minlength: 3,
+                            maxlength: 16,
+                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
+                        }
+                    } ,  
+                    messages: {
+                        TagName: {
+                            remote: 'this TagName is already taken',
+                            required: 'required TagName',
+                            minlength: 'minimum 3 characters',
+                            maxlength: 'maximum 16 characters',
+                            regex: 'bad format for TagName',
+                        }
+                  });      
+                $("input:text:first").focus();    
+            });  
+    </script> 
     </head>
     <body>
         <div class="bloc1">
@@ -45,7 +87,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         <?php if ($user&&$user->Role =="admin"): ?>
                             <td>
                                 <form id="tagform" action="tag/add_tag/<?php echo $values->TagId;?>" method="post">
-                                    <textarea id="TagName" name="TagName" > <?= $values->TagName;?></textarea>
+                                    <textarea id="TagName" name="TagName" > <?= $values->TagName;?></textarea><div class="errors" id="errTagName"></div>
                                     <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt="">            
                                     <a href="tag/delete_tag/<?php echo $values->TagId; ?>">
                                     <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a>

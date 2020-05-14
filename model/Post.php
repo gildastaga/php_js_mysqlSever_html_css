@@ -368,4 +368,13 @@ class Post extends Model {
             return $nbr["nbpost"];
         }
     }
+    public static function get_Title($Title) {
+        $query = self::execute("SELECT * FROM post where Title =:Title", array("Title" => $Title));
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            $row = $query->fetch();
+            return new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+        }
+    }
 }

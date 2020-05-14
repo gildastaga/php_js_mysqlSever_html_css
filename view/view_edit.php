@@ -6,6 +6,49 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script>
+            $.validator.addMethod("regex", function (value, element, pattern) {
+                if (pattern instanceof Array) {
+                    for(p of pattern) {
+                        if (!p.test(value))
+                            return false;
+                    }
+                    return true;
+                } else {
+                    return pattern.test(value);
+                }
+            });
+            $(function (){
+                $('#Edit_form').validate({ 
+                    rules: {
+                        Title: {
+                            remote: {
+                                url: 'post/Title_available_service',
+                                type: 'post',
+                                data:  {
+                                    Title: function() {
+                                         return $("#Title").val();
+                                    }
+                                }
+                            },
+                            required: true,
+                            minlength: 3,
+                            maxlength: 16,
+                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
+                        }
+                    } ,  
+                    messages: {
+                        Title: {
+                            remote: 'this Title is already taken',
+                            required: 'required Title',
+                            minlength: 'minimum 3 characters',
+                            maxlength: 'maximum 16 characters',
+                            regex: 'bad format for Title',
+                        }
+                  });      
+                $("input:text:first").focus();    
+            });  
+        </script>
     </head>
     <body>
         <div class="bloc1">
@@ -25,7 +68,7 @@
         <div class="main">
             <br><br>
             <div>
-                <form id="post_form" action="post/postupdate/<?php echo $posts->PostId; ?>" method="post">
+                <form id="Edit_form" action="post/postupdate/<?php echo $posts->PostId; ?>" method="post">
                     <?php if ($posts->Title): ?>
                         <td>Title</td><br>
                         <textarea id="Title" name="Title" rows='1'><?= $posts->Title; ?></textarea><br>
