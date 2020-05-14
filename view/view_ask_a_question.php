@@ -76,25 +76,25 @@
         <br>
         <div class="main">   
             <br><br>
-            <form id="askform" action="post/Ak_a_question" method="post" onsubmit="return checkAll();">
+            <form id="askform" action="post/Ak_a_question" method="post" >
                 <table>
                     <tr>
                         <td>Title</td>
-                        <td><input id="Title" name="Title" type="text" rows='1' oninput='checkTitle();' value="<?= $Title ?>" > <?= $Title; ?> </td>
+                        <td><input id="Title" name="Title" type="text" rows='1'  value="<?= $Title ?>" > </td>
                         <td class="errors" id="errTitle"></td>
                     </tr>
                     <tr>
                         <td> add 5 tag i: </td>
                         <td> 
-                            <?php foreach ($tag as $row): ?>
-                                <input id="" type="checkbox" name="TagName[]" multiple="oui" oninput='checkcheckbox();' > <?= $row->TagName ;?>
+                            <?php foreach ($tag as $row):?>
+                                <input id="" type="checkbox" name="TagName[]" multiple="oui"  value="<?= $row->TagName  ?>"  > <?= $row->TagName ;?>
                             <?php endforeach; ?>
                         </td>
                         <td class="errors" id="errcheckbox"> </td>
                     </tr>
                      <tr>
                         <td>Body</td>
-                        <td><textarea id="Body" name="Body" type="text" rows='4' oninput='checkBody();' value="<?= $Body ?>" > <?= $Body; ?></textarea></td>
+                        <td><textarea id="Body" name="Body" type="text" rows='4'  value="<?=$Body ?>" > <?= $Body ?></textarea></td>
                         <td class="errors" id="errBody"></td>
                     </tr>               
                 </table><br><br>

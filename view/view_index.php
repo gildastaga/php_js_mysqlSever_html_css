@@ -35,7 +35,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
             </div>   
             <div>
                 <form class="recherche" action="post/post_search" method="post" method="get">
-                    <input id="idsearch" type="search" name="search" aria-label="search ">
+                    <input id="idsearch" type="search" name="search"   aria-label="search ">
                     <input id="post" type="submit" value="search">
                 </form>
             </div>

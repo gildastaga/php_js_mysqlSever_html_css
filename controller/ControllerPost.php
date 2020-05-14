@@ -73,7 +73,7 @@ class ControllerPost extends Controller {
 
     //controller post :post/ask a question
     public function Ak_a_question() {
-        $user = $this->get_user_or_redirect();
+        $user = $this->get_user_or_redirect(); 
         $Title = '';
         $Body = '';
         $errors = [];
@@ -84,15 +84,17 @@ class ControllerPost extends Controller {
             $Timestamp = date('Y-m-d H:i:s');
             $post = new Post($user->UserId, $Title, $Body, $Timestamp, NULL, NULL);
             $errors = $post->validate();
+            
             if (count($errors) == 0) {  
                 if (!isset($_POST['TagName'])) {
-                   // $post->update();
-                  //  $this->redirect("post", "index");
+                    $errors [] = "you had to add minimum 1 tag by post";
+//                    $post->update();
+//                    $this->redirect("post", "index");
                 } else {
                     $taglis = ($_POST['TagName']);                    
-                    if(count($taglis)<=Configuration ::get("max_tags")){
+                    if( count($taglis)<=Configuration ::get("max_tags")){
                         $post->update();
-                        $lasinset = Post::get_lasinset();
+                        $lasinset = Post::get_lasinset();                        
                         foreach ($taglis as $value) {
                             $tagassocie = Tag::get_tagbytagname($value);
                             Tag::associer_post_tag($lasinset, $tagassocie->TagId);
@@ -100,7 +102,7 @@ class ControllerPost extends Controller {
                         $this->redirect("post", "index");
                     } else {                        
                         $max_tag=Configuration ::get("max_tags");                       
-                        $errors [] = "you can add max : ". $max_tag." ";
+                        $errors [] = "you had to add maximum : ". $max_tag." tag by post";
                     }    
                 }
             }
@@ -149,7 +151,7 @@ class ControllerPost extends Controller {
             $question = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $posts->ParentId, $posts->PostId);
             $errors = $question->validates();
         }
-        if ($posts->AuthorId == $user->UserId) {
+        if ($posts->AuthorId == $user->UserId|| $user->Role == "admin") {
             if (count($errors) == 0) {
                 /// $question->update();
                 $user->write_post($question);
@@ -174,13 +176,18 @@ class ControllerPost extends Controller {
         $comment = NULL;
         $tagdelete = NULL;
         if (isset($_GET['param2'])) {
-            if ($posts->AuthorId == $user->UserId) {
-                $parent = Post::get_post_PostId($posts->ParentId);
+            if ($posts->AuthorId == $user->UserId ||$user->Role == "admin") {
+                if($posts->ParentId!=null){
+                    $parent = Post::get_post_PostId($posts->ParentId);
+                }else{
+                    $parent=$posts;
+                }
+                
 //                if ($posts->AcceptedAnswerId != NULL) {
 //                    $answered = new Post($parent->AuthorId, $parent->Title, $parent->Body, date('Y-m-d H:i:s'), NULL, $parent->ParentId, $parent->PostId);
 //                    $posts = $user->write_post($answered);
 //                }
-                if ($posts->PostId === $parent->AcceptedAnswerId) {
+                if ($parent->AcceptedAnswerId!=NULL) {
                     Tools::abort("!!!Cannot delete a post accepte");
                 } else {
                     if (Post::nbr_vote($posts->PostId) != 0) {
@@ -221,7 +228,7 @@ class ControllerPost extends Controller {
             $answered = new Post($user->UserId, $question->Title, $question->Body, date('Y-m-d H:i:s'), NULL, $question->ParentId, $question->PostId);
         }
         $reponsethis = new Post($post->AuthorId, $post->Title, $post->Body, date('Y-m-d H:i:s'), $post->AcceptedAnswerId, $post->ParentId, $post->PostId);
-        if ($question->AuthorId == $user->UserId) {
+        if ($question->AuthorId == $user->UserId ||$user->Role == "admin") {
             $user->write_post($answered);
             $user->write_post($reponsethis);
             $this->redirect("post", "show", $post->ParentId);
@@ -231,7 +238,8 @@ class ControllerPost extends Controller {
         (new View("show"))->show(array("user" => $user, "posts" => $post,));
     }
 
-    public function post_search() {
+    public function post_search() {        var_dump($_GET);
+        
         $user = $this->get_user_or_false();
         $nbpage = 5;
         $currentPage = (int) ($_GET['param1'] ?? 1);
@@ -255,7 +263,7 @@ class ControllerPost extends Controller {
             $filters = Utils::url_safe_decode($mot);
             $posts = Post::get_filter($filters,$nbpage,$offset);
             if (!$filters || $posts == 0) {
-                $this->redirect("post", "index");
+              //  $this->redirect("post", "index");
             }
             $errors = [];
             (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "post_search"));

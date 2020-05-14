@@ -49,11 +49,11 @@ class User extends Model {
     public function validate() {
         $errors = array();
         if (!(isset($this->UserName) && is_string($this->UserName) && strlen($this->UserName) > 0)) {
-            $errors[] = "Pseudo is required.";
+            $errors[] = "UserName is required.";
         } if (!(isset($this->UserName) && is_string($this->UserName) && strlen($this->UserName) >= 3 && strlen($this->UserName) <= 16)) {
-            $errors[] = "Pseudo length must be between 3 and 16.";
+            $errors[] = "UserName length must be between 3 and 16.";
         } if (!(isset($this->UserName) && is_string($this->UserName) && preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->UserName))) {
-            $errors[] = "Pseudo must start by a letter and must contain only letters and numbers.";
+            $errors[] = "UserName must start by a letter and must contain only letters and numbers.";
         }
         return $errors;
     }
@@ -75,7 +75,14 @@ class User extends Model {
         }
         return $errors;
     }
-
+     public static function validate_unicityEmail($Email) {
+        $errors = [];
+        $user = self::get_email($Email);
+        if ($user) {
+            $errors[] = "This Email already exists.";
+        }
+        return $errors;
+    }
     public static function validate_unicity($UserName) {
         $errors = [];
         $user = self::get_member_by_username($UserName);
@@ -103,6 +110,15 @@ class User extends Model {
 
     public static function get_member_by_username($UserName) {
         $query = self::execute("SELECT * FROM user where UserName = :UserName", array("UserName" => $UserName));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"],$data["Role"], $data["UserId"]);
+        }
+    }
+    public static function get_email($Email) {
+        $query = self::execute("SELECT * FROM user where Email = :Email", array("Email" => $Email));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;

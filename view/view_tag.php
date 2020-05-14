@@ -10,28 +10,9 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
-        
-        <script>
-            let TagName;
-            document.onreadystatechange = function () {
-                if (document.readyState === 'complete') {
-                    TagName = document.getElementById("TagName");
-                }
-            };
-            function checkTagName(){
-                let ok = true;
-                errTagName.innerHTML = "";
-                if(TagName.value.length <= 0){
-                    errTagName.innerHTML += "<p>TagName must start by a letter and must contain only letters and users.</p>";  
-                    ok = false;
-                }
-                return ok;
-            }
-            function checkAll(){
-                let ok = checkTagName();
-                return ok;
-            }
-        </script>
+        <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
+        <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="js/tag.js" type="text/javascript"></script>
     </head>
     <body>
         <div class="bloc1">
@@ -63,21 +44,20 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         </td>
                         <?php if ($user&&$user->Role =="admin"): ?>
                             <td>
-                                <form id="post_form" action="tag/add_tag/<?php echo $values->TagId;?>" method="post">
+                                <form id="tagform" action="tag/add_tag/<?php echo $values->TagId;?>" method="post">
                                     <textarea id="TagName" name="TagName" > <?= $values->TagName;?></textarea>
                                     <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt="">            
                                     <a href="tag/delete_tag/<?php echo $values->TagId; ?>">
                                     <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a>
                                 </form>
-        
                            </td>
                         <?php endif; ?>   
                     </tr>     
                 <?php endforeach; ?>  
             </table><br>
             <?php if ($user&& $user->Role =="admin"): ?>
-                <form action="tag/add_tag" method="post" onsubmit="return checkAll();" >
-                    <textarea id="TagName" name="TagName" rows='1' oninput='checkTagName();' value="<?= $TagName ?>" > <?= "new tag name"; ?> </textarea>
+                <form id="tagform" action="tag/add_tag" method="post"  >
+                    <textarea id="TagName" name="TagName" rows='1'  value="<?= $TagName ?>" > <?= "new tag name"; ?> </textarea>
                     <input  type="image" img src="lib/parsedown-1.7.3/plus.png" width="30" height="20"  alt="">
                     <div class="errors" id="errTagName"></div>
                 </form>

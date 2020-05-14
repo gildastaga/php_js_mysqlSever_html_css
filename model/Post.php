@@ -211,7 +211,7 @@ class Post extends Model {
     }
 
     public static function get_unanswere($nbpage,$offset) {
-        $query = self::execute("SELECT * FROM post where ParentId IS NULL and  AcceptedAnswerId IS NULL group by PostId,ParentId order by Timestamp DESC LIMIT $nbpage OFFSET $offset ", array());
+        $query = self::execute("SELECT * FROM post where ParentId IS NULL and  AcceptedAnswerId IS NULL  order by Timestamp DESC LIMIT $nbpage OFFSET $offset ", array());
         $data = $query->fetchAll();
         $result = [];
         foreach ($data as $value) {
@@ -221,8 +221,13 @@ class Post extends Model {
     }
 
     public function count_Answer() {
-        $query = self::execute(("SELECT count(AcceptedAnswerId) as nbranswer from post  WHERE PostId =:PostId group by PostId"), array("PostId" => $this->PostId));
-        return $query->fetch()["nbranswer"];
+        $query = self::execute("SELECT COUNT(*) as nbransw FROM Post  where ParentId=:ParentId", array("ParentId" => $this->PostId));
+        $data = $query->fetch();        
+        if ($data["nbransw"] == 0) {
+            return 0;
+        }else{
+            return $data["nbransw"];
+        }
     }
 
     public static function nbr_vote($PostId) {

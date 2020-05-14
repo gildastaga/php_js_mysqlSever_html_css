@@ -164,7 +164,11 @@ form.link input[type="submit"] {
   text-decoration: none;
   transition: background-color .3s;
 }
-
+label.error {
+    color: red;
+    font-size: 8pt;
+    padding-left: .5em;
+}
 /* Style the active/current link */
 /*.pagination a.active {
   background-color: dodgerblue;

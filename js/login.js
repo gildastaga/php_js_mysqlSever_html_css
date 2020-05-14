@@ -1,6 +1,6 @@
 $(function (){
-    validate_signug();
-          });
+    validate_login();
+});
 $.validator.addMethod("regex", function (value, element, pattern) {
     if (pattern instanceof Array) {
         for (p of pattern) {
@@ -13,8 +13,8 @@ $.validator.addMethod("regex", function (value, element, pattern) {
     }
 }, "Please enter a valid input.");
 
-function_validate_signup(){
-    $('#loginForm').validate({
+function_validate_login(){
+    $('#loginForm').validate()({
         rules: {
             UserName: {
                 remote: {

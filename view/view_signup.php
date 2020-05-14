@@ -6,7 +6,7 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
-        <script src="lib/jquery-3.3.1.min.js" type="text/javascript"></script>
+        <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
         <script>
            $.validator.addMethod("regex", function (value, element, pattern) {
@@ -20,7 +20,7 @@
                     return pattern.test(value);
                 }
             });
-            #(function (){
+            $(function (){
                 $('#signupForm').validate({ 
                     rules: {
                         UserName: {
@@ -39,15 +39,6 @@
                             regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
                         },
                         FullName: {
-                            remote: {
-                                url: 'user/UserName_available_service',
-                                type: 'post',
-                                data:  {
-                                    UserName: function() {
-                                         return $("#FullName").val();
-                                    }
-                                }
-                            },
                             required: true,
                             minlength: 3,
                             maxlength: 16,
@@ -57,45 +48,66 @@
                             required: true,
                             minlength: 8,
                             maxlength: 16,
-                            regex: [/[A-Z]/, /\d/, /['";:,.\/?\\-]/],
+                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
                         },
                         password_confirm: {
                             required: true,
                             minlength: 8,
                             maxlength: 16,
                             equalTo: "#password",
-                            regex: [/[A-Z]/, /\d/, /['";:,.\/?\\-]/],
+                            regex:/^[a-zA-Z][a-zA-Z0-9]*$/,
+                        },
+                        Email: {
+                            remote: {
+                                url: 'user/Email_available_service',
+                                type: 'post',
+                                data:  {
+                                    Email: function() {
+                                         return $("#Email").val();
+                                    }
+                                }
+                            },
+                            required: true,
+                            minlength: 3,
+                            maxlength: 16,
+                            regex:[/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/],
                         }
                     } ,  
                     messages: {
-                            UserName: {
-                                remote: 'this UserName is already taken',
-                                required: 'required',
-                                minlength: 'minimum 3 characters',
-                                maxlength: 'maximum 16 characters',
-                                regex: 'bad format for UserName',
-                            },
-                            FullName: {
-                                remote: 'this FullName is already taken',
-                                required: 'required',
-                                minlength: 'minimum 3 characters',
-                                maxlength: 'maximum 16 characters',
-                                regex: 'bad format for FullName',
-                            },
-                            password: {
-                                required: 'required',
-                                minlength: 'minimum 8 characters',
-                                maxlength: 'maximum 16 characters',
-                                regex: 'bad password format',
-                            },
-                            password_confirm: {
-                                required: 'required',
-                                minlength: 'minimum 8 characters',
-                                maxlength: 'maximum 16 characters',
-                                equalTo: 'must be identical to password above',
-                                regex: 'bad password format',
-                            }
-                        }
+                        UserName: {
+                            remote: 'this UserName is already taken',
+                            required: 'required UserName',
+                            minlength: 'minimum 3 characters',
+                            maxlength: 'maximum 16 characters',
+                            regex: 'bad format for UserName',
+                        },
+                        FullName: {
+                            required: 'required FullName',
+                            minlength: 'minimum 3 characters',
+                            maxlength: 'maximum 16 characters',
+                            regex: 'bad format for FullName',
+                        },
+                        password: {
+                            required: 'required password',
+                            minlength: 'minimum 8 characters',
+                            maxlength: 'maximum 16 characters',
+                            regex: 'bad password format',
+                        },
+                        password_confirm: {
+                            required: 'required password confirm',
+                            minlength: 'minimum 8 characters',
+                            maxlength: 'maximum 16 characters',
+                            equalTo: 'must be identical to password above',
+                            regex: 'bad password format',
+                         },
+                         Email: {
+                            remote: 'this Email is already taken',
+                            required: 'required Email',
+                            minlength: 'minimum 3 characters',
+                            maxlength: 'maximum 16 characters',
+                            regex: 'bad format for Email',
+                        }   
+                    }
                   });      
                 $("input:text:first").focus();    
             });  
@@ -162,3 +174,4 @@
 
         </div>
     </body>
+</html>    

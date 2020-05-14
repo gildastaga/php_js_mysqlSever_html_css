@@ -46,6 +46,7 @@ class ControllerUser extends Controller {
             $Email = $_POST['Email'];
             $user = new User($UserName, Tools:: my_hash($Password), $FullName, $Email);
             $errors = User::validate_unicity($UserName);
+            $errors = User::validate_unicityEmail($Email);            
             $errors = array_merge($errors, $user->validate());
             $errors = array_merge($errors, User::validate_passwords($Password, $Password_confirm));
             if (count($errors) == 0) {
@@ -62,6 +63,16 @@ class ControllerUser extends Controller {
         $res = "true";
         if(isset($_POST["UserName"]) && $_POST["UserName"] !== ""){
             $user = User::get_member_by_UserName($_POST["UserName"]);
+            if($user){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
+    public function Email_available_service(){
+        $res = "true";
+        if(isset($_POST["Email"]) && $_POST["Email"] !== ""){
+            $user = User::get_email($_POST["Email"]);
             if($user){
                 $res = "false";
             }
