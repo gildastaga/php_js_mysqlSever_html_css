@@ -309,4 +309,9 @@ class ControllerPost extends Controller {
         }
         echo $res;
     }
+    public function rech() {
+        if(isset($_GET['motclef'])){
+            
+        }
+    }
 }

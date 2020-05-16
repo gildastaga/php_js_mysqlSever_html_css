@@ -13,25 +13,22 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
         <script>
-            $(function (){
-                $('#recherche').validate({ 
-                    rules: {
-                        search: {
-                            remote: {
-                                url: 'post/search_available_service',
-                                type: 'post',
-                                data:  {
-                                    search: function() {
-                                         return $("#search").val();
-                                    }
-                                }
-                            },
-                            required: true
-                        }
-                    }  
-                  });      
-                $("input:text:first").focus();    
-            })
+            $(document).ready(function{
+                 $('#recherche').keyup(function(){
+                     var search=$(this).val();
+                     var data='motclef'+ search;
+                     if(search.length>1){
+                         $.ajax({
+                             type :"Get",
+                             url :"post/rech",
+                             data :data,
+                             success :function(server_reponse){
+                                 $("#result").html(server_reponse).show();
+                             }
+                         });
+                     }
+                 });
+            });
         </script>
     </head>
     <body>
@@ -59,6 +56,8 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
             <div>
                 <form class="recherche" id="recherche" action="post/post_search" method="post" method="get">
                     <input id="search" type="search" name="search"   aria-label="search ">
+                    <div class="result" id="result" ></div>
+                    <div class="post" id="post"></div>
                     <input id="post" type="submit" value="search">
                 </form>
             </div>
