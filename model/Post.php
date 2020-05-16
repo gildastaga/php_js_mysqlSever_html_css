@@ -377,4 +377,23 @@ class Post extends Model {
             return new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
         }
     }
+    public static function rechech($motclef) {
+        $query = self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body  ", array("Title" => "%" .$motclef.'%', "Body" => "%" .$motclef.'%'));
+        $resul = [];
+        if ($query->rowCount() == 0) {
+            return "Aucun resultat pour :".$motclef;
+        } else {
+            $data = $query->fetchAll();
+            foreach ($data as $row) {
+                $post = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+                if ($post->ParentId != null) {
+                    $postParent = Post::get_quetion($post->ParentId);
+                    $resul[] = $postParent;
+                } else {
+                    $resul[] = $post;
+                }
+            }
+            return $resul;
+        }
+    }
 }
