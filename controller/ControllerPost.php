@@ -238,7 +238,7 @@ class ControllerPost extends Controller {
         (new View("show"))->show(array("user" => $user, "posts" => $post,));
     }
 
-    public function post_search() {        var_dump($_GET);
+    public function post_search() {        
         
         $user = $this->get_user_or_false();
         $nbpage = 5;
@@ -299,20 +299,12 @@ class ControllerPost extends Controller {
         }
         echo $res;
     }
-//    public function search_available_service(){
-//        $res = "true";
-//        if(isset($_POST["search"]) && $_POST["search"] !== ""){
-//            $search = Post::get_Title($_POST["search"]);
-//            if(!$search){
-//                $res = "false";
-//            }
-//        }
-//        echo $res;
-//    }
+    
     public function rech() {
-        if(isset($_GET['motclef'])){
-            $motclef=$_GET['motclef'];
-            return Post::rechech($motclef);
+        if(isset($_GET['motclef'])){ 
+            $motclef=$_GET['motclef'];var_dump($motclef);
+            $result= Post::rechech($motclef); var_dump($result);
+            return $result;
         }
     }
 }

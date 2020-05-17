@@ -79,5 +79,9 @@ class ControllerUser extends Controller {
         }
         echo $res;
     }
+    public function start() {
+        
+        (new View("start"))->show(array());
+    }
     
 }

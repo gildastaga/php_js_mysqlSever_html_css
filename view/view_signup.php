@@ -44,18 +44,18 @@
                             maxlength: 16,
                             regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
                         },
-                        password: {
+                        Password: {
                             required: true,
                             minlength: 8,
                             maxlength: 16,
-                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
+                            regex: [/[A-Z]/, /\d/, /['";:,.\/?\\-]/],
                         },
-                        password_confirm: {
+                        Password_confirm: {
                             required: true,
                             minlength: 8,
                             maxlength: 16,
                             equalTo: "#password",
-                            regex:/^[a-zA-Z][a-zA-Z0-9]*$/,
+                            regex:[/[A-Z]/, /\d/, /['";:,.\/?\\-]/],
                         },
                         Email: {
                             remote: {
@@ -87,13 +87,13 @@
                             maxlength: 'maximum 16 characters',
                             regex: 'bad format for FullName',
                         },
-                        password: {
+                        Password: {
                             required: 'required password',
                             minlength: 'minimum 8 characters',
                             maxlength: 'maximum 16 characters',
                             regex: 'bad password format',
                         },
-                        password_confirm: {
+                        Password_confirm: {
                             required: 'required password confirm',
                             minlength: 'minimum 8 characters',
                             maxlength: 'maximum 16 characters',
@@ -143,12 +143,12 @@
                         </tr>
                         <tr>
                             <td>Password:</td>
-                            <td><input id="Password" name="Password" type="Password" size="16"  value="<?= $Password ?>"></td>
+                            <td><input id="Password" name="Password" type="Password" size="16"  value="<?php echo $Password ;?>"></td>
                             <td class="errors" id="errPassword"></td>
                         </tr>
                         <tr>
                             <td>Confirm Password:</td>
-                            <td><input id="PasswordConfirm" name="Password_confirm" type="Password" size="16"  value="<?= $Password_confirm ?>"></td>
+                            <td><input id="Password_confirm" name="Password_confirm" type="Password" size="16"  value="<?php echo $Password_confirm ;?>"></td>
                             <td class="errors" id="errPasswordConfirm"></td>
                         </tr>
                         <tr>

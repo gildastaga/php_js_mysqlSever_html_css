@@ -13,8 +13,8 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
         <script>
-            $(document).ready(function{
-                 $('#recherche').keyup(function(){
+            $(document).ready(function(){
+                 $('#search').keyup(function(){
                      var search=$(this).val();
                      var data='motclef'+ search;
                      if(search.length>1){
@@ -57,7 +57,6 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 <form class="recherche" id="recherche" action="post/post_search" method="post" method="get">
                     <input id="search" type="search" name="search"   aria-label="search ">
                     <div class="result" id="result" ></div>
-                    <div class="post" id="post"></div>
                     <input id="post" type="submit" value="search">
                 </form>
             </div>

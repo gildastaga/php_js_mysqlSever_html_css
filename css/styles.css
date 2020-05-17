@@ -10,11 +10,15 @@ body {
     border      :1px solid #888; 
 
 }
+#result{
+    background: #lalala;
+    color: green;
+}
 
 html {
-    background-image: url (src="lib/parsedown-1.7.3/fond.png" ) no-repeat ;
-    background: url(/lib/parsedown-1.7.3/fond.png) no-repeat;
-    background-size: cover;
+/*    background-image: url (src="lib/parsedown-1.7.3/fond.png" ) no-repeat ;*/
+/*    background: url(/lib/parsedown-1.7.3/fond.png) no-repeat;*/
+/*    background-size: cover;*/
     /*    background-image:url(/lib/fonds.jpg);*/
     /*    background  :#fff;*/
 }
