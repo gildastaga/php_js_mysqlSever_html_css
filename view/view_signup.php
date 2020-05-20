@@ -29,7 +29,7 @@
                                 type: 'post',
                                 data:  {
                                     UserName: function() {
-                                         return $("#UserName").val();
+                                        return $("#UserName").val();
                                     }
                                 }
                             },
@@ -42,7 +42,7 @@
                             required: true,
                             minlength: 3,
                             maxlength: 16,
-                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
+                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/
                         },
                         Password: {
                             required: true,

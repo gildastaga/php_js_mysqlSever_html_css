@@ -150,10 +150,10 @@ form.link input[type="submit"] {
   padding: 14px 16px;
   text-decoration: none;
 }
-#TagName{
+/*#TagName{
     height:30px;
     width:200px;
-}
+}*/
 #addtag{
     background-image: url(lib/parsedown-1.7.3/plus.png);
     color: red;

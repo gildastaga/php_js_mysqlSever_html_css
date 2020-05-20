@@ -24,30 +24,35 @@
                 $('#askform').validate({ 
                     rules: {
                         Title: {
+                            required: true
+                        },
+                        TagName:{
                             remote: {
-                                url: 'post/Title_available_service',
+                                url: 'post/TagName_available_service',
                                 type: 'post',
                                 data:  {
-                                    Title: function() {
-                                         return $("#Title").val();
+                                    TagName: function() {
+                                        return $("#TagName").val();
                                     }
                                 }
-                            },
-                            required: true,
-                            minlength: 3,
-                            maxlength: 16,
-                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
+                            }
+                        },
+                        Body:{
+                            required: true
                         }
                     } ,  
                     messages: {
                         Title: {
-                            remote: 'this Title is already taken',
-                            required: 'required Title',
-                            minlength: 'minimum 3 characters',
-                            maxlength: 'maximum 16 characters',
-                            regex: 'bad format for Title',
+                            required: 'required Title'  
+                        },
+                        TagName:{
+                            remote:'nombre de tag depasse '
+                        },
+                        Body: {
+                            required: 'required Body'  
                         }
-                  });      
+                  }
+              }) ;     
                 $("input:text:first").focus();    
             });
         </script>
@@ -74,19 +79,19 @@
                         <td>Title</td>
                         <td><input id="Title" name="Title" type="text" rows='1'  value="<?= $Title ?>" > </td>
                         <td class="errors" id="errTitle"></td>
-                    </tr>
+                    </tr><br>
                     <tr>
-                        <td> add 5 tag i: </td>
+                        <td> add 5 tag i: </td><br>
                         <td> 
                             <?php foreach ($tag as $row):?>
-                                <input id="" type="checkbox" name="TagName[]" multiple="oui"  value="<?= $row->TagName  ?>"  > <?= $row->TagName ;?>
+                                <input id="TagName" type="checkbox" name="TagName[]" multiple="oui"  value="<?= $row->TagName  ?>"  > <?= $row->TagName ;?>
                             <?php endforeach; ?>
                         </td>
-                        <td class="errors" id="errcheckbox"> </td>
-                    </tr>
-                     <tr>
+                        <td class="errors" id="errTagName"> </td>
+                    </tr><br>
+                    <tr>
                         <td>Body</td>
-                        <td><textarea id="Body" name="Body" type="text" rows='4'  value="<?=$Body ?>" > <?= $Body ?></textarea></td>
+                        <td><textarea id="Body" name="Body" type="text" rows='4'   > <?= $Body ?></textarea></td>
                         <td class="errors" id="errBody"></td>
                     </tr>               
                 </table><br><br>

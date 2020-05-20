@@ -10,25 +10,28 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+        <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.theme.min.css" rel="stylesheet" type="text/css"/>
+        <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.structure.min.css" rel="stylesheet" type="text/css"/>
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
-        <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
         <script>
             $(document).ready(function(){
+                $("message_list").hide();
                  $('#search').keyup(function(){
                      var search=$(this).val();
-                     var data='motclef'+ search;
-                     if(search.length>1){
-                         $.ajax({
-                             type :"Get",
-                             url :"post/rech",
-                             data :data,
-                             success :function(server_reponse){
-                                 $("#result").html(server_reponse).show();
-                             }
-                         });
-                     }
+                     
+                     $post("post/searchJson", {search: search}, function(data) {
+                        var data_object = jQuery.parseJSON(data); 
+                        
+                        getPosts(data_object);
+                     });
                  });
             });
+            
+            function getPosts(data) {
+                
+            }
         </script>
     </head>
     <body>
@@ -54,7 +57,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 </form> 
             </div>   
             <div>
-                <form class="recherche" id="recherche" action="post/post_search" method="post" method="get">
+                <form class="recherche" id="recherche" action="post/fiter" method="post" method="get">
                     <input id="search" type="search" name="search"   aria-label="search ">
                     <div class="result" id="result" ></div>
                     <input id="post" type="submit" value="search">
@@ -76,16 +79,6 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         </tr><br><br>                          
                     <?php endforeach; ?>  
                 </table><br>
-                <?php if (count($errors) != 0): ?>
-                    <div class='errors'>
-                        <br><br><p>Please correct the following error(s) :</p>
-                        <ul>
-                            <?php foreach ($errors as $error): ?>
-                                <li><?= $error ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
                 <div class="pagination">
                     <li  style="page-item <?= ($currentPage>1) ? " -webkit-filter:blur(90deg);
                                                         filter: blur(90deg);" :

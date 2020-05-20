@@ -18,8 +18,7 @@ class ControllerPost extends Controller {
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_all_post($nbpage, $offset);
-        $errors = [];
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "index"));
+        (new View("index"))->show(array("user" => $user, "posts" => $posts,"currentPage" => $currentPage, "nbr" => $nbr, "action" => "index"));
     }
 
 //controller post: post/question
@@ -30,8 +29,7 @@ class ControllerPost extends Controller {
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_all_post($nbpage, $offset);
-        $errors = [];
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "questions"));
+        (new View("index"))->show(array("user" => $user, "posts" => $posts,  "currentPage" => $currentPage, "nbr" => $nbr, "action" => "questions"));
     }
 
     //controler post/active
@@ -42,9 +40,8 @@ class ControllerPost extends Controller {
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::getactive($nbpage, $offset);
-        $errors = [];
         $t = FALSE;
-        (new View("index"))->show(array("user" => $user, "posts" => $posts, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "active"));
+        (new View("index"))->show(array("user" => $user, "posts" => $posts, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "active"));
     }
 
     //controller post :post/unanswered
@@ -55,8 +52,7 @@ class ControllerPost extends Controller {
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_unanswere($nbpage, $offset);
-        $errors = [];
-        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "unanswered"));
+        (new View("index"))->show(Array("posts" => $posts, "user" => $user,  "currentPage" => $currentPage, "nbr" => $nbr, "action" => "unanswered"));
     }
 
     //controller neswest :post/neswet
@@ -67,8 +63,7 @@ class ControllerPost extends Controller {
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_newest($nbpage, $offset);
-        $errors = [];
-        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "newest"));
+        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "newest"));
     }
 
     //controller post :post/ask a question
@@ -237,37 +232,27 @@ class ControllerPost extends Controller {
         }
         (new View("show"))->show(array("user" => $user, "posts" => $post,));
     }
+    
+    
+    public function fiter() {
+        if (isset($_POST["search"])) {
+            $this->redirect("post", "post_search", Utils::url_safe_encode($_POST["search"]));
+        }
+    }
 
     public function post_search() {        
-        
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_GET['param2'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage); 
+        
         if (isset($_GET["param1"])) {
             $filter = Utils::url_safe_decode($_GET["param1"]);
-            if (!$filter)
-                Tools::abort("Bad url parameter");
+            $posts = Post::get_filter($filter,$nbpage,$offset);
         }
-        if (isset($_POST["search"])) {
-            $param = Tools::sanitize($_POST['search']);
-            $filter = '';
-            if (User::get_member_by_username($param)) {
-                $user = User::get_member_by_username($param);
-                $filter = $user->UserId;
-            } else {
-                $filter = $param;
-            }
-            $mot = trim(Utils::url_safe_encode($filter));
-            $filters = Utils::url_safe_decode($mot);
-            $posts = Post::get_filter($filters,$nbpage,$offset);
-            if (!$filters || $posts == 0) {
-              //  $this->redirect("post", "index");
-            }
-            $errors = [];
-            (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "post_search"));
-        }
+        
+        (new View("index"))->show(Array("posts" => $posts, "user" => $user, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "post_search"));
     }
 
     public function by_tag() {
@@ -289,12 +274,13 @@ class ControllerPost extends Controller {
             (new View("index"))->show(Array("posts" => $posts, "user" => $user, "errors" => $errors, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "by_tag"));
     }
     
-    public function Title_available_service(){
+    public function TagName_available_service(){
         $res = "true";
-        if(isset($_POST["Title"]) && $_POST["Title"] !== ""){
-            $Title = Post::get_Title($_POST["Title"]);
-            if($Title){
-                $res = "false";
+        if(isset($_POST["TagName"]) && $_POST["TagName"] !== ""){
+            $TagName = Tools::sanitize($_POST['TagName']);
+            $max_tag=Configuration ::get("max_tags");
+            if(count($TagName)>$max_tag){
+                $res = $max_tag;
             }
         }
         echo $res;
@@ -302,7 +288,7 @@ class ControllerPost extends Controller {
     
     public function rech() {
         if(isset($_GET['motclef'])){ 
-            $motclef=$_GET['motclef'];var_dump($motclef);
+            $motclef=$_GET['motclef'];
             $result= Post::rechech($motclef); var_dump($result);
             return $result;
         }

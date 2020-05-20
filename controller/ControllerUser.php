@@ -79,6 +79,30 @@ class ControllerUser extends Controller {
         }
         echo $res;
     }
+    
+    public function UserName_available_service_login(){
+        $res = "true";
+        if(isset($_POST["UserName"]) && $_POST["UserName"] !== ""){
+            $user = User::get_member_by_UserName($_POST["UserName"]);
+            if(!$user){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
+    
+    public function Password_available_service_login(){
+        $res = "true";
+        if(isset($_POST["UserName"]) && $_POST["UserName"] !== "" && isset($_POST["Password"]) && $_POST["Password"] !== ""){
+            $user = User::get_member_by_UserName($_POST["UserName"]);
+            if($user){
+                if($user->hashed_password !== Tools::my_hash($_POST["Password"]))
+                    $res = "false";
+            }
+        }
+        echo $res;
+    }
+    
     public function start() {
         
         (new View("start"))->show(array());

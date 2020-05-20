@@ -54,7 +54,8 @@ class Post extends Model {
     }
 
     public static function get_filter($search,$nbpage,$offset) {
-        $query = self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body LIMIT $nbpage OFFSET $offset ", array("Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));
+        $query = self::execute("select * from post, user where AuthorId=UserId and (UserName LIKE :UserName or Title LIKE :Title or Body LIKE :Body )LIMIT $nbpage OFFSET $offset ",
+                array("UserName"=>"%".$search."%","Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));
         $resul = [];
         if ($query->rowCount() == 0) {
             return 0;
@@ -104,10 +105,10 @@ class Post extends Model {
     //le tableau est vide s'il n'y a pas d'erreur.
     public function validate() {
         $errors = array();
-        if (!(($this->Title) )) {
+        if (!($this->Title)) {
             $errors[] = "Incorrect Title";
         }
-        if (!(($this->Body) )) {
+        if (!($this->Body)) {
             $errors[] = "Body must be filled";
         }
         return $errors;
