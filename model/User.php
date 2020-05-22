@@ -148,5 +148,28 @@ class User extends Model {
     public function get_post() {
         return Post::get_post($this);
     }
-
+    
+    Public static function getActivity($time){ 
+        $query = self::execute("SELECT UserName,count(*) as activity ,UserId ,Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Time GROUP by UserName
+                                UNION
+                                SELECT UserName,count(*) as activity ,user.UserId ,Timestamp from user join comment on user.UserId= comment.UserId WHERE comment.Timestamp >=:Time  GROUP by UserName",
+                    array("Time" =>$time));        
+        $resul= $query->fetchAll();   
+        return $resul;
+    }
+    public function functionNam($param) {
+        $query = self::execute("SELECT UserName,count(*) as activity ,UserId ,Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Timestamp GROUP by UserName"
+                . "UNION"
+                . "SELECT UserName,count(*) as activity ,user.UserId ,Timestamp from user join comment on user.UserId = comment.UserId where comment.Timestamp >=:Timestamp GROUP by UserName",
+                    array("Timestamp" =>$time));        
+        $resul= $query->fetchAll();        var_dump($resul); 
+        return $resul;
+    } 
+    
+    public function functionName($param) {
+        $query = self::execute("SELECT Uname,count(*) as activity from (SELECT u.UserName as Uname,u.UserId as userId, p.Timestamp as timed from user u 
+        join post p on u.UserId = p.AuthorId  where p.Timestamp >= :dated", array("dated" =>$time));        var_dump("je suis entre");
+        $resul= $query->fetchAll();        var_dump($resul);
+        return $resul;
+    }
 }

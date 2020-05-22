@@ -1,5 +1,5 @@
 $(function (){
-    $("input:text:first").focus();
+    validate_tag();
 });
 $.validator.addMethod("regex", function (value, element, pattern) {
     if (pattern instanceof Array) {
@@ -11,9 +11,9 @@ $.validator.addMethod("regex", function (value, element, pattern) {
     } else {
         return pattern.test(value);
     }
-}, "Please enter a valid input.");
+});
 
-function_validate_tag(){
+function validate_tag(){
     $('#tagform').validate({
         rules: {
             TagName: {
@@ -29,7 +29,7 @@ function_validate_tag(){
                 required: true,
                 minlength: 3,
                 maxlength: 16,
-                regex: /^[a-zA-Z][a-zA-Z0-9]*$/;
+                regex: /^[a-zA-Z][a-zA-Z0-9]*$/
             }
         },
         messages: {
@@ -38,7 +38,7 @@ function_validate_tag(){
                 required: 'required',
                 minlength: 'minimum 3 characters',
                 maxlength: 'maximum 16 characters',
-                regex: 'bad format for TagName',
+                regex: 'bad format for TagName'
             }
         }
     });

@@ -30,7 +30,7 @@ class Tag extends Model {
     
     public function valitag() {
         $errors = array();
-        if (!($this->TagName)) {
+        if (!($this->TagName) ||$this->TagName==" " ) {
             $errors[] = "TagName must be filled";
         }
         return $errors;

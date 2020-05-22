@@ -29,11 +29,11 @@ class ControllerTag extends Controller{
             $TagId= Tools::sanitize($_GET['param1']);
             $tagedit= Tag::get_tag($TagId);
         } 
-        if (isset($_POST['TagName']) && isset($_GET['param1']) ) {
+        if (isset($_POST['TagName'])&& $_POST["TagName"] !== "" && isset($_GET['param1']) ) {
             $TagName = Tools::sanitize($_POST['TagName']); 
             $tags = new Tag($TagName,$tagedit->TagId);
         }
-        if (isset($_POST['TagName']) && !isset($_GET['param1'] )) {           
+        if (isset($_POST['TagName']) && $_POST["TagName"] !== "" && !isset($_GET['param1'] )) {           
             $TagName = Tools::sanitize($_POST['TagName']); 
             $tags = new Tag($TagName);
         }

@@ -12,49 +12,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
-        <script>
-            $.validator.addMethod("regex", function (value, element, pattern) {
-                if (pattern instanceof Array) {
-                    for(p of pattern) {
-                        if (!p.test(value))
-                            return false;
-                    }
-                    return true;
-                } else {
-                    return pattern.test(value);
-                }
-            });
-            $(function (){
-                $('#tagform').validate({ 
-                    rules: {
-                        TagName: {
-                            remote: {
-                                url: 'tag/TagName_available_service',
-                                type: 'post',
-                                data:  {
-                                    TagName: function() {
-                                         return $("#TagName").val();
-                                    }
-                                }
-                            },
-                            required: true,
-                            minlength: 3,
-                            maxlength: 16,
-                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
-                        }
-                    } ,  
-                    messages: {
-                        TagName: {
-                            remote: 'this TagName is already taken',
-                            required: 'required TagName',
-                            minlength: 'minimum 3 characters',
-                            maxlength: 'maximum 16 characters',
-                            regex: 'bad format for TagName',
-                        }
-                  });      
-                $("input:text:first").focus();    
-            });  
-    </script> 
+        <script src="js/tag.js" type="text/javascript"></script> 
     </head>
     <body>
         <div class="bloc1">

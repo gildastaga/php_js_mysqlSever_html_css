@@ -6,6 +6,38 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
+         <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+        <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.theme.min.css" rel="stylesheet" type="text/css"/>
+        <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.structure.min.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
+        <script>
+            $(function(){
+                //le bouton "post" est désactivé par défaut.
+                //il s'active quand le champs "body" possède au moins un caractère 
+                $('#post').attr("disabled", true);
+                $("#body").on("input", function () {
+                    $('#post').attr("disabled", $(this).val().length === 0);
+                });
+                
+                //le formulaire est caché par défaut.
+                //quand on clique sur le titre, il s'affiche ou se cache.
+                $("#comment_form").hide();
+                $("#enableMessageForm").click(function(){
+                    $("#mcomment_form").toggle("fast", function () {
+                        if($("#comment_form").is(":visible")){
+                            $("#enableMessageForm").html("Click here to hide the new message form.");
+                            $("#body").focus();
+                        } else {
+                            $("#enableMessageForm").html("Click here to leave a message.");
+                        }
+                    });
+                });
+                postButton = $('#post');
+                postButton.attr("type", "button");
+                //postButton.click(postMessage);
+            });
+        </script>
     </head>
     <body>
         <div class="bloc1">
@@ -55,56 +87,58 @@
                         <table> 
                             <tr>
                                 <?php if ($user): ?>
-                                    <td> 
-                                        <a href="vote/add_vote/<?php echo $posts->PostId; ?>/<?php echo TRUE; ?>"><img 
-                                            <?php if (Vote::get_vote($posts->PostId, $user->UserId) && Vote::get_vote($posts->PostId, $user->UserId)->UpDown == 1): ?>                  
-                                                    style=" -webkit-filter: hue-rotate(90deg);
-                                                    filter: hue-rotate(90deg);"
-                                                <?php else: ?>
-                                                    style="-webkit-filter: grayscale(1);
-                                                    filter: grayscale(1);"
-                                                <?php endif; ?>
-                                                src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
-                                        <?php echo Post::nbr_vote($posts->PostId); ?> score(s)<br>
-                                        <a href="vote/add_vote/<?php echo $posts->PostId; ?>"><img
-                                            <?php if (Vote::get_vote($posts->PostId, $user->UserId) && Vote::get_vote($posts->PostId, $user->UserId)->UpDown == -1): ?> 
-                                                    style=" -webkit-filter: hue-rotate(90deg);
-                                                    filter: hue-rotate(90deg);"
-                                                <?php else: ?>
-                                                    style="   -webkit-filter: grayscale(1);
-                                                    filter: grayscale(1);"
-                                                <?php endif; ?>
-                                                src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
-                                    </td>
-                                <?php endif; ?>
-                            <h6> body post </h6>   
-                            <td>
-                                <h3>comment by post</h3><br><br>
-                                <?php foreach ($comment as $values): ?>
-                                <tr>
-                                <li> <?php echo $values->Body; ?></li>
-                                <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
-                                &nbsp by <?php echo $values->name(); ?> &nbsp &nbsp
-                                <?php if ($user): ?>
-                                    <?php if ($user->Role == "admin" || $values->UserId == $user->UserId): ?>
-                                        <a href="comment/edit_comment/<?php echo $values->CommentId; ?>">
-                                            <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""> </a>            
-                                        <a href="comment/delete_comment/<?php echo $values->CommentId; ?>">
-                                            <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
-                                    <?php endif; ?>
-                                    <?php endif; ?><br> 
-                                </tr>     
-                                <?php endforeach; ?><br>
-                                <?php if ($user): ?>
-                                Add your Comment<br>
-                                <form id="post_form" action="comment/add_comment/<?php echo $posts->PostId; ?>" method="post">                 
-                                    <textarea id="Body" name="Body" rows='2'></textarea><br><br>
-                                    <input id="post" type="submit" value="Comment">
-                                </form>
-                                <?php endif; ?><br><br>
+                                    <td>
+                                            <a href="vote/add_vote/<?php echo $posts->PostId; ?>/<?php echo TRUE; ?>"><img 
+                                                <?php if (Vote::get_vote($posts->PostId, $user->UserId) && Vote::get_vote($posts->PostId, $user->UserId)->UpDown == 1): ?>                  
+                                                        style=" -webkit-filter: hue-rotate(90deg);
+                                                        filter: hue-rotate(90deg);"
+                                                    <?php else: ?>
+                                                        style="-webkit-filter: grayscale(1);
+                                                        filter: grayscale(1);"
+                                                    <?php endif; ?>
+                                                    src="lib/parsedown-1.7.3/vote1.png" width="30" height="20"  alt=""/></a><br>
+                                            <?php echo Post::nbr_vote($posts->PostId); ?> score(s)<br>
+                                            <a href="vote/add_vote/<?php echo $posts->PostId; ?>"><img
+                                                <?php if (Vote::get_vote($posts->PostId, $user->UserId) && Vote::get_vote($posts->PostId, $user->UserId)->UpDown == -1): ?> 
+                                                        style=" -webkit-filter: hue-rotate(90deg);
+                                                        filter: hue-rotate(90deg);"
+                                                    <?php else: ?>
+                                                        style="   -webkit-filter: grayscale(1);
+                                                        filter: grayscale(1);"
+                                                    <?php endif; ?>
+                                                    src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
+                                        </td>
+                                    <?php endif; ?>              
+                                <h6> body post </h6>   
+                                <td>
+                                    <h3>comment by post</h3><br><br>
+                                    <?php foreach ($comment as $values): ?>
+                                    <table>
+                                    <tr>
+                                    <li> <?php echo $values->Body; ?></li>
+                                    <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
+                                    &nbsp by <?php echo $values->name(); ?> &nbsp &nbsp
+                                    <?php if ($user): ?>
+                                        <?php if ($user->Role == "admin" || $values->UserId == $user->UserId): ?>
+                                            <a href="comment/edit_comment/<?php echo $values->CommentId; ?>">
+                                                <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""> </a>            
+                                            <a href="comment/delete_comment/<?php echo $values->CommentId; ?>">
+                                                <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
+                                        <?php endif; ?>
+                                        <?php endif; ?><br> 
+                                        </tr> </table>    
+                                    <?php endforeach; ?><br>
+                                    <?php if ($user): ?>
+<!--                                    Add your Comment<br>-->
+                                    <div id="enablecomment"> Add a Comment on the post.</div>
+                                    <form id="comment_form" action="comment/add_comment/<?php echo $posts->PostId; ?>" method="post">                 
+                                        <textarea id="Body" name="Body" rows='2'></textarea><br><br>
+                                        <input id="post" type="submit" value="Comment">
+                                    </form>
+                                    <?php endif; ?><br><br>
 
-                                <li><?php echo $posts->markdown(); ?></li> <br>
-                            </td>
+                                    <li><?php echo $posts->markdown(); ?></li> <br>
+                                </td>
                             </tr>
                         </table><br><br>
 
@@ -169,8 +203,8 @@
                                             <?php endforeach; ?><br> 
                                         <?php endif; ?>     
                                         <?php if ($user && count($listanswer) != 0): ?><br>
-                                            &nbsp &nbsp you can Add a Comment on the answer<br><br>
-                                            <form id="post_form" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
+                                            &nbsp &nbsp<div id="enablecomment"> Add a Comment on the answer.</div><br><br>
+                                            <form id="comment_form" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
                                                 <textarea id="Body" name="Body" rows='2'></textarea><br>
                                                 <input id="post" type="submit" value="Comment">
                                             </form>

@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
-        <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
+        
     </head>
     <body>
         <div class="bloc1">
@@ -26,7 +26,7 @@
         <div class="main">
             <br><br>
             <div>
-                <form id="post_form" action="comment/add_comment/<?php echo $comment->CommentId; ?>/<?php echo TRUE; ?>" method="post">
+                <form id="comment_form" action="comment/add_comment/<?php echo $comment->CommentId; ?>/<?php echo TRUE; ?>" method="post">          
                     <td>Body</td><br>
                     <textarea id="Body" name="Body" rows='3'><?= $comment->Body; ?></textarea><br><br>
                     <input id="post" type="submit" value="Save">

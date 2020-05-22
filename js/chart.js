@@ -1,12 +1,24 @@
 $(function() {
+   init();
+});
+
+function init() {
+    $.get("user/starts" , function(data){
+        var tab = jQuery.parseJSON(data);  
+        getStats(tab);
+    });
+}
+
+function getStats(data) {
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels: data.map(u=>u.UserName),
             datasets: [{
                 label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
+                data: data.map(u=>parseInt(u.activity)),
+                
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -36,5 +48,5 @@ $(function() {
             }
         }
     });
-});
+}
 

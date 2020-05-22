@@ -103,9 +103,16 @@ class ControllerUser extends Controller {
         echo $res;
     }
     
+    public function starts() {
+        $Timestamp = date('Y-m-d H:i:s' , strtotime( '-5 month'));
+        $tar = User::getActivity($Timestamp);
+        echo json_encode($tar);
+    }
     public function start() {
-        
-        (new View("start"))->show(array());
+        $Timestamp = date('Y-m-d H:i:s' , strtotime( '-3 month'));
+        $tar = User::getActivity($Timestamp);        
+        $user = $this->get_user_or_false();
+        (new View("start"))->show(array("user"=>$user));
     }
     
 }
