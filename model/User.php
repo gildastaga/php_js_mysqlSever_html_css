@@ -150,14 +150,23 @@ class User extends Model {
     }
     
     Public static function getActivity($time){ 
-        $query = self::execute("SELECT UserName,count(*) as activity ,UserId ,Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Time GROUP by UserName
+        $query = self::execute("sELECT UserName, SUM(activity) as activity from ((SELECT UserName,count(*) as activity ,UserId ,Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Time GROUP by UserName)
                                 UNION
-                                SELECT UserName,count(*) as activity ,user.UserId ,Timestamp from user join comment on user.UserId= comment.UserId WHERE comment.Timestamp >=:Time  GROUP by UserName",
-                    array("Time" =>$time));        
+                                (SELECT UserName,count(*) as activity ,user.UserId ,Timestamp from user join comment on user.UserId= comment.UserId WHERE comment.Timestamp >=:Time  GROUP by UserName)) t
+                                            GROUP BY UserName
+                                            ORDER BY t.activity DESC ",array("Time" =>$time));        
         $resul= $query->fetchAll();   
         return $resul;
     }
-   
+    public function activityByuser($time){
+          $query=self::execute("SELECT SUM(compte) nb
+          from((SELECT COUNT() as compte  FROM post WHERE post.AuthorId = :UserId AND post.TimeStamp>:time)
+        UNION(SELECT COUNT() as compte  FROM comment WHERE comment.UserId=:UserId AND comment.TimeStamp>:time)) t 
+        ",array("UserId"=>$this->userid, "time" => $time));
+          $data=$query->fetch();
+
+          return $data['nb'];
+        }
     
     public function functionName($param) {
         $query = self::execute("SELECT Uname,count(*) as activity from (SELECT u.UserName as Uname,u.UserId as userId, p.Timestamp as timed from user u 

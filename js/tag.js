@@ -35,9 +35,9 @@ function validate_tag(){
         messages: {
             TagName: {
                 remote: 'this TagName is already taken',
-                required: 'required',
+                required: 'required TagName',
                 minlength: 'minimum 3 characters',
-                maxlength: 'maximum 16 characters',
+                maxlength: 'maximum 20 characters',
                 regex: 'bad format for TagName'
             }
         }

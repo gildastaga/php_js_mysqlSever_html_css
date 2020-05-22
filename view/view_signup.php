@@ -117,6 +117,7 @@
         <div class="bloc1">
             <div class="title"><a href="post/index"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>Stuck Overflow</div>
             <div class="menu">
+                <a href="user/login"><img src="lib/parsedown-1.7.3/login.png" width="30" height="20"  alt=""/></a>
                 <a href="post/index">Home</a>
             </div>
         </div>

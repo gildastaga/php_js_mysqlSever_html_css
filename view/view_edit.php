@@ -36,7 +36,10 @@
                             required: true,
                             minlength: 3,
                             maxlength: 16,
-                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/,
+                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/
+                        },
+                        Body:{
+                            required: true
                         }
                     } ,  
                     messages: {
@@ -45,7 +48,10 @@
                             required: 'required Title',
                             minlength: 'minimum 3 characters',
                             maxlength: 'maximum 16 characters',
-                            regex: 'bad format for Title',
+                            regex: 'bad format for Title'
+                        },
+                        Body:{
+                            required: 'required Body'   
                         }
                   });      
                 $("input:text:first").focus();    

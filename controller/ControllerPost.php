@@ -73,7 +73,7 @@ class ControllerPost extends Controller {
         $Body = '';
         $errors = [];
         $tag = Tag::get_all_tag();
-        if (isset($_POST['Title']) && isset($_POST['Body'])) {
+        if (isset($_POST['Title']) && $_POST["Title"] !== ""&& isset($_POST['Body'])&& $_POST["Body"] !== "") {
             $Title = Tools::sanitize($_POST['Title']);
             $Body = Tools::sanitize($_POST['Body']);
             $Timestamp = date('Y-m-d H:i:s');
@@ -117,7 +117,7 @@ class ControllerPost extends Controller {
         $tags = Tag::get_all_tag();
         $comment = Comment::get_all_comment($PostId);
         $errors = [];
-        if (isset($_POST['Body'])) {
+        if (isset($_POST['Body'])&& $_POST["Body"] !== "") {
             $Body = Tools::sanitize($_POST['Body']);
             $answered = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $posts->PostId);
             $errors = $answered->validates();
@@ -136,12 +136,12 @@ class ControllerPost extends Controller {
         $PostId = Tools::sanitize($_GET['param1']);
         $posts = Post::get_post_PostId($PostId);
         $errors = [];
-        if (isset($_POST['Title']) && isset($_POST['Body'])) {
+        if (isset($_POST['Title']) && $_POST["Title"] !== "" && isset($_POST['Body'])&& $_POST["Body"] !== " ") {
             $Title = Tools::sanitize($_POST['Title']);
             $Body = Tools::sanitize($_POST['Body']);
             $question = new Post($user->UserId, $Title, $Body, date('Y-m-d H:i:s'), $posts->AcceptedAnswerId, $posts->ParentId, $posts->PostId);
             $errors = $question->validate();
-        } elseif (isset($_POST['Body'])) {
+        } elseif (isset($_POST['Body']) && $_POST["Body"] !== " ") {
             $Body = Tools::sanitize($_POST['Body']);
             $question = new Post($user->UserId, NULL, $Body, date('Y-m-d H:i:s'), NULL, $posts->ParentId, $posts->PostId);
             $errors = $question->validates();

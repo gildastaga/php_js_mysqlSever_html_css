@@ -12,7 +12,10 @@
     <body>
         <div class="bloc1">
             <div class="title"><a href="post/index"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>Stuck Overflow </div>
-            <div class="menu"><a href="post/index">home</a></div>
+            <div class="menu">
+                <a href="user/signup"><img src="lib/parsedown-1.7.3/signup0.png" width="30" height="20"  alt=""/></a>
+                <a href="post/index">home</a>
+            </div>
         </div>
             <div class="main">
                 <form id="loginForm"action="user/login" method="post">

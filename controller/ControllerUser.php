@@ -104,7 +104,7 @@ class ControllerUser extends Controller {
     }
     
     public function starts() {
-        $Timestamp = date('Y-m-d H:i:s' , strtotime( '-5 month'));
+        $Timestamp = date('Y-m-d H:i:s' , strtotime( '-6 month'));
         $tar = User::getActivity($Timestamp);
         echo json_encode($tar);
     }

@@ -14,12 +14,21 @@
 <body>
     <div class="bloc1">
         <div class="title"><a href="post/index"><img style="color: white;"src="lib/parsedown-1.7.3/back.png" width="30" height="20"  alt=""/></a>Stuck Overflow </div>
+        <div>
+            <form class="menu">
+                <?php if (!$user): ?>
+                    <?php include('menu.html'); ?>
+                <?php else: ?>
+                    <?php include('menus.html'); ?>
+                <?php endif; ?>
+            </form>   
+        </div>
     </div>
     <div class="main">
-        <div>
-            <form>
+        <div class="star">
+            <form id="nbrperide" method="post">
                 <p>period : the last</p>
-                <input id="number" type="number">
+                <input id="number" type="number" name="number">
                 <select class="" id="period">
                     <option value="" selected="select">choisir la periode</option>
                     <option value="days">days</option>

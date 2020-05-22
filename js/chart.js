@@ -1,6 +1,14 @@
 $(function() {
    init();
 });
+function get_data() {
+    var t = document.getElementById("#number").value;
+    var nbre=document.getElementById('number').value;
+    var periode=document.getElementById('period').value;
+    alert("valeur"+t);
+    console.log(t);
+    //alert(periode);
+} 
 
 function init() {
     $.get("user/starts" , function(data){
