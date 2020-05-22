@@ -20,7 +20,7 @@
             <form>
                 <p>period : the last</p>
                 <input id="number" type="number">
-                <select class="" id="">
+                <select class="" id="period">
                     <option value="" selected="select">choisir la periode</option>
                     <option value="days">days</option>
                     <option value="week">week</option>
