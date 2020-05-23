@@ -96,21 +96,30 @@ class ControllerUser extends Controller {
         if(isset($_POST["UserName"]) && $_POST["UserName"] !== "" && isset($_POST["Password"]) && $_POST["Password"] !== ""){
             $user = User::get_member_by_UserName($_POST["UserName"]);
             if($user){
-                if($user->hashed_password !== Tools::my_hash($_POST["Password"]))
+                if($user->hashed_password !== Tools::my_hash($_POST["Password"])){
                     $res = "false";
+                }    
             }
         }
         echo $res;
     }
     
     public function starts() {
-        $Timestamp = date('Y-m-d H:i:s' , strtotime( '-6 month'));
+        $user = $this->get_user_or_false();
+        if(isset($_POST['numbre'])&& isset($_POST['periode'])){
+            $periode= $_POST['periode'];
+            $numbre= $_POST['numbre'];
+        } else {
+            $periode= 'days';
+            $numbre= 1;
+        }  
+        
+        $Timestamp = date('Y-m-d H:i:s' , strtotime('-'.$numbre." ".$periode));
         $tar = User::getActivity($Timestamp);
         echo json_encode($tar);
     }
-    public function start() {
-        $Timestamp = date('Y-m-d H:i:s' , strtotime( '-3 month'));
-        $tar = User::getActivity($Timestamp);        
+    
+    public function start() {       var_dump($_POST);
         $user = $this->get_user_or_false();
         (new View("start"))->show(array("user"=>$user));
     }
