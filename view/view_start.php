@@ -11,30 +11,44 @@
         <script>
             $(function () {
                 init();
-                
                 $("#number").change(function () {
-                    console.log($("#number").val() + " " + $("#period").val())
-                    $.post("user/starts",{numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
+                    $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
                         getStats(tab);
                     });
                 });
-                
                 $("#period").click(function () {
-                    console.log($("#period").val())
-                    $.post("user/starts",{numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
+                    $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
                         getStats(tab);
                     });
                 });
-            });            
-               
+            });
+            function removeData(chart) {
+                chart.data.labels.pop();
+                chart.data.datasets.forEach((dataset) => {
+                    dataset.data.pop();
+                });
+                chart.update();
+            }
             
+            $("#myChart").Click(function() {
+                alert("hello");
+            });
+
             function init() {
                 $.get("user/starts", function (data) {
                     var tab = jQuery.parseJSON(data);
                     getStats(tab);
                 });
+            }
+
+            function addData(chart, label, data) {
+                chart.data.labels.push(label);
+                chart.data.datasets.forEach((dataset) => {
+                    dataset.data.push(data);
+                });
+                chart.update();
             }
 
             function getStats(data) {
@@ -44,9 +58,8 @@
                     data: {
                         labels: data.map(u => u.UserName),
                         datasets: [{
-                                label: '# of Votes',
+                                //label: '# of Votes',
                                 data: data.map(u => parseInt(u.activity)),
-
                                 backgroundColor: [
                                     'rgba(255, 99, 132, 0.2)',
                                     'rgba(54, 162, 235, 0.2)',
@@ -67,6 +80,7 @@
                             }]
                     },
                     options: {
+                        events: ['clicks'],
                         scales: {
                             yAxes: [{
                                     ticks: {
@@ -78,19 +92,8 @@
                 });
             }
 
-//            function recupSelection(src, dest)
-//            {
-//                var valeur = src.options[src.selectedIndex].value;
-//                console.log(valeur);
-//                if (valeur = '')
-//                    return;
-//
-//                dest.value += src.options[src.selectedIndex].value + 'n';
-//                src.selectedIndex = 0;
-//            }
-//            ;
-        </script>
 
+        </script>
     </head>
     <body>
         <div class="bloc1">
@@ -122,7 +125,7 @@
                 </form>
             </div>
 
-            <canvas id="myChart" width="200" height="200"></canvas>
+            <canvas id="myChart" width="400" height="400"></canvas>
         </div>
 
     </body>

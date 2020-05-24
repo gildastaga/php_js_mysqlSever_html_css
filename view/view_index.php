@@ -19,11 +19,9 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
             $(document).ready(function(){
                 $("message_list").hide();
                  $('#search').keyup(function(){
-                     var search=$(this).val();
-                     
-                     $post("post/searchJson", {search: search}, function(data) {
+                     var search=$(this).val(); 
+                     $.post("post/searchJson", {search: search}, function(data) {
                         var data_object = jQuery.parseJSON(data); 
-                        
                         getPosts(data_object);
                      });
                  });

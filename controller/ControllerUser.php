@@ -119,7 +119,7 @@ class ControllerUser extends Controller {
         echo json_encode($tar);
     }
     
-    public function start() {       var_dump($_POST);
+    public function start() {    
         $user = $this->get_user_or_false();
         (new View("start"))->show(array("user"=>$user));
     }
