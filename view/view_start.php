@@ -11,15 +11,25 @@
         <script>
             $(function () {
                 init();
+                let chart=myChart;
                 $("#number").change(function () {
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
+                        removeData(chart);
+                        for(var i = 0; i < tab.length; ++i) {
+                            addData(chart, tab[i].UserName, tab[i].activity);
+                        }
                         getStats(tab);
+                        
                     });
                 });
                 $("#period").click(function () {
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
+                        removeData(chart);
+                        for(var i = 0; i < tab.length; ++i) {
+                            addData(chart, tab[i].UserName, tab[i].activity);
+                        }
                         getStats(tab);
                     });
                 });
@@ -33,10 +43,30 @@
                     getStats(tab);
                 });
             }
-
+            
+            function removeData(chart) {
+                for(var i = 0 ; i < chart.data.labels.length ; i++) {
+                    chart.data.labels.pop();
+                    chart.data.datasets.forEach((dataset) => {
+                        dataset.data.pop();
+                    });
+                }
+                
+                chart.update();
+            }
+            
+            function addData(chart, label, data) {
+      
+                chart.data.labels.push(label);
+                chart.data.datasets.forEach((dataset) => {
+                    dataset.data.push(data);
+                });
+                chart.update();
+            }
+            var myChart;
             function getStats(data) {
                 var ctx = document.getElementById('myChart').getContext('2d');
-                var myChart = new Chart(ctx, {
+                 myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: data.map(u => u.UserName),
