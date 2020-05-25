@@ -23,32 +23,15 @@
                         getStats(tab);
                     });
                 });
+                
             });
-            function removeData(chart) {
-                chart.data.labels.pop();
-                chart.data.datasets.forEach((dataset) => {
-                    dataset.data.pop();
-                });
-                chart.update();
-            }
-            
-            $("#myChart").Click(function() {
-                alert("hello");
-            });
+
 
             function init() {
                 $.get("user/starts", function (data) {
                     var tab = jQuery.parseJSON(data);
                     getStats(tab);
                 });
-            }
-
-            function addData(chart, label, data) {
-                chart.data.labels.push(label);
-                chart.data.datasets.forEach((dataset) => {
-                    dataset.data.push(data);
-                });
-                chart.update();
             }
 
             function getStats(data) {
@@ -80,18 +63,35 @@
                             }]
                     },
                     options: {
-                        events: ['clicks'],
                         scales: {
                             yAxes: [{
                                     ticks: {
                                         beginAtZero: true
                                     }
                                 }]
-                        }
+                        },
+                        onClick: function (evt, array) {
+                            donnee = array[0];
+                            if (typeof donnee == 'undefined')
+                                return;
+                            //console.log(donne);
+                            let UserName = this.data.labels[donnee._index];
+                            let nbre = this.data.datasets[0].data[donnee._index];
+                            console.log(UserName);
+                            console.log(nbre);
+                            actbyuser(UserName);
+                        },
+                        events:['click']
                     }
                 });
             }
-
+            function actbyuser(UserName){
+                $.post("user/getActivityByUser", {numbre: $("#number").val(), periode: $("#period").val(),UserName :UserName}, function (data) {
+                   console.log(data);
+                    var tab = jQuery.parseJSON(data);
+                    console.log(tab);
+                    });
+            }
 
         </script>
     </head>
@@ -124,8 +124,9 @@
 
                 </form>
             </div>
-
-            <canvas id="myChart" width="400" height="400"></canvas>
+            <div style=" width:40%; height:40%;margin-left: 25%;">
+                <canvas id="myChart" width="200" height="200" ></canvas>
+            </div>
         </div>
 
     </body>

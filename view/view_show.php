@@ -12,30 +12,41 @@
         <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.structure.min.css" rel="stylesheet" type="text/css"/>
         <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
         <script>
-            $(function(){
-                //le bouton "post" est désactivé par défaut.
-                //il s'active quand le champs "body" possède au moins un caractère 
+            $(function(){ 
                 $('#post').attr("disabled", true);
-                $("#body").on("input", function () {
+                $("#Body").on("input", function () {
                     $('#post').attr("disabled", $(this).val().length === 0);
                 });
                 
-                //le formulaire est caché par défaut.
-                //quand on clique sur le titre, il s'affiche ou se cache.
                 $("#comment_form").hide();
-                $("#enableMessageForm").click(function(){
-                    $("#mcomment_form").toggle("fast", function () {
+                $("#enablecomment").click(function(){
+                    $("#comment_form").toggle("fast", function () {
                         if($("#comment_form").is(":visible")){
-                            $("#enableMessageForm").html("Click here to hide the new message form.");
-                            $("#body").focus();
+                            $("#enablecomment").html("Click here to hide the new message form.");
+                            $("#Body").focus();
                         } else {
-                            $("#enableMessageForm").html("Click here to leave a message.");
+                            $("#enablecomment").html("Click here to leave a message.");
                         }
                     });
                 });
-                postButton = $('#post');
-                postButton.attr("type", "button");
-                //postButton.click(postMessage);
+                
+                
+                $('#post_answer').attr("disabled", true);
+                $("#Body").on("input", function () {
+                    $('#post_answer').attr("disabled", $(this).val().length === 0);
+                });
+                
+                $("#comment_form_answer").hide();
+                $("#enablecomment_answer").click(function(){
+                    $("#comment_form_answer").toggle("fast", function () {
+                        if($("#comment_form_answer").is(":visible")){
+                            $("#enablecomment_answer").html("Click here to hide the new comment answer form.");
+                            $("#Body").focus();
+                        } else {
+                            $("#enablecomment_answer").html("Click here to leave a comment answer.");
+                        }
+                    });
+                });
             });
         </script>
     </head>
@@ -203,10 +214,10 @@
                                             <?php endforeach; ?><br> 
                                         <?php endif; ?>     
                                         <?php if ($user && count($listanswer) != 0): ?><br>
-                                            &nbsp &nbsp<div id="enablecomment"> Add a Comment on the answer.</div><br><br>
-                                            <form id="comment_form" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
+                                            &nbsp &nbsp<div id="enablecomment_answer"> Add a Comment on the answer.</div><br><br>
+                                            <form id="comment_form_answer" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
                                                 <textarea id="Body" name="Body" rows='2'></textarea><br>
-                                                <input id="post" type="submit" value="Comment">
+                                                <input id="post_answer" type="submit" value="Comment">
                                             </form>
                                         <?php endif; ?><br><br>
                                 <li><?php echo $reponse->markdown(); ?></li><br>

@@ -105,7 +105,6 @@ class ControllerUser extends Controller {
     }
     
     public function starts() {
-        $user = $this->get_user_or_false();
         if(isset($_POST['numbre'])&& isset($_POST['periode'])){
             $periode= $_POST['periode'];
             $numbre= $_POST['numbre'];
@@ -123,5 +122,15 @@ class ControllerUser extends Controller {
         $user = $this->get_user_or_false();
         (new View("start"))->show(array("user"=>$user));
     }
-    
+    public function getActivityByUser() {
+        if(isset($_POST['numbre'])&& isset($_POST['periode'])&& isset($_POST['UserName'])){
+            $periode= $_POST['periode'];
+            $numbre= $_POST['numbre'];
+            $UserName=$_POST['UserName'];
+        }
+        $user=User::get_member_by_username($UserName);
+        $Timestamp = date('Y-m-d H:i:s' , strtotime('-'.$numbre." ".$periode));
+       // $tar = User::activityByuser($Timestamp,$user->UserId);
+        echo json_encode($Timestamp);
+    }
 }
