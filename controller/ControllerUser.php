@@ -120,6 +120,9 @@ class ControllerUser extends Controller {
     
     public function start() {    
         $user = $this->get_user_or_false();
+        $Timestamp = date('Y-m-d H:i:s' , strtotime('-3 week'));
+        $t=$user->activityByuser($Timestamp);
+        var_dump($t);
         (new View("start"))->show(array("user"=>$user));
     }
     public function getActivityByUser() {
@@ -130,7 +133,7 @@ class ControllerUser extends Controller {
         }
         $user=User::get_member_by_username($UserName);
         $Timestamp = date('Y-m-d H:i:s' , strtotime('-'.$numbre." ".$periode));
-       // $tar = User::activityByuser($Timestamp,$user->UserId);
-        echo json_encode($Timestamp);
+        $tar = $user->activityByuser($Timestamp);
+        echo json_encode($tar);
     }
 }

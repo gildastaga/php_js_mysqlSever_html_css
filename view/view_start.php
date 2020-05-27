@@ -11,8 +11,9 @@
         <script>
             $(function () {
                 init();
-                let chart=myChart;
+                
                 $("#number").change(function () {
+                    let chart=myChart;
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
                         removeData(chart);
@@ -24,6 +25,7 @@
                     });
                 });
                 $("#period").click(function () {
+                    let chart=myChart;
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
                         removeData(chart);
@@ -56,7 +58,6 @@
             }
             
             function addData(chart, label, data) {
-      
                 chart.data.labels.push(label);
                 chart.data.datasets.forEach((dataset) => {
                     dataset.data.push(data);
@@ -104,11 +105,8 @@
                             donnee = array[0];
                             if (typeof donnee == 'undefined')
                                 return;
-                            //console.log(donne);
                             let UserName = this.data.labels[donnee._index];
                             let nbre = this.data.datasets[0].data[donnee._index];
-                            console.log(UserName);
-                            console.log(nbre);
                             actbyuser(UserName);
                         },
                         events:['click']
@@ -117,8 +115,7 @@
             }
             function actbyuser(UserName){
                 $.post("user/getActivityByUser", {numbre: $("#number").val(), periode: $("#period").val(),UserName :UserName}, function (data) {
-                   console.log(data);
-                    var tab = jQuery.parseJSON(data);
+                    var tab =jQuery.parseJSON(data);
                     console.log(tab);
                     });
             }
@@ -156,6 +153,10 @@
             </div>
             <div style=" width:40%; height:40%;margin-left: 25%;">
                 <canvas id="myChart" width="200" height="200" ></canvas>
+            </div>
+            <div>
+                
+                
             </div>
         </div>
 
