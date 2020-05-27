@@ -116,8 +116,27 @@
             function actbyuser(UserName){
                 $.post("user/getActivityByUser", {numbre: $("#number").val(), periode: $("#period").val(),UserName :UserName}, function (data) {
                     var tab =jQuery.parseJSON(data);
-                    console.log(tab);
+                    displayTable(tab,UserName);
                     });
+            }
+            function displayTable(t,UserName){
+                tblMessages = $('#message_list');
+                tblMessages.html("<tr><td>Loading...</td></tr>");
+                var tab=t
+                var u=UserName;
+                //document.getElementById("UserName").innerHTML=u;
+                var html = "<tr id='UserName'> </tr>";
+                           "<tr><th id='moment' onclick='sort(\"moment\");'>moment</th>" +
+                           "<th id='type' onclick='sort(\"type\");'>type</th>" + 
+                           "<th id='Title' onclick='sort(\"Title\")';>Title</th></tr>";
+                for (var m of tab) {
+                    html += "<tr>";
+                    html += "<td>" + m.moment + "</td>";
+                    html += "<td>"+m.type+"</td>";
+                    html += "<td>" + m.Title + "</td>";
+                    html += "</tr>";
+                }
+                tblMessages.html(html);
             }
 
         </script>
@@ -153,10 +172,20 @@
             </div>
             <div style=" width:40%; height:40%;margin-left: 25%;">
                 <canvas id="myChart" width="200" height="200" ></canvas>
+            </div><br><br><br>
+            <div  class="message_list" style=" width:40%; height:40%;margin-left: 25%;">
+                <table id="message_list">
+                    
+                </table>
             </div>
+            
             <div>
-                
-                
+                 <?php// foreach ($t as $values): ?>                         
+                        
+                       
+                       <?php //$values->Title; ?>
+                                                
+                    <?php// endforeach; ?>
             </div>
         </div>
 

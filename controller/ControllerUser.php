@@ -105,6 +105,7 @@ class ControllerUser extends Controller {
     }
     
     public function starts() {
+        $user= $this->get_user_or_redirect();
         if(isset($_POST['numbre'])&& isset($_POST['periode'])){
             $periode= $_POST['periode'];
             $numbre= $_POST['numbre'];
@@ -119,11 +120,8 @@ class ControllerUser extends Controller {
     }
     
     public function start() {    
-        $user = $this->get_user_or_false();
-        $Timestamp = date('Y-m-d H:i:s' , strtotime('-3 week'));
-        $t=$user->activityByuser($Timestamp);
-        var_dump($t);
-        (new View("start"))->show(array("user"=>$user));
+        $user = $this->get_user_or_redirect();
+        (new View("start"))->show(array("user"=>$user,));
     }
     public function getActivityByUser() {
         if(isset($_POST['numbre'])&& isset($_POST['periode'])&& isset($_POST['UserName'])){
@@ -133,7 +131,7 @@ class ControllerUser extends Controller {
         }
         $user=User::get_member_by_username($UserName);
         $Timestamp = date('Y-m-d H:i:s' , strtotime('-'.$numbre." ".$periode));
-        $tar = $user->activityByuser($Timestamp);
+        $tar = $user->activityByuse($Timestamp);
         echo json_encode($tar);
     }
 }

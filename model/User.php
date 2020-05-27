@@ -153,9 +153,9 @@ class User extends Model {
     }
 
     Public static function getActivity($time) {
-        $query = self::execute("select UserName, SUM(activity) as activity from ((SELECT UserName,count(*) as activity ,UserId ,Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Time GROUP by UserName)
+        $query = self::execute("select UserName, SUM(activity) as activity from ((SELECT UserName,count(*) as activity ,UserId ,Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Time GROUP by UserName order by Timestamp DESC)
                                 UNION
-                                (SELECT UserName,count(*) as activity ,user.UserId ,Timestamp from user join comment on user.UserId= comment.UserId WHERE comment.Timestamp >=:Time  GROUP by UserName)) t
+                                (SELECT UserName,count(*) as activity ,user.UserId ,Timestamp from user join comment on user.UserId= comment.UserId WHERE comment.Timestamp >=:Time  GROUP by UserName order by Timestamp DESC)) t
                                             GROUP BY UserName
                                             ORDER BY t.activity DESC ", array("Time" => $time));
         $resul = $query->fetchAll();
@@ -163,31 +163,31 @@ class User extends Model {
     }
 
     public function activityByuser($time) {
-        $query = self::execute("SELECT * FROM post WHERE post.AuthorId = :UserId AND post.TimeStamp>:time ", array("UserId" => $this->UserId, "time" => $time));
-        $data [] = $query->fetchAll();
+        $query = self::execute("SELECT * FROM post WHERE post.AuthorId = :UserId AND post.TimeStamp>:time order by Timestamp DESC", array("UserId" => $this->UserId, "time" => $time));
+        $data  = $query->fetchAll();
         $result = [];
         foreach ($data as $value) {
             if ($value["Title"] !== NULL) {
                 $post = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
                 $post->type = ["create/update post"];
-                $post->moment = [$post->temp_ago()];
+                $post->moment = [$post->temp_ago()[0]];
                 $result[] = $post;
             } else if ($value["Title"] == NULL) {
                 $answer = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
-                $post = Post::get_post_PostId($answer->PostId);
-                $post->type = ["create/update answer"];
-                $post->moment = [$answer->temp_ago()];
-                $result[] = $post;
+                $post2 = Post::get_post_PostId($answer->PostId);
+                $post2->type = ["create/update answer"];
+                $post2->moment = [$answer->temp_ago()[0]];
+                $result[] = $post2;
             }
         }
-        $query1 = self::execute("SELECT * FROM comment  where comment.UserId = :UserId AND comment.TimeStamp>:time ", array("UserId" => $this->UserId, "time" => $time));
+        $query1 = self::execute("SELECT * FROM comment  where comment.UserId = :UserId AND comment.TimeStamp>:time order by Timestamp DESC", array("UserId" => $this->UserId, "time" => $time));
         $data1 = $query1->fetchAll();
         foreach ($data1 as $row) {
             $c = new Comment($row["UserId"], $row["PostId"], $row["Body"], $row["Timestamp"], $row["CommentId"]);
-            $post = Post::get_post_PostId($c->PostId);
-            $post->type = ["create/update comment"];
-            $post->moment = [$c->temp_ago()];
-            $result[] = $post;
+            $post1 = Post::get_post_PostId($c->PostId);
+            $post1->type = ["create/update comment"];
+            $post1->moment = [$c->temp_ago()[0]];
+            $result[] = $post1;
         }
         return $result;
     }
@@ -199,7 +199,7 @@ class User extends Model {
         from  post WHERE post.ParentId !=NULL AND post.AuthorId = :UserId AND post.TimeStamp>:time )
         UNION ALL
         (select post.Timestamp as timestamp, 'create/update response' as type, question.Title as question
-        from ( select * from post WHERE post.PostId =post.ParentId in(select * from post where post.ParentId != NULL AND post.AuthorId = :UserId AND post.TimeStamp>:time)) question )
+        from ( select * from post WHERE post.PostId =post.ParentId in(select * from post where post.ParentId != NULL AND post.AuthorId = :UserId AND post.TimeStamp>:time))
         UNION ALL
         (select comment.Timestamp as timestamp, 'create/update comment' as type, post.Title as question
         from comment  where  comment.UserId = :UserId AND comment.TimeStamp>:time )
@@ -210,5 +210,51 @@ class User extends Model {
         var_dump($resul);
         return $resul;
     }
+    
+    
+    
+    
+    public function activityByuse($time) {
+        $query = self::execute("SELECT * FROM post WHERE post.AuthorId = :UserId AND post.TimeStamp>:time order by Timestamp DESC", array("UserId" => $this->UserId, "time" => $time));
+        $data  = $query->fetchAll();
+        $result = [];
+        foreach ($data as $value) {
+           
+            if (!$value["ParentId"]) {
+                $post = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
+                $post->type = ["create/update post"];
+                $post->moment = [$post->temp_ago()[0]];
+                $result[] = $post;
+            } else {
+                $post = Post::get_post_PostId($value["ParentId"]);
+                $post->type = ["create/update answer"];
+                $post->moment = [$post->temp_ago()[0]];
+                $result[] = $post;
+            }
+        }
+
+        $query1 = self::execute("SELECT * FROM comment  where comment.UserId = :UserId AND comment.TimeStamp>:time order by Timestamp DESC ", array("UserId" => $this->UserId, "time" => $time));
+        $data1 = $query1->fetchAll();
+        foreach ($data1 as $row) {
+            $post = Post::get_post_PostId($row["PostId"]);
+if (!$post->ParentId) {
+                $post = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
+                $post->type = ["create/update comment"];
+                $post->moment = [$post->temp_ago()[0]];
+                $result[] = $post;
+            } else {
+                $post = Post::get_post_PostId($value["ParentId"]);
+                $post->type = ["create/update comment"];
+                $post->moment = [$post->temp_ago()[0]];
+                $result[] = $post;
+            }
+        }
+
+        return $result;
+    }
+
+    
+    
+    
 
 }
