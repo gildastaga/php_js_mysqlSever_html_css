@@ -29,6 +29,18 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
             
             function getPosts(data) {
                 
+                tblMessages = $('#message_list');
+                tblMessages.html("<tr><td>Loading...</td></tr>");
+                var tab=data;
+                var html = "<t> </tr>";
+                for (var m of tab) {
+                    html += "<tr>";
+                    html += "<li><a href='post/show/"+m.PostId+"'>"+m.Title+"</a></li>";
+                    html+="&nbsp&nbsp "+m.Body+"<br>";
+                    html += "</tr>";
+                }
+                tblMessages.html(html);
+                
             }
         </script>
     </head>
@@ -62,21 +74,27 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 </form>
             </div>
             <br><br><br><br>
-            <div class="main">                
-                <table id="message_list" class="message_list">
-                    <?php foreach ($posts as $values): ?>                         
-                        <tr> 
-                        <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
-                        &nbsp <?= "  " . $values->markdown(); ?>
-                        <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
-                        &nbsp by <?php echo $values->name(); ?>(<?php echo Post::nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp
-                        <?php $taglispost = Tag::get_tag_bypostId($values->PostId); ?>
-                        <?php foreach ($taglispost as $row): ?>
-                            <a href="post/by_tag/<?= $row->TagId ?>"><?= $row->TagName ?></a>&nbsp
-                        <?php endforeach; ?>
-                        </tr><br><br>                          
-                    <?php endforeach; ?>  
-                </table><br>
+            <div class="main">      
+                <div  class="message_list" >
+                    <table id="message_list" class="message_list">
+                    
+                    </table>
+                   
+                    <table id="message_list" class="message_list">
+                        <?php foreach ($posts as $values): ?>                         
+                            <tr> 
+                            <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
+                            &nbsp <?= "  " . $values->markdown(); ?>
+                            <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
+                            &nbsp by <?php echo $values->name(); ?>(<?php echo Post::nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp
+                            <?php $taglispost = Tag::get_tag_bypostId($values->PostId); ?>
+                            <?php foreach ($taglispost as $row): ?>
+                                <a href="post/by_tag/<?= $row->TagId ?>"><?= $row->TagName ?></a>&nbsp
+                            <?php endforeach; ?>
+                            </tr><br><br>                          
+                        <?php endforeach; ?>  
+                    </table>
+                </div><br>
                 <div class="pagination">
                     <li  style="page-item <?= ($currentPage>1) ? " -webkit-filter:blur(90deg);
                                                         filter: blur(90deg);" :

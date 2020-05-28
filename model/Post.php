@@ -54,7 +54,7 @@ class Post extends Model {
     }
 
     public static function get_filter($search,$nbpage,$offset) {
-        $query = self::execute("select * from post, user where AuthorId=UserId and (UserName LIKE :UserName or Title LIKE :Title or Body LIKE :Body )LIMIT $nbpage OFFSET $offset ",
+        $query = self::execute("select * from post, user where AuthorId=UserId and (UserName LIKE :UserName or Title LIKE :Title or Body LIKE :Body ) ORDER BY Timestamp DESC LIMIT $nbpage OFFSET $offset ",
                 array("UserName"=>"%".$search."%","Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));
         $resul = [];
         if ($query->rowCount() == 0) {
@@ -379,7 +379,8 @@ class Post extends Model {
         }
     }
     public static function rechech($motclef) {
-        $query = self::execute("select * from post where  Title LIKE :Title or Body LIKE :Body  ", array("Title" => "%" .$motclef.'%', "Body" => "%" .$motclef.'%'));
+        $query = self::execute("select * from post , user where AuthorId=UserId and( UserName LIKE :UserName or  Title LIKE :Title or Body LIKE :Body  ) ORDER BY Timestamp DESC ", 
+                array("UserName"=>"%".$motclef."%","Title" => "%" .$motclef.'%', "Body" => "%" .$motclef.'%'));
         $resul = [];
         if ($query->rowCount() == 0) {
             return "Aucun resultat pour :".$motclef;

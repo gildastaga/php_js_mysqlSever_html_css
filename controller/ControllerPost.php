@@ -254,7 +254,7 @@ class ControllerPost extends Controller {
         
         (new View("index"))->show(Array("posts" => $posts, "user" => $user, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "post_search"));
     }
-
+    
     public function by_tag() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
@@ -286,11 +286,18 @@ class ControllerPost extends Controller {
         echo $res;
     }
     
-    public function rech() {
-        if(isset($_GET['motclef'])){ 
-            $motclef=$_GET['motclef'];
-            $result= Post::rechech($motclef); var_dump($result);
-            return $result;
+    public function searchJson() {     
+//        $nbpage = 5;
+//        $currentPage = (int) ($_GET['param2'] ?? 1);
+//        $offset = $nbpage * ($currentPage - 1);
+//        $nbr = ceil(count(Post::get_total()) / $nbpage);
+        if(isset($_POST['search'])){ 
+            $motclef=$_POST['search'];
+            $result= Post::rechech($motclef);   
+        }else{
+            $result = Post::get_all_post($nbpage, $offset);
         }
+        echo json_encode( $result);
     }
+  
 }

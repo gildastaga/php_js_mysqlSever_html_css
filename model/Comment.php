@@ -96,6 +96,7 @@ class Comment extends Model {
             return new Comment($row["UserId"], $row["PostId"], $row["Body"], $row["Timestamp"], $row["CommentId"]);
         }
     }
+    
 
     //ajout ou  update un comment
     public function update() {
