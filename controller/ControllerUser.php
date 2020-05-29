@@ -105,7 +105,7 @@ class ControllerUser extends Controller {
     }
     
     public function starts() {
-        $user= $this->get_user_or_redirect();
+        
         if(isset($_POST['numbre'])&& isset($_POST['periode'])){
             $periode= $_POST['periode'];
             $numbre= $_POST['numbre'];

@@ -11,7 +11,7 @@
         <script>
             $(function () {
                 init();
-                
+                //pour recuperer les nombres de weeck,month,year
                 $("#number").change(function () {
                     let chart=myChart;
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
@@ -24,6 +24,7 @@
                         
                     });
                 });
+               //pour recuperer  weeck,month,year
                 $("#period").click(function () {
                     let chart=myChart;
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
@@ -45,7 +46,7 @@
                     getStats(tab);
                 });
             }
-            
+            // suprimmer les enciens donne du graphe 
             function removeData(chart) {
                 for(var i = 0 ; i < chart.data.labels.length ; i++) {
                     chart.data.labels.pop();
@@ -56,7 +57,7 @@
                 
                 chart.update();
             }
-            
+            //ajouter des nouvelles donnes
             function addData(chart, label, data) {
                 chart.data.labels.push(label);
                 chart.data.datasets.forEach((dataset) => {
@@ -113,30 +114,32 @@
                     }
                 });
             }
+            //recuper les activite d'un user sur une  dure precise 
             function actbyuser(UserName){
                 $.post("user/getActivityByUser", {numbre: $("#number").val(), periode: $("#period").val(),UserName :UserName}, function (data) {
                     var tab =jQuery.parseJSON(data);
                     displayTable(tab,UserName);
                     });
             }
+            //dessiner le tableau   des activites d'un user
             function displayTable(t,UserName){
                 tblMessages = $('#message_list');
                 tblMessages.html("<tr><td>Loading...</td></tr>");
-                var tab=t
+                var tab=t;
                 var u=UserName;
-                //document.getElementById("UserName").innerHTML=u;
-                var html = "<tr id='UserName'> </tr>";
-                           "<tr><th id='moment' onclick='sort(\"moment\");'>moment</th>" +
-                           "<th id='type' onclick='sort(\"type\");'>type</th>" + 
-                           "<th id='Title' onclick='sort(\"Title\")';>Title</th></tr>";
-                for (var m of tab) {
-                    html += "<tr>";
-                    html += "<td>" + m.moment + "</td>";
-                    html += "<td>"+m.type+"</td>";
-                    html += "<td>" + m.Title + "</td>";
-                    html += "</tr>";
-                }
-                tblMessages.html(html);
+                var html  ="<h2>Detailed Activity for "+u+"</h2>";
+                    html += "<tr id='UserName'> </tr>";
+                               "<tr><th id='moment' onclick='sort(\"moment\");'>moment</th>" +
+                               "<th id='type' onclick='sort(\"type\");'>type</th>" + 
+                               "<th id='Title' onclick='sort(\"Title\")';>Title</th></tr>";
+                    for (var m of tab) {
+                        html += "<tr>";
+                        html += "<td>" + m.moment + "</td>";
+                        html += "<td>"+m.type+"</td>";
+                        html += "<td>" + m.Title + "</td>";
+                        html += "</tr>";
+                    }
+                    tblMessages.html(html);
             }
 
         </script>
@@ -158,37 +161,23 @@
             <div class="star">
                 <form id="nbrperide" method="post">
                     <p>period : the last</p>
-
                     <input id="number" min="0" value="1"  max="100" type="number" name="numb"  >
-
                     <select class="" name="test" id="period"  >
                         <option value="days" selected="selected">days</option>
                         <option value="week">week</option>
                         <option value="month">month</option>
                         <option value="year">year</option>
                     </select>
-
                 </form>
             </div>
             <div style=" width:40%; height:40%;margin-left: 25%;">
                 <canvas id="myChart" width="200" height="200" ></canvas>
             </div><br><br><br>
-            <div  class="message_list" style=" width:40%; height:40%;margin-left: 25%;">
+            <div  class="message_list" style=" width:15%; height:20%;margin-left: 25%;">
                 <table id="message_list">
                     
                 </table>
             </div>
-            
-            <div>
-                 <?php// foreach ($t as $values): ?>                         
-                        
-                       
-                       <?php //$values->Title; ?>
-                                                
-                    <?php// endforeach; ?>
-            </div>
         </div>
-
     </body>
-
 </html>

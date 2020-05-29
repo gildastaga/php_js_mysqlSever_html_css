@@ -34,23 +34,6 @@
                     });
                 });
 
-
-//                $('#post_answer').attr("disabled", true);
-//                $("#Body").on("input", function () {
-//                    $('#post_answer').attr("disabled", $(this).val().length === 0);
-//                });
-//
-//                $("#comment_form_answer").hide();
-//                $("#enablecomment_answer").click(function () {
-//                    $("#comment_form_answer").toggle("fast", function () {
-//                        if ($("#comment_form_answer").is(":visible")) {
-//                            $("#enablecomment_answer").html("Click here to hide the new comment answer form.");
-//                            $("#Body").focus();
-//                        } else {
-//                            $("#enablecomment_answer").html("Click here to leave a comment answer.");
-//                        }
-//                    });
-//                });
                 tblMessages = $('#comment');
                 tblMessages.html("<tr><td>Loading...</td></tr>");
                 getMessages()
@@ -59,7 +42,15 @@
                 postButton.click(postMessage());
 
             });
+            //save comment
             function postMessage() {
+//                var newMsg = {UserId: UserId,
+//                    PostId: PostId,
+//                    Body: $("#Body").val(),
+//                    datetime: Timestamp,
+//                    id: -1
+//                };
+//                messages.push(newMsg);
                 $("#comment_form").submit(function (e) {
                     e.preventDefault(); //empêcher une action par défaut
                     //var form_url = $(this).attr("action"); //récupérer l'URL du formulaire
@@ -72,32 +63,14 @@
                     });
                 });
             }   
+            
+            //recuper les commentaire 
             function getMessages(){ 
                 $.post("comment/get_visible_comment_service/", {PostId}, function (data) {
                     var tab =jQuery.parseJSON(data);
-                    $("#comment").html(tab);
+                    tabComment(tab);
                 });
             }
-//
-//            function postMessage() {
-//                var newMsg = {UserId: UserId,
-//                    PostId: PostId,
-//                    Body: $("#Body").val(),
-//                    datetime: Timestamp,
-//                    id: -1
-//                };
-//                messages.push(newMsg);
-//                sortMessages();
-//                displayTable();
-//                $.post("comment/add_comment_service/", {PostId, Body: $("#Body").val()},function (data) {
-//                    console.log(data);
-//                            getMessages();
-//                        }
-//                ).fail(function () {
-//                    alert("<tr><td>Error encountered while retrieving the messages!</td></tr>");
-//                    getMessages();
-//                });
-//            }
 //            function sortMessages() {
 //                messages.sort(function (a, b) {
 //                    if (a[sortColumn] < b[sortColumn])
@@ -117,17 +90,18 @@
 //                sortMessages();
 //                displayTable();
 //            }
-//
-//            function displayTable() {
-//                var html = "<tr></tr>";
-//                for (var m of messages) {
-//                    html += "<tr>";
-//                    html += "<td>" + m.Body + "</td>";
-//                    html += "</tr>";
-//                }
-//                tblMessages.html(html);
-//                $('#col_' + sortColumn).append(sortAscending ? ' &#9650;' : ' &#9660;');
-//            }
+function tabComment(datas) {
+    $("#comment").html("");
+    var table = "";
+        for(var index = 0; index < datas.comment.length; index++) {
+            table += "<tr>";
+            table += '&nbsp  ' + datas.comment[index].markdown; 
+            table += '<br>&nbsp &nbsp asked <span>'+datas.comment[index].temp_ago +'</span>';
+            table += '&nbsp by '+datas.comment[index].name+')('+ datas.comment[index].nbr_vote + 'vote(s) &nbsp, ' +datas.comment[index].count_Answer+' Answer (s)) &nbsp';
+            table += '</tr><br><br>';
+        }
+    $("#comment").append(table);    
+    }
 
         </script>
     </head>
@@ -204,10 +178,8 @@
                             <h6> body post </h6>   
                             <td>
                                 <h3>comment by post</h3><br><br>
+                                <table id="comment_0">
                                 <?php foreach ($comment as $values): ?>
-                                    <table id="comment">
-
-                                    </table>
                                     <table>
                                         <tr>
                                         <li> <?php echo $values->Body; ?></li>
@@ -223,6 +195,10 @@
                                             <?php endif; ?><br> 
                                         </tr> </table>    
                                 <?php endforeach; ?><br>
+                                 </table>
+                                <table id="comment">
+                                    
+                                </table>
                                 <?php if ($user): ?>
                                     <!--                                    Add your Comment<br>-->
                                     <div id="enablecomment"> Add a Comment on the post.</div>

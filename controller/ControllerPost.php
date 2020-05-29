@@ -411,19 +411,7 @@ class ControllerPost extends Controller {
         echo $res;
     }
     
-//    public function searchJson() {     
-////        $nbpage = 5;
-////        $currentPage = (int) ($_GET['param2'] ?? 1);
-////        $offset = $nbpage * ($currentPage - 1);
-////        $nbr = ceil(count(Post::get_total()) / $nbpage);
-//        if(isset($_POST['search'])){ 
-//            $motclef=$_POST['search'];
-//            $result= Post::rechech($motclef);   
-//        }else{
-//            $result = Post::get_all_post($nbpage, $offset);
-//        }
-//        echo json_encode( $result);
-//    }
+
     public function searchJson() {
         if (isset($_POST["terme"])) {
             $this->redirect("post", "post_search_ajax", Utils::url_safe_encode($_POST["terme"]));

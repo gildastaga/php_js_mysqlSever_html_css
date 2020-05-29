@@ -76,10 +76,18 @@ class ControllerComment extends Controller {
 
     public function get_visible_comment_service() {
         $PostId = $_POST['PostId'];
-//        if(!isset($_GET['PostId'])){
-//            $PostId= $_GET['PostId'];
-//        }
         $comment = Comment::get_all_comment($PostId);
+        foreach($comment as $post) {
+            $post->markdown = $post->markdown();
+            $post->temp = $post->temp_ago()[0];
+            $post->name = $post->name();
+            $post->tags = Tag::get_tag_bypostId($post->PostId);
+            $post->nbr_vote = Post::nbr_vote($post->PostId);
+            $post->count_Answer = $post->count_Answer();
+        }
+        
+        $data = [];
+        $data["comment"] = $comment;
         $messages_json = json_encode($comment);
         echo $messages_json;
     }

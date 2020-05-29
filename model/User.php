@@ -151,7 +151,7 @@ class User extends Model {
     public function get_post() {
         return Post::get_post($this);
     }
-
+//all activity 
     Public static function getActivity($time) {
         $query = self::execute("select UserName, SUM(activity) as activity from ((SELECT UserName,count(*) as activity ,UserId ,Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Time GROUP by UserName order by Timestamp DESC)
                                 UNION
@@ -161,7 +161,7 @@ class User extends Model {
         $resul = $query->fetchAll();
         return $resul;
     }
-
+ //pas corret
     public function activityByuser($time) {
         $query = self::execute("SELECT * FROM post WHERE post.AuthorId = :UserId AND post.TimeStamp>:time order by Timestamp DESC", array("UserId" => $this->UserId, "time" => $time));
         $data  = $query->fetchAll();
@@ -192,24 +192,24 @@ class User extends Model {
         return $result;
     }
 
-    public function functionName($time) {
-        $query = self::execute("select * 
-    from
-        ((select post.Timestamp as timestamp, 'create/update question' as type, post.Title as question
-        from  post WHERE post.ParentId !=NULL AND post.AuthorId = :UserId AND post.TimeStamp>:time )
-        UNION ALL
-        (select post.Timestamp as timestamp, 'create/update response' as type, question.Title as question
-        from ( select * from post WHERE post.PostId =post.ParentId in(select * from post where post.ParentId != NULL AND post.AuthorId = :UserId AND post.TimeStamp>:time))
-        UNION ALL
-        (select comment.Timestamp as timestamp, 'create/update comment' as type, post.Title as question
-        from comment  where  comment.UserId = :UserId AND comment.TimeStamp>:time )
-        ) as tbl
-     order by Timestamp DESC", array("UserId" => $this->UserId,"time" => $time));
-        var_dump("je suis entre");
-        $resul = $query->fetchAll();
-        var_dump($resul);
-        return $resul;
-    }
+//    public function functionName($time) {
+//        $query = self::execute("select * 
+//    from
+//        ((select post.Timestamp as timestamp, 'create/update question' as type, post.Title as question
+//        from  post WHERE post.ParentId !=NULL AND post.AuthorId = :UserId AND post.TimeStamp>:time )
+//        UNION ALL
+//        (select post.Timestamp as timestamp, 'create/update response' as type, question.Title as question
+//        from ( select * from post WHERE post.PostId =post.ParentId in(select * from post where post.ParentId != NULL AND post.AuthorId = :UserId AND post.TimeStamp>:time))
+//        UNION ALL
+//        (select comment.Timestamp as timestamp, 'create/update comment' as type, post.Title as question
+//        from comment  where  comment.UserId = :UserId AND comment.TimeStamp>:time )
+//        ) as tbl
+//     order by Timestamp DESC", array("UserId" => $this->UserId,"time" => $time));
+//        var_dump("je suis entre");
+//        $resul = $query->fetchAll();
+//        var_dump($resul);
+//        return $resul;
+//    }
     
     
     

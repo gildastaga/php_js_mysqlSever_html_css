@@ -25,10 +25,12 @@ function getPost() {
 
     }
 function prev(action,page){
+    if(page>=0){
     $.post("post/"+action, {page: page}, function(data){
         datas=jQuery.parseJSON(data);
         index(datas);
     });
+    }
 }  
 function next(action,page){
     $.post("post/"+action, {page: page} , function(data){ 
