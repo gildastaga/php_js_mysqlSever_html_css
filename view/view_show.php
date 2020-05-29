@@ -17,6 +17,7 @@
             var UserId = "<?= $user->UserId ?>";
             console.log(PostId);
             $(function () {
+                $("#pagi").hide();
                 $('#post'+'*').attr("disabled", true);
                 $("#Body"+'*').on("input", function () {
                     $('#post').attr("disabled", $(this).val().length === 0);
@@ -90,18 +91,18 @@
 //                sortMessages();
 //                displayTable();
 //            }
-function tabComment(datas) {
-    $("#comment").html("");
-    var table = "";
-        for(var index = 0; index < datas.comment.length; index++) {
-            table += "<tr>";
-            table += '&nbsp  ' + datas.comment[index].markdown; 
-            table += '<br>&nbsp &nbsp asked <span>'+datas.comment[index].temp_ago +'</span>';
-            table += '&nbsp by '+datas.comment[index].name+')('+ datas.comment[index].nbr_vote + 'vote(s) &nbsp, ' +datas.comment[index].count_Answer+' Answer (s)) &nbsp';
-            table += '</tr><br><br>';
+    function tabComment(datas) {
+        $("#comment").html("");
+        var table = "";
+            for(var index = 0; index < datas.comment.length; index++) {
+                table += "<tr>";
+                table += '&nbsp  ' + datas.comment[index].markdown; 
+                table += '<br>&nbsp &nbsp asked <span>'+datas.comment[index].temp_ago +'</span>';
+                table += '&nbsp by '+datas.comment[index].name+')('+ datas.comment[index].nbr_vote + 'vote(s) &nbsp, ' +datas.comment[index].count_Answer+' Answer (s)) &nbsp';
+                table += '</tr><br><br>';
+            }
+        $("#comment").append(table);    
         }
-    $("#comment").append(table);    
-    }
 
         </script>
     </head>
