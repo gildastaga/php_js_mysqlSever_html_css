@@ -15,34 +15,9 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.structure.min.css" rel="stylesheet" type="text/css"/>
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
-        <script>
-            $(document).ready(function(){
-                $("message_list").hide();
-                 $('#search').keyup(function(){
-                     var search=$(this).val(); 
-                     $.post("post/searchJson", {search: search}, function(data) {
-                        var data_object = jQuery.parseJSON(data); 
-                        getPosts(data_object);
-                     });
-                 });
-            });
-            
-            function getPosts(data) {
-                
-                tblMessages = $('#message_list');
-                tblMessages.html("<tr><td>Loading...</td></tr>");
-                var tab=data;
-                var html = "<t> </tr>";
-                for (var m of tab) {
-                    html += "<tr>";
-                    html += "<li><a href='post/show/"+m.PostId+"'>"+m.Title+"</a></li>";
-                    html+="&nbsp&nbsp "+m.Body+"<br>";
-                    html += "</tr>";
-                }
-                tblMessages.html(html);
-                
-            }
-        </script>
+        <script src="js/post.js" type="text/javascript"></script>
+
+       
     </head>
     <body>
         <div class="bloc1">
@@ -57,29 +32,28 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         </div>
         <br>
         <div class="main"> 
-            <div class="menus">
-                <form class="menus">
-                    <a href="post/newest">Newest</a>
-                    <a href="post/active"> Active</a>
-                    <a href="post/unanswered">Unanswered</a>
-                    <a href="vote/index">Vote</a>
-                    <a href="post/by_tag">by tag</a>
-                </form> 
-            </div>   
-            <div>
-                <form class="recherche" id="recherche" action="post/fiter" method="post" method="get">
-                    <input id="search" type="search" name="search"   aria-label="search ">
-                    <div class="result" id="result" ></div>
-                    <input id="post" type="submit" value="search">
-                </form>
+            <div id="ongle-php">
+                <div class="menus">
+                    <form class="menus">
+                        <a href="post/newest">Newest</a>
+                        <a href="post/active"> Active</a>
+                        <a href="post/unanswered">Unanswered</a>
+                        <a href="vote/index">Vote</a>
+                        <a href="post/by_tag">by tag</a>
+                    </form> 
+                </div>   
+                <div>
+                    <form class="recherche" id="recherche" action="post/fiter" method="post" method="get">
+                        <input id="search" type="search" name="search"   aria-label="search ">
+                        <div class="result" id="result" ></div>
+                        <input id="post" type="submit" value="search">
+                    </form>
+                </div>
             </div>
+            
             <br><br><br><br>
-            <div class="main">      
-                <div  class="message_list" >
-                    <table id="message_list" class="message_list">
-                    
-                    </table>
-                   
+            <div class="main" >      
+                <div  class="message_list" id="postList-php" >
                     <table id="message_list" class="message_list">
                         <?php foreach ($posts as $values): ?>                         
                             <tr> 
@@ -94,25 +68,33 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                             </tr><br><br>                          
                         <?php endforeach; ?>  
                     </table>
-                </div><br>
+                </div>
+                <div id="postList-ajax">
+                    
+                </div>
+            </div>      
+            <div>
                 <div class="pagination">
                     <li  style="page-item <?= ($currentPage>1) ? " -webkit-filter:blur(90deg);
                                                         filter: blur(90deg);" :
-                                                        "none" ?>">
+                                                        "pointer-events:none;-webkit-filter: grayscale(1);
+                                                        filter: grayscale(1);" ?>">
                         <a  style="page-link ml-auto" href="post/<?=$action.'/'.($currentPage-1) ?>">prev &laquo; </a>
                     </li>
-                    <?php for($page_i=1;$page_i<=$nbr;$page_i++): ?>
+                    <?php var_dump($nbr); for($page_i=1;$page_i<=$nbr;$page_i++): ?>
                         <li  style="page-item <?= ($currentPage==$page_i)? " -webkit-filter: blur(90deg);
                                                         filter: blur(90deg);" :
                                                         "-webkit-filter: grayscale(1);
-                                                        filter: grayscale(1);" ?>">
+                                                        filter: grayscale(1);
+                                                        pointer-events:none;" ?>">
                             <a  style="page-link ml-auto" href="post/<?=$action.'/'.$page_i ?>"><?= $page_i; ?> </a>
                         </li>
                     <?php endfor;?>
                         <li style="page-item <?= ($currentPage<$nbr)? " -webkit-filter: blur(90deg);
                                                         filter: blur(90deg);" :
                                                         "-webkit-filter: grayscale(1);
-                                                        filter: grayscale(1);" ?>">
+                                                        filter: grayscale(1);
+                                                        pointer-events:none;" ?>">
                         <a  style="page-link ml-auto" href="post/<?=$action.'/'.($currentPage+1) ?>">&raquo;next </a>
                     </li>
                 </div> 

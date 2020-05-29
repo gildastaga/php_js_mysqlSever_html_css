@@ -20,6 +20,29 @@ class ControllerVote extends Controller {
         $errors = [];
         (new View("index"))->show(array("posts" => $posts, "user" => $user, "errors" => $errors,"currentPage"=>$currentPage,"nbr"=>$nbr,"action"=>"index"));
     }
+    public function indexJson() {
+        $user = $this->get_user_or_false();
+        $nbpage = 5;
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage * ($currentPage - 1);
+        $nbr = ceil(count(Post::get_total()) / $nbpage);
+        $posts = Post::getvotes($nbpage, $offset);
+        foreach($posts as $post) {
+            $post->markdown = $post->markdown();
+            $post->temp = $post->temp_ago()[0];
+            $post->name = $post->name();
+            $post->tags = Tag::get_tag_bypostId($post->PostId);
+            $post->nbr_vote = Post::nbr_vote($post->PostId);
+            $post->count_Answer = $post->count_Answer();
+        }
+        
+        $data = [];
+        $data["user"] = $user;
+        $data["posts"] = $posts;
+        $data["currentPage"] = $currentPage;
+        $data["nbr"] = $nbr;
+        echo json_encode($data);
+    }
     public function add_vote() {
         $user = $this->get_user_or_false(); 
         $PostId= Tools::sanitize($_GET['param1']);;

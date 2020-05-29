@@ -17,19 +17,19 @@
             var UserId = "<?= $user->UserId ?>";
             console.log(PostId);
             $(function () {
-                $('#post').attr("disabled", true);
-                $("#Body").on("input", function () {
+                $('#post'+'*').attr("disabled", true);
+                $("#Body"+'*').on("input", function () {
                     $('#post').attr("disabled", $(this).val().length === 0);
                 });
 
-                $("#comment_form").hide();
-                $("#enablecomment").click(function () {
-                    $("#comment_form").toggle("fast", function () {
-                        if ($("#comment_form").is(":visible")) {
-                            $("#enablecomment").html("Click here to hide the new message form.");
-                            $("#Body").focus();
+                $("#comment_form"+'*').hide();
+                $("#enablecomment"+'*').click(function () {
+                    $("#comment_form"+'*').toggle("fast", function () {
+                        if ($("#comment_form"+'*').is(":visible")) {
+                            $("#enablecomment"+'*').html("Click here to hide the new message form.");
+                            $("#Body"+'*').focus();
                         } else {
-                            $("#enablecomment").html("Click here to leave a message.");
+                            $("#enablecomment"+'*').html("Click here to leave a message.");
                         }
                     });
                 });
@@ -299,10 +299,10 @@
                                             <?php endforeach; ?><br> 
                                         <?php endif; ?>     
                                         <?php if ($user && count($listanswer) != 0): ?><br>
-                                            &nbsp &nbsp<div id="enablecomment_answer"> Add a Comment on the answer.</div><br><br>
-                                            <form id="comment_form_answer" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
+                                            &nbsp &nbsp<div id="enablecomment"> Add a Comment on the answer.</div><br><br>
+                                            <form id="comment_form" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
                                                 <textarea id="Body" name="Body" rows='2'></textarea><br>
-                                                <input id="post_answer" type="submit" value="Comment">
+                                                <input id="post" type="submit" value="Comment">
                                             </form>
 
                                         <?php endif; ?><br><br>
