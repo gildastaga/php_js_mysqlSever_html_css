@@ -41,15 +41,16 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         <a href="vote/index">Vote</a>
                         <a href="post/by_tag">by tag</a>
                     </form> 
-                </div>   
+                </div>
+            </div>    
                 <div>
-                    <form class="recherche" id="recherche" action="post/fiter" method="post" method="get">
-                        <input id="search" type="search" name="search"   aria-label="search ">
+                    <form class="recherche"  action="post/fiter" method="post" method="get">
+                        <input id="search"  type="search" name="search"   aria-label="search ">
                         <div class="result" id="result" ></div>
                         <input id="post" type="submit" value="search">
                     </form>
                 </div>
-            </div>
+            
             
             <br><br><br><br>
             <div class="main" >      
@@ -73,11 +74,12 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                     
                 </div>
             </div>      
-            <div>
+            <div id="pagi">
                 <div class="pagination">
                     <li  style="page-item <?= ($currentPage>1) ? " -webkit-filter:blur(90deg);
                                                         filter: blur(90deg);" :
-                                                        "pointer-events:none;-webkit-filter: grayscale(1);
+                                                        "pointer-events:none;
+                                                        -webkit-filter: grayscale(1);
                                                         filter: grayscale(1);" ?>">
                         <a  style="page-link ml-auto" href="post/<?=$action.'/'.($currentPage-1) ?>">prev &laquo; </a>
                     </li>
@@ -90,7 +92,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                             <a  style="page-link ml-auto" href="post/<?=$action.'/'.$page_i ?>"><?= $page_i; ?> </a>
                         </li>
                     <?php endfor;?>
-                        <li style="page-item <?= ($currentPage<$nbr)? " -webkit-filter: blur(90deg);
+                        <li style="page-item <?= ($currentPage<=$nbr)? " -webkit-filter: blur(90deg);
                                                         filter: blur(90deg);" :
                                                         "-webkit-filter: grayscale(1);
                                                         filter: grayscale(1);

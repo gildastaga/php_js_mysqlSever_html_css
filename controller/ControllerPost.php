@@ -14,7 +14,7 @@ class ControllerPost extends Controller {
     public function index() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_all_post($nbpage, $offset);
@@ -24,7 +24,7 @@ class ControllerPost extends Controller {
     public function indexJson() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_all_post($nbpage, $offset);
@@ -50,7 +50,7 @@ class ControllerPost extends Controller {
     public function questions() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_all_post($nbpage, $offset);
@@ -61,7 +61,7 @@ class ControllerPost extends Controller {
     public function active() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::getactive($nbpage, $offset);
@@ -70,7 +70,7 @@ class ControllerPost extends Controller {
     public function activeJson() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts =Post::getactive($nbpage, $offset);
@@ -96,7 +96,7 @@ class ControllerPost extends Controller {
     public function unanswered() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_unanswere($nbpage, $offset);
@@ -106,7 +106,7 @@ class ControllerPost extends Controller {
     public function unansweredJson() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_unanswere($nbpage, $offset);
@@ -132,7 +132,7 @@ class ControllerPost extends Controller {
     public function newest() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_newest($nbpage, $offset);
@@ -141,7 +141,7 @@ class ControllerPost extends Controller {
     public function newestJson() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_newest($nbpage, $offset);
@@ -338,7 +338,7 @@ class ControllerPost extends Controller {
     public function post_search() {        
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_POST['param2'] ?? 1);
+        $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage); 
         
@@ -371,7 +371,7 @@ class ControllerPost extends Controller {
     public function bytagJson() {
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_POST['param1'] ?? 1);
+        $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         if (isset($_GET['param1'])) {
@@ -411,29 +411,29 @@ class ControllerPost extends Controller {
         echo $res;
     }
     
-    public function searchJson() {     
-//        $nbpage = 5;
-//        $currentPage = (int) ($_GET['param2'] ?? 1);
-//        $offset = $nbpage * ($currentPage - 1);
-//        $nbr = ceil(count(Post::get_total()) / $nbpage);
-        if(isset($_POST['search'])){ 
-            $motclef=$_POST['search'];
-            $result= Post::rechech($motclef);   
-        }else{
-            $result = Post::get_all_post($nbpage, $offset);
-        }
-        echo json_encode( $result);
-    }
-    public function fiter_ajax() {
-        if (isset($_POST["search"])) {
-            $this->redirect("post", "post_search_ajax", Utils::url_safe_encode($_POST["search"]));
+//    public function searchJson() {     
+////        $nbpage = 5;
+////        $currentPage = (int) ($_GET['param2'] ?? 1);
+////        $offset = $nbpage * ($currentPage - 1);
+////        $nbr = ceil(count(Post::get_total()) / $nbpage);
+//        if(isset($_POST['search'])){ 
+//            $motclef=$_POST['search'];
+//            $result= Post::rechech($motclef);   
+//        }else{
+//            $result = Post::get_all_post($nbpage, $offset);
+//        }
+//        echo json_encode( $result);
+//    }
+    public function searchJson() {
+        if (isset($_POST["terme"])) {
+            $this->redirect("post", "post_search_ajax", Utils::url_safe_encode($_POST["terme"]));
         }
     }
 
     public function post_search_ajax() {        
         $user = $this->get_user_or_false();
         $nbpage = 5;
-        $currentPage = (int) ($_GET['param2'] ?? 1);
+        $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage); 
         
@@ -441,8 +441,23 @@ class ControllerPost extends Controller {
             $filter = Utils::url_safe_decode($_GET["param1"]);
             $posts = Post::get_filter($filter,$nbpage,$offset);
         }
+        foreach($posts as $post) {
+            $post->markdown = $post->markdown();
+            $post->temp = $post->temp_ago()[0];
+            $post->name = $post->name();
+            $post->tags = Tag::get_tag_bypostId($post->PostId);
+            $post->nbr_vote = Post::nbr_vote($post->PostId);
+            $post->count_Answer = $post->count_Answer();
+        }
         
-        (new View("search"))->show(Array("posts" => $posts, "user" => $user, "currentPage" => $currentPage, "nbr" => $nbr, "action" => "post_search"));
+        $data = [];
+        $data["user"] = $user;
+        $data["posts"] = $posts;
+        $data["currentPage"] = $currentPage;
+        $data["nbr"] = $nbr;
+        $data["action"] = "indexJson";
+        echo json_encode($data);
+        
     }
   
 }
