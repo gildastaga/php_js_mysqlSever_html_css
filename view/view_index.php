@@ -92,7 +92,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                             <a  style="page-link ml-auto" href="post/<?=$action.'/'.$page_i ?>"><?= $page_i; ?> </a>
                         </li>
                     <?php endfor;?>
-                        <li style="page-item <?= ($currentPage<$nbr)? " -webkit-filter: blur(90deg);
+                        <li style="page-item <?= ($currentPage==$nbr)? " -webkit-filter: blur(90deg);
                                                         filter: blur(90deg);" :
                                                         "-webkit-filter: grayscale(1);
                                                         filter: grayscale(1);
