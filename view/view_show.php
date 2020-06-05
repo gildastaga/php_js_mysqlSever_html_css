@@ -140,8 +140,10 @@
                     <?php if ($user->UserId == $posts->AuthorId || $user->Role == "admin"): ?>    
                         <form action="tag/asso_tag_post/<?php echo $posts->PostId; ?>" method="post">
                             <select name="TagId">
-                                <?php foreach ($tags as $rows): ?>
-                                    <option value=<?php echo $rows->TagId; ?> ><?php echo $rows->TagName; ?></option>
+                                <?php foreach ($tags as $rows): ?> 
+                                    <?php if(!Tag::get_tag_Post($posts->PostId,$rows->TagId)):?>
+                                        <option value=<?php echo $rows->TagId; ?> ><?php echo $rows->TagName; ?></option>
+                                    <?php endif; ?>    
                                 <?php endforeach; ?> 
                             </select>        
                             <input  type="image" img src="lib/parsedown-1.7.3/plus.png" width="30" height="20"  alt="">
@@ -215,8 +217,7 @@
                         </table><br><br>
 
                         <h6> Post response's list</h6> <br><br>
-                        <?php foreach ($listanswer as $reponse): ?>
-                        
+                        <?php foreach ($listanswer as $reponse): ?>                       
                             <table> 
                                 <tr>
                                     <?php if ($user): ?>
@@ -254,7 +255,7 @@
                                                     <?php endif; ?>
                                                     src="lib/parsedown-1.7.3/accepte.png" width="30" height="20" alt=""/></a>
                                             <?php endif; ?>
-                                    </td>
+                                        </td>
                                     <?php $reponsecomment = Comment::get_all_comment($reponse->PostId); ?>
                                     <td>
                                         <?php if (count($reponsecomment) != 0): ?>

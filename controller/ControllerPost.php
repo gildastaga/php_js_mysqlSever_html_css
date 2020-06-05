@@ -13,7 +13,7 @@ class ControllerPost extends Controller {
 
     public function index() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -23,7 +23,7 @@ class ControllerPost extends Controller {
     
     public function indexJson() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -49,7 +49,7 @@ class ControllerPost extends Controller {
 //controller post: post/question
     public function questions() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -60,7 +60,7 @@ class ControllerPost extends Controller {
     //controler post/active
     public function active() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -69,7 +69,7 @@ class ControllerPost extends Controller {
     }
     public function activeJson() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -95,7 +95,7 @@ class ControllerPost extends Controller {
     //controller post :post/unanswered
     public function unanswered() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -105,7 +105,7 @@ class ControllerPost extends Controller {
     
     public function unansweredJson() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -131,7 +131,7 @@ class ControllerPost extends Controller {
     //controller neswest :post/neswet
     public function newest() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -140,7 +140,7 @@ class ControllerPost extends Controller {
     }
     public function newestJson() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -337,7 +337,7 @@ class ControllerPost extends Controller {
 
     public function post_search() {        
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage); 
@@ -352,7 +352,7 @@ class ControllerPost extends Controller {
     
     public function by_tag() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -370,7 +370,7 @@ class ControllerPost extends Controller {
     }
     public function bytagJson() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
@@ -420,7 +420,7 @@ class ControllerPost extends Controller {
 
     public function post_search_ajax() {        
         $user = $this->get_user_or_false();
-        $nbpage = 5;
+        $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage); 

@@ -68,6 +68,15 @@ class Tag extends Model {
             return $this;
         }
     }
+    public static function get_tag_Post($PostId,$TagId) {        
+        $query = self::execute(("select * from  posttag  where PostId=:PostId and TagId=:TagId"),array("PostId"=>$PostId,"TagId" =>$TagId));
+         $query->fetch();
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return TRUE;
+        }
+    }
     
     public static function nbr_post_bytag($TagId) {
         $query = self::execute(("SELECT count(PostId) as nbpost FROM posttag  where TagId=:TagId"), array("TagId" =>$TagId));
