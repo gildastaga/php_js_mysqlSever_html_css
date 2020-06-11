@@ -54,7 +54,7 @@ class Post extends Model {
     }
 
     public static function get_filter($search,$nbpage,$offset) {
-        $query = self::execute("select * from post, user where AuthorId=UserId and (UserName LIKE :UserName or Title LIKE :Title or Body LIKE :Body ) ORDER BY Timestamp DESC LIMIT $nbpage OFFSET $offset ",
+        $query = self::execute("select * from post, user where AuthorId=UserId and (UserName LIKE :UserName or Title LIKE :Title or Body LIKE :Body )GROUP BY PostId  ORDER BY Timestamp DESC LIMIT $nbpage OFFSET $offset ",
                 array("UserName"=>"%".$search."%","Title" => "%" . $search . "%", "Body" => "%" . $search . "%"));
         $resul = [];
         if ($query->rowCount() == 0) {

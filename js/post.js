@@ -51,7 +51,7 @@ function newest() {
   });
 }
 
-function bytag() {
+function byTag() {
   $.get("post/bytagJson", function(data) {
       datas = jQuery.parseJSON(data);
       index(datas);
@@ -79,6 +79,12 @@ function active() {
   }) ; 
 }
 
+function byTags(TagId){
+    $.get("post/bytagJson/"+TagId, function(data){
+        datas=jQuery.parseJSON(data);
+        index(datas);
+    });
+}
 function index(datas) {
     posts.html("");
     var table = "";
@@ -108,7 +114,8 @@ function index(datas) {
             table += '<br>&nbsp &nbsp asked <span>'+datas.posts[index].temp_ago +'</span>';
             table += '&nbsp by '+datas.posts[index].name+')('+ datas.posts[index].nbr_vote + 'vote(s) &nbsp, ' +datas.posts[index].count_Answer+' Answer (s)) &nbsp';
             for(var i = 0; i < datas.posts[index].tags.length; i++) {
-                table += '<a href="post/by_tag/'+datas.posts[index].tags[i].TagId +'">'+ datas.posts[index].tags[i].TagName + '</a>&nbsp';
+                table += '<span  onclick = "byTags('+datas.posts[index].tags[i].TagId +')" id="bytag" > '+ datas.posts[index].tags[i].TagName + '</span>';
+                
             }
             table += '</tr><br><br>';
         }

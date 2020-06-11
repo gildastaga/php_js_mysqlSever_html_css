@@ -15,92 +15,84 @@
             var Timestamp = 'datetime';
             var PostId = "<?= $posts->PostId ?>";
             var UserId = "<?= $user->UserId ?>";
-            console.log(PostId);
+            var Role="<?= $user->Role ?>";
             $(function () {
-                $("#pagi").hide();
+                 $('#comment_0'+'*').hide();
+                getComment();
                 $('#post'+'*').attr("disabled", true);
                 $("#Body"+'*').on("input", function () {
-                    $('#post').attr("disabled", $(this).val().length === 0);
+                    $('#post').attr("disabled", $(this).val().length !== 0);
                 });
 
                 $("#comment_form"+'*').hide();
                 $("#enablecomment"+'*').click(function () {
                     $("#comment_form"+'*').toggle("fast", function () {
                         if ($("#comment_form"+'*').is(":visible")) {
-                            $("#enablecomment"+'*').html("Click here to hide the new message form.");
+                            $("#enablecomment"+'*').html("");
                             $("#Body"+'*').focus();
                         } else {
-                            $("#enablecomment"+'*').html("Click here to leave a message.");
+                            $("#enablecomment"+'*').html("Click here to leave a comment.");
                         }
                     });
                 });
-
-                tblMessages = $('#comment');
-                tblMessages.html("<tr><td>Loading...</td></tr>");
-                getMessages()
+                
+               
+                        
+//                tblMessages = $('#comment');
+//                tblMessages.html("<tr><td>Loading...</td></tr>");
+//                getMessages();
                 postButton = $('#post');
                 postButton.attr("type", "button");
-                postButton.click(postMessage());
+                postButton.click(postComment());
 
             });
             //save comment
-            function postMessage() {
-//                var newMsg = {UserId: UserId,
-//                    PostId: PostId,
-//                    Body: $("#Body").val(),
-//                    datetime: Timestamp,
-//                    id: -1
-//                };
-//                messages.push(newMsg);
-                $("#comment_form").submit(function (e) {
-                    e.preventDefault(); //empêcher une action par défaut
-                    //var form_url = $(this).attr("action"); //récupérer l'URL du formulaire
-                    var form_method = $(this).attr("method"); //récupérer la méthode GET/POST du formulaire
-                    var form_data = $(this).serialize(); //Encoder les éléments du formulaire pour la soumission
-                    
-                    $.post('comment/add_comment_service/',{PostId,Body :$("#Body").val()},function (data) {
+            function postComment() {
+                $.post('comment/add_comment_service/',{PostId,Body :$("#Body").val()},function (data) {
                         var tab = jQuery.parseJSON(data);
-                        getMessages(); 
+                        getComment(); 
                     });
-                });
-            }   
+            }
+//            function postComment() {
+//                $("#comment_form").submit(function (e) {
+////                    e.preventDefault(); //empêcher une action par défaut
+//                    //var form_url = $(this).attr("action"); //récupérer l'URL du formulaire
+//                    var form_method = $(this).attr("method"); //récupérer la méthode GET/POST du formulaire
+//                    var form_data = $(this).serialize(); //Encoder les éléments du formulaire pour la soumission
+//                    
+//                    $.post('comment/add_comment_service/',{PostId,Body :$("#Body").val()},function (data) {
+//                        var tab = jQuery.parseJSON(data);
+//                        getComment(); 
+//                    });
+//                });
+//            }   
             
             //recuper les commentaire 
-            function getMessages(){ 
+            function getComment(){ 
                 $.post("comment/get_visible_comment_service/", {PostId}, function (data) {
                     var tab =jQuery.parseJSON(data);
                     tabComment(tab);
                 });
             }
-//            function sortMessages() {
-//                messages.sort(function (a, b) {
-//                    if (a[sortColumn] < b[sortColumn])
-//                        return sortAscending ? -1 : 1;
-//                    if (a[sortColumn] > b[sortColumn])
-//                        return sortAscending ? 1 : -1;
-//                    return 0;
-//                });
-//            }
-//            function sort(field) {
-//                if (field === sortColumn)
-//                    sortAscending = !sortAscending;
-//                else {
-//                    sortColumn = field;
-//                    sortAscending = true;
-//                }
-//                sortMessages();
-//                displayTable();
-//            }
+
     function tabComment(datas) {
         $("#comment").html("");
         var table = "";
-            for(var index = 0; index < datas.comment.length; index++) {
+            for(var index = 0; index < datas.length; index++ ) {
+                table +="<table>";
                 table += "<tr>";
-                table += '&nbsp  ' + datas.comment[index].markdown; 
-                table += '<br>&nbsp &nbsp asked <span>'+datas.comment[index].temp_ago +'</span>';
-                table += '&nbsp by '+datas.comment[index].name+')('+ datas.comment[index].nbr_vote + 'vote(s) &nbsp, ' +datas.comment[index].count_Answer+' Answer (s)) &nbsp';
-                table += '</tr><br><br>';
+                table += '<li>&nbsp  ' + datas[index].Body+'</li>'; 
+                table += '<br>&nbsp &nbsp asked <span>'+datas[index].temp +'</span>';
+                table += '&nbsp by '+datas[index].name+'&nbsp &nbsp<br>';
+                console.log(Role);
+                if(datas){
+                    if(Role==="admin"|| UserId===datas[index].UserId){
+                        table += '<a href="comment/edit_comment/' + datas[index].CommentId +'"> <input  type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""></a>';
+                        table += '<a href="comment/delete_comment/' + datas[index].CommentId +'"> <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>';
+                    }
+                } 
             }
+            table += '</tr></table> <br><br>';
         $("#comment").append(table);    
         }
 
@@ -181,7 +173,7 @@
                             <h6> body post </h6>   
                             <td>
                                 <h3>comment by post</h3><br><br>
-                                <table id="comment_0">
+                                <div id="comment_0">
                                 <?php foreach ($comment as $values): ?>
                                     <table>
                                         <tr>
@@ -198,19 +190,19 @@
                                             <?php endif; ?><br> 
                                         </tr> </table>    
                                 <?php endforeach; ?><br>
-                                 </table>
-                                <table id="comment">
+                                 </div>
+                                <div id="comment">
                                     
-                                </table>
+                                </div>
                                 <?php if ($user): ?>
                                     <!--                                    Add your Comment<br>-->
                                     <div id="enablecomment"> Add a Comment on the post.</div>
                                     <form id="comment_form" action="comment/add_comment/<?php echo $posts->PostId; ?>" method="post">                 
-                                        <textarea id="Body" name="Body" rows='2'></textarea><br><br>
-                                        <input id="post" type="submit" value="Comment">
+                                        <textarea id="Body" name="Body" rows='2'></textarea>
+                                        <input id="post" type="submit" value="add you Comment"><input id="enablecomment" type="button" value="Cancel" style="background: red">
                                     </form>
                                 <?php endif; ?><br><br>
-
+                                <h6>POST BODY</h6>
                             <li><?php echo $posts->markdown(); ?></li> <br>
                             </td>
                             </tr>
@@ -258,34 +250,37 @@
                                         </td>
                                     <?php $reponsecomment = Comment::get_all_comment($reponse->PostId); ?>
                                     <td>
-                                        <?php if (count($reponsecomment) != 0): ?>
-                                            <h4> comment list</h4>
-                                            <?php foreach ($reponsecomment as $values): ?>
-                                                <div id="comment">
-                                                    <li> <?php echo $values->Body; ?></li>
-                                                    <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
-                                                    &nbsp by <?php echo $values->name(); ?> &nbsp &nbsp
-                                                    <?php if ($user): ?>
-                                                        <?php if ($user->Role == "admin" || $values->UserId == $user->UserId): ?>
-                                                            <a href="comment/edit_comment/<?php echo $values->CommentId; ?>">
-                                                                <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""> </a>            
-                                                            <a href="comment/delete_comment/<?php echo $values->CommentId; ?>">
-                                                                <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
-                                                        <?php endif; ?><br> 
-                                                    <?php endif; ?>    
-                                                </div>     
-                                            <?php endforeach; ?><br> 
-                                        <?php endif; ?>     
-                                        <?php if ($user && count($listanswer) != 0): ?><br>
+                                            <h4> comment answer list</h4>
+                                            <div id="comment_0">
+                                                <?php foreach ($reponsecomment as $values): ?>
+                                                    <div id="comment">
+                                                        <li> <?php echo $values->Body; ?></li>
+                                                        <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
+                                                        &nbsp by <?php echo $values->name(); ?> &nbsp &nbsp
+                                                        <?php if ($user): ?>
+                                                            <?php if ($user->Role == "admin" || $values->UserId == $user->UserId): ?>
+                                                                <a href="comment/edit_comment/<?php echo $values->CommentId; ?>">
+                                                                    <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""> </a>            
+                                                                <a href="comment/delete_comment/<?php echo $values->CommentId; ?>">
+                                                                    <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
+                                                            <?php endif; ?><br> 
+                                                        <?php endif; ?>    
+                                                    </div>     
+                                                <?php endforeach; ?><br> 
+                                            </div>
+                                            <div id="comment">
+
+                                            </div>    
+                                        <?php if ($user): ?><br>
                                             &nbsp &nbsp<div id="enablecomment"> Add a Comment on the answer.</div><br><br>
                                             <form id="comment_form" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
-                                                <textarea id="Body" name="Body" rows='2'></textarea><br>
-                                                <input id="post" type="submit" value="Comment">
+                                                <textarea id="Body" name="Body" rows='2'></textarea>
+                                                <input id="post" type="submit" value="add you Comment"><input id="enablecomment" type="button" value="Cancel" style="background: red">
                                             </form>
-
                                         <?php endif; ?><br><br>
+                                        <h6>BODY ANSWER</h6>
                                 <li><?php echo $reponse->markdown(); ?></li><br>
-                                <?php if ($user && $user->UserId == $reponse->AuthorId): ?>
+                                <?php if ($user && ($user->UserId == $reponse->AuthorId || $user->Role == "admin" )): ?>
                                     <a href="post/edit/<?php echo $reponse->PostId; ?>"><img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"  alt=""/></a>
                                     <a href="post/delete_confirm/<?php echo $reponse->PostId; ?>"><img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
                                 <?php endif; ?>
