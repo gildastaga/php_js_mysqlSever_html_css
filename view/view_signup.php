@@ -54,7 +54,7 @@
                             required: true,
                             minlength: 8,
                             maxlength: 16,
-                            equalTo: "#password",
+                            equalTo: "#Password",
                             regex:[/[A-Z]/, /\d/, /['";:,.\/?\\-]/],
                         },
                         Email: {
