@@ -45,7 +45,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                         <?php if ($user&&$user->Role =="admin"): ?>
                             <td>
                                 <form id="tagform" action="tag/add_tag/<?php echo $values->TagId;?>" method="post">
-                                    <textarea id="TagName" name="TagName" > <?= $values->TagName;?></textarea><div class="errors" id="errTagName"></div>
+                                    <textarea id="TagName" name="TagName" ><?= $values->TagName;?></textarea><div class="errors" id="errTagName"></div>
                                     <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt="">            
                                     <a href="tag/delete_tag/<?php echo $values->TagId; ?>">
                                     <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a>
@@ -56,8 +56,8 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 <?php endforeach; ?>  
             </table><br>
             <?php if ($user&& $user->Role =="admin"): ?>
-                <form id="tagform" action="tag/add_tag" method="post"  >
-                    <textarea id="TagName" name="TagName" rows='1'  value="<?= $TagName ?>" > <?= "new tag name"; ?> </textarea>
+                <form id="tagformadd" action="tag/add_tag" method="post"  >
+                    <textarea id="TagName" name="TagName" rows='1'  value="<?= $TagName ?>" ><?= "new tag name"; ?></textarea>
                     <input  type="image" img src="lib/parsedown-1.7.3/plus.png" width="30" height="20"  alt="">
                     <div class="errors" id="errTagName"></div>
                 </form>

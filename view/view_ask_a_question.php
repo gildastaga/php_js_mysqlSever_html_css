@@ -35,7 +35,8 @@
                                         return $("#TagName").val();
                                     }
                                 }
-                            }
+                            },
+                            required: true
                         },
                         Body:{
                             required: true
@@ -46,6 +47,7 @@
                             required: 'required Title'  
                         },
                         TagName:{
+                            required: 'required tag',
                             remote:'nombre de tag depasse '
                         },
                         Body: {
@@ -77,7 +79,7 @@
                 <table>
                     <tr>
                         <td>Title</td>
-                        <td><input id="Title" name="Title" type="text" rows='1'  value="<?= $Title ?>" > </td>
+                        <td><input id="Title" name="Title" type="text" rows='1'  value="<?= $Title ?>" ></td>
                         <td class="errors" id="errTitle"></td>
                     </tr><br>
                     <tr>
@@ -91,7 +93,7 @@
                     </tr><br>
                     <tr>
                         <td>Body</td>
-                        <td><textarea id="Body" name="Body" type="text" rows='4'   > <?= $Body ?></textarea></td>
+                        <td><textarea id="Body" name="Body" type="text" rows='4'><?=$Body ?></textarea></td>
                         <td class="errors" id="errBody"></td>
                     </tr>               
                 </table><br><br>

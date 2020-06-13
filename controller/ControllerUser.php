@@ -120,7 +120,7 @@ class ControllerUser extends Controller {
     }
     
     public function start() {    
-        $user = $this->get_user_or_redirect();
+        $user = $this->get_user_or_false();
         (new View("start"))->show(array("user"=>$user,));
     }
     public function getActivityByUser() {

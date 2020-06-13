@@ -111,11 +111,10 @@ function index(datas) {
             table += "<tr>";
             table += '<li><a href="post/show/' + datas.posts[index].PostId +'">' + datas.posts[index].Title + '</a></li>';
             table += '&nbsp  ' + datas.posts[index].markdown; 
-            table += '<br>&nbsp &nbsp asked <span>'+datas.posts[index].temp_ago +'</span>';
+            table += '<br>&nbsp &nbsp asked <span>'+datas.posts[index].temp+'</span>';
             table += '&nbsp by '+datas.posts[index].name+')('+ datas.posts[index].nbr_vote + 'vote(s) &nbsp, ' +datas.posts[index].count_Answer+' Answer (s)) &nbsp';
             for(var i = 0; i < datas.posts[index].tags.length; i++) {
-                table += '<span  onclick = "byTags('+datas.posts[index].tags[i].TagId +')" id="bytag" > '+ datas.posts[index].tags[i].TagName + '</span>';
-                
+                table += '<span  onclick = "byTags('+datas.posts[index].tags[i].TagId +')" id="bytag" > '+ datas.posts[index].tags[i].TagName + '</span>';                
             }
             table += '</tr><br><br>';
         }

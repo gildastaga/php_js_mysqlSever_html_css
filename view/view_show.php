@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
+        <script src="lib/jquery-validation-1.19.1/jquery.validate.min.js" type="text/javascript"></script>
         <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
         <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.theme.min.css" rel="stylesheet" type="text/css"/>
         <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.structure.min.css" rel="stylesheet" type="text/css"/>
@@ -17,55 +18,77 @@
             var UserId = "<?= $user->UserId ?>";
             var Role="<?= $user->Role ?>";
             $(function () {
-                 $('#comment_0'+'*').hide();
-                getComment();
-                $('#post'+'*').attr("disabled", true);
-                $("#Body"+'*').on("input", function () {
-                    $('#post').attr("disabled", $(this).val().length !== 0);
+                $('#answer_form').validate({ 
+                    rules: {
+                        Body:{
+                            required: true
+                        }
+                    } ,  
+                    messages: {
+                        Body:{
+                            required: 'required Body'   
+                        }
+                    }    
+                  });
+                  $('#comment_form').validate({ 
+                    rules: {
+                        Body:{
+                            required: true
+                        }
+                    } ,  
+                    messages: {
+                        Body:{
+                            required: 'required Body'   
+                        }
+                    }    
+                  });
+                  getComment();
+//                   $('#comment_0').attr($(this).next()).hide();
+//                 $('#comment_0'+'*').hide();
+                
+//                $('#post'+'*').attr("disabled", true);
+//                $("#Body"+'*').on("input", function () {
+//                    $('#post').attr("disabled", $(this).val().length == 0);
+//                });
+                $('#post').attr("disabled", true);
+                $("#Body").on("input", function () {
+                    $('#post').attr("disabled", $(this).val().length == 0);
                 });
-
-                $("#comment_form"+'*').hide();
+                
+//               $("#comment_form"+'*').hide();
+//                $("#enablecomment"+'*').click(function () {
+//                    $("#comment_form"+'*').toggle("fast", function () {
+//                        if ($("#comment_form"+'*').is(":visible")) {
+//                            $("#enablecomment"+'*').html("");
+//                            $("#Body"+'*').focus();
+//                        } else {
+//                            $("#enablecomment"+'*').html("Click here to leave a comment.");
+//                        }
+//                    });
+//                });
+                $("#comment_form").hide();
                 $("#enablecomment"+'*').click(function () {
-                    $("#comment_form"+'*').toggle("fast", function () {
-                        if ($("#comment_form"+'*').is(":visible")) {
-                            $("#enablecomment"+'*').html("");
-                            $("#Body"+'*').focus();
+                    $("#comment_form").toggle("fast", function () {
+                        if ($("#comment_form").is(":visible")) {
+                            $("#enablecomment"+'*').html("leave a comment");
+                            $("#Body").focus();
                         } else {
                             $("#enablecomment"+'*').html("Click here to leave a comment.");
                         }
                     });
                 });
-                
-               
-                        
-//                tblMessages = $('#comment');
-//                tblMessages.html("<tr><td>Loading...</td></tr>");
-//                getMessages();
                 postButton = $('#post');
-                postButton.attr("type", "button");
+                //postButton.attr("type", "button");
                 postButton.click(postComment());
-
+               // getComment();
             });
             //save comment
             function postComment() {
                 $.post('comment/add_comment_service/',{PostId,Body :$("#Body").val()},function (data) {
-                        var tab = jQuery.parseJSON(data);
-                        getComment(); 
-                    });
-            }
-//            function postComment() {
-//                $("#comment_form").submit(function (e) {
-////                    e.preventDefault(); //empêcher une action par défaut
-//                    //var form_url = $(this).attr("action"); //récupérer l'URL du formulaire
-//                    var form_method = $(this).attr("method"); //récupérer la méthode GET/POST du formulaire
-//                    var form_data = $(this).serialize(); //Encoder les éléments du formulaire pour la soumission
-//                    
-//                    $.post('comment/add_comment_service/',{PostId,Body :$("#Body").val()},function (data) {
-//                        var tab = jQuery.parseJSON(data);
-//                        getComment(); 
-//                    });
-//                });
-//            }   
+                    var tab = jQuery.parseJSON(data);
+                    getComment(); 
+                });
+            }  
             
             //recuper les commentaire 
             function getComment(){ 
@@ -84,7 +107,6 @@
                 table += '<li>&nbsp  ' + datas[index].Body+'</li>'; 
                 table += '<br>&nbsp &nbsp asked <span>'+datas[index].temp +'</span>';
                 table += '&nbsp by '+datas[index].name+'&nbsp &nbsp<br>';
-                console.log(Role);
                 if(datas){
                     if(Role==="admin"|| UserId===datas[index].UserId){
                         table += '<a href="comment/edit_comment/' + datas[index].CommentId +'"> <input  type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""></a>';
@@ -169,9 +191,11 @@
                                                 <?php endif; ?>
                                                 src="lib/parsedown-1.7.3/vote2.png" width="30" height="20" alt=""/></a><br>
                                     </td>
-                                <?php endif; ?>              
-                            <h6> body post </h6>   
+                                <?php endif; ?>  
                             <td>
+                                <h6> body post </h6>
+                                &nbsp &nbsp<?php echo $posts->markdown(); ?><br>
+                                <?php if (count($comment)>0): ?>
                                 <h3>comment by post</h3><br><br>
                                 <div id="comment_0">
                                 <?php foreach ($comment as $values): ?>
@@ -191,6 +215,7 @@
                                         </tr> </table>    
                                 <?php endforeach; ?><br>
                                  </div>
+                                <?php endif; ?>
                                 <div id="comment">
                                     
                                 </div>
@@ -199,16 +224,15 @@
                                     <div id="enablecomment"> Add a Comment on the post.</div>
                                     <form id="comment_form" action="comment/add_comment/<?php echo $posts->PostId; ?>" method="post">                 
                                         <textarea id="Body" name="Body" rows='2'></textarea>
-                                        <input id="post" type="submit" value="add you Comment"><input id="enablecomment" type="button" value="Cancel" style="background: red">
+                                        <input id="post" type="submit" value="add you Comment"  ><input id="enablecomment" type="button" value="Cancel" style="background: red">
                                     </form>
                                 <?php endif; ?><br><br>
-                                <h6>POST BODY</h6>
-                            <li><?php echo $posts->markdown(); ?></li> <br>
+                           
                             </td>
+                            
                             </tr>
-                        </table><br><br>
-
-                        <h6> Post response's list</h6> <br><br>
+                        </table><br>
+                        <h6> Post response's list</h6> <br>
                         <?php foreach ($listanswer as $reponse): ?>                       
                             <table> 
                                 <tr>
@@ -292,9 +316,9 @@
             <?php endforeach; ?><br><br><br>
             <?php if ($user): ?>
                 Add your Anwer<br>
-                <form id="post_form" action="post/show/<?php echo $posts->PostId; ?>" method="post">                 
+                <form id="answer_form" action="post/show/<?php echo $posts->PostId; ?>" method="post">                 
                     <textarea id="Body" name="Body" rows='8'></textarea><br><br>
-                    <input id="post" type="submit" value="put your Answer">
+                    <input id="save" type="submit" value="put your Answer">
                 </form>
             <?php endif; ?><br><br>
             </td>

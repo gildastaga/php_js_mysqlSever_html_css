@@ -81,23 +81,23 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                                                         "pointer-events:none;
                                                         -webkit-filter: grayscale(1);
                                                         filter: grayscale(1);" ?>">
-                        <a  style="page-link ml-auto" href="post/<?=$action.'/'.($currentPage-1) ?>">prev &laquo; </a>
+                        <a  style="page-linkml-auto" href="post/<?=$action.'/'.($currentPage-1) ?>">prev &laquo; </a>
                     </li>
-                    <?php var_dump($nbr); for($page_i=1;$page_i<=$nbr;$page_i++): ?>
+                    <?php  for($page_i=1; $page_i<=$nbr; $page_i++): ?>
                         <li  style="page-item <?= ($currentPage==$page_i)? " -webkit-filter: blur(90deg);
                                                         filter: blur(90deg);" :
                                                         "-webkit-filter: grayscale(1);
                                                         filter: grayscale(1);
                                                         pointer-events:none;" ?>">
-                            <a  style="page-link ml-auto" href="post/<?=$action.'/'.$page_i ?>"><?= $page_i; ?> </a>
+                            <a  style="page-lin:kml-auto;" href="post/<?=$action.'/'.$page_i+1 ?>"><?= $page_i; ?> </a>
                         </li>
                     <?php endfor;?>
-                        <li style="page-item <?= ($currentPage==$nbr)? " -webkit-filter: blur(90deg);
+                        <li style="page-item <?= ($currentPage<=$nbr)? " -webkit-filter: blur(90deg);
                                                         filter: blur(90deg);" :
                                                         "-webkit-filter: grayscale(1);
                                                         filter: grayscale(1);
                                                         pointer-events:none;" ?>">
-                        <a  style="page-link ml-auto" href="post/<?=$action.'/'.($currentPage+1) ?>">&raquo;next </a>
+                        <a  style="page-linkml-auto" href="post/<?=$action.'/'.($currentPage+1) ?>">&raquo;next </a>
                     </li>
                 </div> 
             </div>            

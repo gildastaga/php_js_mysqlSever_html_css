@@ -10,29 +10,30 @@
 <!--        <script src="js/chart.js" type="text/javascript"></script>-->
         <script>
             $(function () {
+              //  $.('# of Votes').hide();
                 init();
                 //pour recuperer les nombres de weeck,month,year
-                $("#number").change(function () {
+                $("#number").change(function () {console.log($("#number").val(),$("#period").val());
                     let chart=myChart;
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
                         removeData(chart);
                         for(var i = 0; i < tab.length; ++i) {
                             addData(chart, tab[i].UserName, tab[i].activity);
-                        }
+                        }console.log(tab);
                         getStats(tab);
                         
                     });
                 });
                //pour recuperer  weeck,month,year
-                $("#period").click(function () {
+                $("#period").click(function () {console.log($("#number").val(),$("#period").val());
                     let chart=myChart;
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
                         removeData(chart);
                         for(var i = 0; i < tab.length; ++i) {
                             addData(chart, tab[i].UserName, tab[i].activity);
-                        }
+                        }console.log(tab);
                         getStats(tab);
                     });
                 });
@@ -73,7 +74,7 @@
                     data: {
                         labels: data.map(u => u.UserName),
                         datasets: [{
-                                //label: '# of Votes',
+                                label: '# of Votes',
                                 data: data.map(u => parseInt(u.activity)),
                                 backgroundColor: [
                                     'rgba(255, 99, 132, 0.2)',
@@ -122,16 +123,14 @@
                     });
             }
             //dessiner le tableau   des activites d'un user
-            function displayTable(t,UserName){
+            function displayTable(tab,UserName){
                 tblMessages = $('#message_list');
                 tblMessages.html("<tr><td>Loading...</td></tr>");
-                var tab=t;
                 var u=UserName;
-                var html  ="<h2>Detailed Activity for "+u+"</h2>";
-                    html += "<tr id='UserName'> </tr>";
-                               "<tr><th id='moment' onclick='sort(\"moment\");'>moment</th>" +
-                               "<th id='type' onclick='sort(\"type\");'>type</th>" + 
-                               "<th id='Title' onclick='sort(\"Title\")';>Title</th></tr>";
+                var html ="<p>Detailed Activity for "+u+"</p>";
+                    html +="<tr><th id='moment' onclick='sort(\"moment\");'>moment</th>" ;
+                    html +="<th id='type' onclick='sort(\"type\");'>type</th>";
+                    html +="<th id='Title' onclick='sort(\"Title\")';>Title</th></tr>";
                     for (var m of tab) {
                         html += "<tr>";
                         html += "<td>" + m.moment + "</td>";

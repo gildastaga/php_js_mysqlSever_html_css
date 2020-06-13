@@ -99,6 +99,7 @@ class ControllerComment extends Controller {
             $errors = $comment->valicomment();
             if (count($errors) == 0) {
                 $comment->update();
+                //$allcomment= Comment::get_all_comment($PostId);
                 echo json_encode($comment);
             } else {
                 echo json_encode($errors);
