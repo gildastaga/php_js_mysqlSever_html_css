@@ -156,7 +156,7 @@ class User extends Model {
         $query = self::execute("select UserName, SUM(activity) as activity from ((SELECT UserName,count(*) as activity ,UserId ,Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Time GROUP by UserName order by Timestamp DESC)
                                 UNION
                                 (SELECT UserName,count(*) as activity ,user.UserId ,Timestamp from user join comment on user.UserId= comment.UserId WHERE comment.Timestamp >=:Time  GROUP by UserName order by Timestamp DESC)) t
-                                            GROUP BY UserName
+                                            GROUP BY UserName 
                                             ORDER BY t.activity DESC ", array("Time" => $time));
         $resul = $query->fetchAll();
         return $resul;
@@ -237,13 +237,14 @@ class User extends Model {
         $data1 = $query1->fetchAll();
         foreach ($data1 as $row) {
             $post = Post::get_post_PostId($row["PostId"]);
-if (!$post->ParentId) {
-                $post = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
+            if (!$post->ParentId) {
+                $post = Post::get_post_PostId($row["PostId"]);
+               // $post = new Post($value["AuthorId"], $value["Title"], $value["Body"], $value["Timestamp"], $value["AcceptedAnswerId"], $value["ParentId"], $value["PostId"]);
                 $post->type = ["create/update comment"];
                 $post->moment = [$post->temp_ago()[0]];
                 $result[] = $post;
             } else {
-                $post = Post::get_post_PostId($value["ParentId"]);
+                $post = Post::get_post_PostId($post->ParentId);
                 $post->type = ["create/update comment"];
                 $post->moment = [$post->temp_ago()[0]];
                 $result[] = $post;
