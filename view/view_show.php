@@ -54,7 +54,6 @@
                 $("#Body").on("input", function () {
                     $('#post').attr("disabled", $(this).val().length == 0);
                 });
-                
 //               $("#comment_form"+'*').hide();
 //                $("#enablecomment"+'*').click(function () {
 //                    $("#comment_form"+'*').toggle("fast", function () {
