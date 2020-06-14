@@ -151,8 +151,9 @@
                         <?php endif; ?>    
                         <a href="post/by_tag/<?php echo $row->TagId; ?>"><?= $row->TagName . ' '; ?></a>
                     <?php endforeach; ?>
-                    <?php if ($user->UserId == $posts->AuthorId || $user->Role == "admin"): ?>    
-                        <form action="tag/asso_tag_post/<?php echo $posts->PostId; ?>" method="post">
+                    <?php if ($user->UserId == $posts->AuthorId || $user->Role == "admin"): ?> 
+                        <?php if( Tag::get_nbr_tag_Post($posts->PostId) < Configuration::get("max_tags") ): ?>
+                        <form action="tag/asso_tag_post/<?php echo $posts->PostId; ?>"  method="post">
                             <select name="TagId">
                                 <?php foreach ($tags as $rows): ?> 
                                     <?php if(!Tag::get_tag_Post($posts->PostId,$rows->TagId)):?>
@@ -161,7 +162,8 @@
                                 <?php endforeach; ?> 
                             </select>        
                             <input  type="image" img src="lib/parsedown-1.7.3/plus.png" width="30" height="20"  alt="">
-                        </form>   
+                        </form>  
+                        <?php endif; ?>
                     <?php endif; ?>
                     </tr> 
                 <?php endif; ?><br><br>
