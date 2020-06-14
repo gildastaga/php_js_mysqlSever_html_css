@@ -97,7 +97,6 @@
                     tabComment(tab);
                 });
             }
-
     function tabComment(datas) {
         $("#comment").html("");
         var table = "";
@@ -117,7 +116,6 @@
             table += '</tr></table> <br><br>';
         $("#comment").append(table);    
         }
-
         </script>
     </head>
     <body>
