@@ -66,6 +66,7 @@
 //                        }
 //                    });
 //                });
+                $('#comment_0').hide();
                 $("#comment_form").hide();
                 $("#enablecomment"+'*').click(function () {
                     $("#comment_form").toggle("fast", function () {
@@ -209,7 +210,7 @@
                                         <?php if ($user): ?>
                                             <?php if ($user->Role == "admin" || $values->UserId == $user->UserId): ?>
                                                 <a href="comment/edit_comment/<?php echo $values->CommentId; ?>">
-                                                    <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""> </a>            
+                                                    <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""></a>            
                                                 <a href="comment/delete_comment/<?php echo $values->CommentId; ?>">
                                                     <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
                                             <?php endif; ?>
