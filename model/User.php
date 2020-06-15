@@ -152,12 +152,16 @@ class User extends Model {
         return Post::get_post($this);
     }
 //all activity 
+    
     Public static function getActivity($time) {
-        $query = self::execute("select UserName, SUM(activity) as activity from ((SELECT UserName,count(*) as activity ,UserId ,Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Time GROUP by UserName order by Timestamp DESC)
-                                UNION
-                                (SELECT UserName,count(*) as activity ,user.UserId ,Timestamp from user join comment on user.UserId= comment.UserId WHERE comment.Timestamp >=:Time  GROUP by UserName order by Timestamp DESC)) t
-                                            GROUP BY UserName 
-                                            ORDER BY t.activity DESC ", array("Time" => $time));
+        $query = self::execute("select UserName, SUM(som) as Activity 
+from (
+  (SELECT UserName,count(*) as som ,UserId , Timestamp from user join post on UserId = AuthorId where post.Timestamp >=:Time GROUP by UserName order by Timestamp DESC)
+   UNION
+  (SELECT UserName,count(*) as som ,user.UserId , Timestamp from user join comment on user.UserId= comment.UserId WHERE comment.Timestamp >=:Time GROUP by UserName order by Timestamp DESC)
+) as t
+GROUP BY UserName 
+ORDER BY Activity DESC", array("Time" => $time));
         $resul = $query->fetchAll();
         return $resul;
     }

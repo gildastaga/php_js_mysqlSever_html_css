@@ -128,7 +128,9 @@ function index(datas) {
                                                         '"pointer-events:none;'+
                                                         '-webkit-filter: grayscale(1);'+
                                                         'filter: grayscale(1);" ">';
-        table+='<span style="page-link ml-auto" onclick="prev(`'+ datas.action+'`,'+(datas.currentPage-1)+')"; id="prev">prev &laquo</span>' ;
+            if(datas.currentPage!=0){                                    
+                table+='<span style="page-link ml-auto" onclick="prev(`'+ datas.action+'`,'+(datas.currentPage-1)+')"; id="prev">prev &laquo</span>' ;
+            }    
         table+='</li>';
         for(var page_i=1; page_i<=datas.nbr ;page_i++){
             table+='<li  style="page-item ('+datas.currentPage+'=='+page_i+' ) ?'+'"-webkit-filter:blur(90deg);'+

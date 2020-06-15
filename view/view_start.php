@@ -10,31 +10,32 @@
 <!--        <script src="js/chart.js" type="text/javascript"></script>-->
         <script>
             $(function () {
-              //  $.('# of Votes').hide();
                 init();
                 //pour recuperer les nombres de weeck,month,year
-                $("#number").change(function () {console.log($("#number").val(),$("#period").val());
+                $("#number").change(function () {
+                    console.log($("#number").val(),$("#period").val());//
                     let chart=myChart;
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
                         removeData(chart);
                         for(var i = 0; i < tab.length; ++i) {
-                            addData(chart, tab[i].UserName, tab[i].activity);
-                        }console.log(tab);
-                        getStats(tab);
+                            addData(chart, tab[i].UserName, tab[i].Activity);
+                        }console.log(tab);//
+                        chart.update();
                         
                     });
                 });
                //pour recuperer  weeck,month,year
-                $("#period").click(function () {console.log($("#number").val(),$("#period").val());
+                $("#period").click(function () {
+                    console.log($("#number").val(),$("#period").val());//
                     let chart=myChart;
                     $.post("user/starts", {numbre: $("#number").val(), periode: $("#period").val()}, function (data) {
                         var tab = jQuery.parseJSON(data);
                         removeData(chart);
                         for(var i = 0; i < tab.length; ++i) {
-                            addData(chart, tab[i].UserName, tab[i].activity);
-                        }console.log(tab);
-                        getStats(tab);
+                            addData(chart, tab[i].UserName, tab[i].Activity);
+                        }console.log(tab);//
+                        chart.update();
                     });
                 });
                 
@@ -49,14 +50,16 @@
             }
             // suprimmer les enciens donne du graphe 
             function removeData(chart) {
-                for(var i = 0 ; i < chart.data.labels.length ; i++) {
-                    chart.data.labels.pop();
-                    chart.data.datasets.forEach((dataset) => {
-                        dataset.data.pop();
-                    });
-                }
+                chart.data.labels =[];
+                chart.data.datasets[0].data=[];
+//                for(var i = 0 ; i < chart.data.labels.length ; i++) {
+//                    chart.data.labels.pop();
+//                    chart.data.datasets.forEach((dataset) => {
+//                        dataset.data.pop();
+//                    });
+//                }
                 
-                chart.update();
+//                chart.update();
             }
             //ajouter des nouvelles donnes
             function addData(chart, label, data) {
@@ -75,7 +78,7 @@
                         labels: data.map(u => u.UserName),
                         datasets: [{
                                 label: '# of Votes',
-                                data: data.map(u => parseInt(u.activity)),
+                                data: data.map(u => parseInt(u.Activity)),
                                 backgroundColor: [
                                     'rgba(255, 99, 132, 0.2)',
                                     'rgba(54, 162, 235, 0.2)',
