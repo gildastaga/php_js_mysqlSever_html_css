@@ -208,7 +208,7 @@ class Post extends Model {
         }
         return $resul;
     }
-    public static function get_all_anwsbypos($PostId) {
+    public static function get_all_commentbypos($PostId) {
         $query = self::execute("select * from comment where  PostId=:PostId GROUP BY PostId ORDER BY Timestamp DESC ", array("PostId"=>$PostId));
         $array = $query->fetchAll();
         $resul = [];
@@ -225,7 +225,7 @@ class Post extends Model {
                 self::execute(("DELETE FROM posttag WHERE PostId =:PostId"), array("PostId" =>$this->PostId));
             }
         }
-        $allanw= Post::get_all_anwsbypos($this->PostId);        
+        $allanw= Post::get_all_commentbypos($this->PostId);        
         if($allanw && count($allanw)>0){           
             foreach ($allanw as $value){                 
                 self::execute(("DELETE  FROM comment WHERE PostId =:PostId"), array("PostId" =>$value->PostId));
@@ -233,8 +233,7 @@ class Post extends Model {
         }
         $allanws= Post::get_all_anwsbypost($this->PostId);       
         if($allanws && count($allanws)>0){           
-            foreach ($allanws as $value){ 
-                var_dump($value);
+            foreach ($allanws as $value){
                 self::execute(("DELETE  FROM vote WHERE PostId =:PostId"), array("PostId" =>$value->PostId));
                 self::execute(("DELETE  FROM comment WHERE PostId =:PostId"), array("PostId" =>$value->PostId));
                $t= self::execute(("DELETE  FROM post WHERE PostId =:PostId"), array("PostId" =>$value->PostId));

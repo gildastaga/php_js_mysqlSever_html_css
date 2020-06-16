@@ -86,14 +86,14 @@
                 });
                 postButton = $('#post');
                 //postButton.attr("type", "button");
-                postButton.click(postComment());
+                postButton.click( postComment());
                 getComment();
                 savecommentanswer = $('.post_button');
                 savecommentanswer.click(postComment())
                  getComment();
             });
             //save comment
-            function postComment() {
+            function postComment() {console.log($("#Body").val());
                 $.post('comment/add_comment_service/',{PostId,Body :$("#Body").val()},function (data) {
                     var tab = jQuery.parseJSON(data);
                     getComment(); 
@@ -216,8 +216,7 @@
                                         &nbsp by <?php echo $values->name(); ?> &nbsp &nbsp
                                         <?php if ($user): ?>
                                             <?php if ($user->Role == "admin" || $values->UserId == $user->UserId): ?>
-                                                <a href="comment/edit_comment/<?php echo $values->CommentId; ?>">
-                                                    <input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""></a>            
+                                                <a href="comment/edit_comment/<?php echo $values->CommentId; ?>"><input id="post" type="image" img src="lib/parsedown-1.7.3/edit.png" width="30" height="20"alt=""></a>            
                                                 <a href="comment/delete_comment/<?php echo $values->CommentId; ?>">
                                                     <img src="lib/parsedown-1.7.3/delete.png" width="30" height="20"  alt=""/></a><br>
                                             <?php endif; ?>

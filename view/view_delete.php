@@ -42,7 +42,7 @@
                             <?php if($posts!=null): ?>
                                 <td>
                                     <?php if($posts->ParentId==NULL): ?>
-                                        <a href="post/show/ <?php echo $posts->PostId; ?>">cancel</a>
+                                        <a href="post/show/<?php echo $posts->PostId; ?>">cancel</a>
                                     <?php else: ?> 
                                         <a href="post/show/<?php echo $posts->ParentId;?>">cancel</a>
                                     <?php endif; ?>
