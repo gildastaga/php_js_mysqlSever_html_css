@@ -47,59 +47,50 @@
 //                 $('#comment_0'+'*').hide();
                 
                 $('.post_button').attr("disabled", true);
-                $(".textarea"+'*').on("input", function () {
+                $(".textarea").on("input", function () {
                     $('.post_button').attr("disabled", $(this).val().length == 0);
                 });
-//                $('#post').attr("disabled", true);
-//                $("#Body").on("input", function () {
-//                    $('#post').attr("disabled", $(this).val().length == 0);
-//                });
-
-                
-//                $('#comment_0').hide();
-//                $(".comment_form").hide();
-//                $(".cancel_button").click(function () {
-//                    $(this).nextAll(".comment_form").toggle("fast");
-//                        if ($(this).nextAll(".comment_form").is(":visible")) {
-//                            $(".cancel_button").html("leave a comment");
-//                            $(".textarea").focus();
-//                        } else {
-//                            $(".cancel_button").html("Click here to leave a comment.");
-//                        }
-//                    
-//                });
-                
+                $('#comment_0').hide();
                $('.form_comment').hide();
                 $('.answer').click(function () { 
-                    $(this).nextAll(".form_comment").toggle("fast",function () {
-                    if ($(this).nextAll(".form_comment").is(":visible")) {
-                        $(this).nextAll('.answer').html("jkhfiuhgillj");
-                        $(".textarea").focus();
-                        $(this).nextAll('.answer').html( function(){
-                              alert("ok");
-                        });
-                    } else {
-                        
-                        $(this).html("Click here to leave a comment.");                           
-                    } 
+                    $(this).nextAll(".form_comment").toggle("fast");
+                    $(this).nextAll(".form_comment").children(".button_answer").click(function () { 
+                        $(this).parent('.form_comment').hide();
+                        if ($(this).nextAll(".form_comment").is(":visible")) {
+                            $(this).parent('.form_comment').hide();
+                            $(".textarea").focus();
+
+                        } else {
+
+                            $(this).html("Click here to leave a comment.");                           
+                        } 
                     });
                 });
-//                $('#comment_0').hide();
-//                $("#comment_form").hide();
-//                $("#enablecomment"+'*').click(function () {
-//                    $("#comment_form").toggle("fast", function () {
-//                        if ($("#comment_form").is(":visible")) {
-//                            $("#enablecomment"+'*').html("leave a comment");
-//                            $("#Body").focus();
-//                        } else {
-//                            $("#enablecomment"+'*').html("Click here to leave a comment.");
-//                        }
-//                    });
-//                });
+                
+                $('#post').attr("disabled", true);
+                $("#Body").on("input", function () {
+                    $('#post').attr("disabled", $(this).val().length == 0);
+                });
+                
+                $('#comment_0').hide();
+                $("#comment_form").hide();
+                $("#enablecomment"+'*').click(function () {
+                    $("#comment_form").toggle("fast", function () {
+                        if ($("#comment_form").is(":visible")) {
+                            $("#enablecomment"+'*').html("leave a comment");
+                            $("#Body").focus();
+                        } else {
+                            $("#enablecomment"+'*').html("Click here to leave a comment.");
+                        }
+                    });
+                });
                 postButton = $('#post');
                 //postButton.attr("type", "button");
                 postButton.click(postComment());
-               // getComment();
+                getComment();
+                savecommentanswer = $('.post_button');
+                savecommentanswer.click(postComment())
+                 getComment();
             });
             //save comment
             function postComment() {
@@ -318,7 +309,7 @@
                                         &nbsp &nbsp<h6 class="answer" > Add a Comment on the answer.</h6><br>
                                         <form class="form_comment" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
                                             <textarea class="textarea" id="Body" name="Body" rows='2'></textarea>
-                                            <input class="post_button" id="post" type="submit" value="add you Comment"><input class="answer"  type="button" value="Cancel" style="background: red">
+                                            <input class="post_button" id="post" type="submit" value="add you Comment"><input class="button_answer"  type="button" value="Cancel" style="background: red">
                                         </form>
                                         <?php endif; ?><br><br>
                                         <h6>BODY ANSWER</h6>

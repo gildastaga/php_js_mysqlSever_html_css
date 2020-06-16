@@ -22,9 +22,9 @@ class ControllerVote extends Controller {
     }
     public function indexJson() {
         $user = $this->get_user_or_false();
-        $nbpage = 5;
-        $currentPage = (int) ($_GET['param1'] ?? 1);
-        $offset = $nbpage * ($currentPage - 1);
+        $nbpage = Configuration ::get("max_post");
+        $currentPage = (int) ($_GET['page'] ?? 1);
+        $offset = $nbpage*($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::getvotes($nbpage, $offset);
         foreach($posts as $post) {
@@ -41,6 +41,7 @@ class ControllerVote extends Controller {
         $data["posts"] = $posts;
         $data["currentPage"] = $currentPage;
         $data["nbr"] = $nbr;
+        $data["action"] = "indexJson";
         echo json_encode($data);
     }
     public function add_vote() {

@@ -92,6 +92,7 @@ class Post extends Model {
     }
 
     public static function get_newest($nbpage,$offset) {
+        
         $query = self::execute(("select * from post where Body IS NOT NULL and Title IS NOT NULL and ParentId IS NULL group by PostId ORDER BY Timestamp DESC LIMIT $nbpage OFFSET $offset "), array());
         $data = $query->fetchAll();
         $newest = [];
@@ -198,18 +199,78 @@ class Post extends Model {
             return $this;
         }
     }
-
+    public static function get_all_anwsbypost($PostId) {
+        $query = self::execute("select * from post where  ParentId=:PostId GROUP BY PostId ORDER BY Timestamp DESC ", array("PostId"=>$PostId));
+        $array = $query->fetchAll();
+        $resul = [];
+        foreach ($array as $row) {
+            $resul[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+        }
+        return $resul;
+    }
+    public static function get_all_anwsbypos($PostId) {
+        $query = self::execute("select * from comment where  PostId=:PostId GROUP BY PostId ORDER BY Timestamp DESC ", array("PostId"=>$PostId));
+        $array = $query->fetchAll();
+        $resul = [];
+        foreach ($array as $row) {
+            $resul[] = new Post($row["AuthorId"], $row["Title"], $row["Body"], $row["Timestamp"], $row["AcceptedAnswerId"], $row["ParentId"], $row["PostId"]);
+        }
+        return $resul;
+    }
     public function delete() {
-        $query=self::execute(("select * FROM posttag WHERE PostId =:PostId"), array("PostId" => $this->PostId));
+        $query=self::execute(("select * FROM posttag WHERE PostId =:PostId"), array("PostId" =>$this->PostId));
         $data = $query->fetchAll();
         foreach ($data as $value) {
             if($value["PostId"]== $this->PostId){
-                self::execute(("DELETE FROM posttag WHERE PostId =:PostId"), array("PostId" => $this->PostId));
+                self::execute(("DELETE FROM posttag WHERE PostId =:PostId"), array("PostId" =>$this->PostId));
             }
         }
+        $allanw= Post::get_all_anwsbypos($this->PostId);        
+        if($allanw && count($allanw)>0){           
+            foreach ($allanw as $value){                 
+                self::execute(("DELETE  FROM comment WHERE PostId =:PostId"), array("PostId" =>$value->PostId));
+            }
+        }
+        $allanws= Post::get_all_anwsbypost($this->PostId);       
+        if($allanws && count($allanws)>0){           
+            foreach ($allanws as $value){ 
+                var_dump($value);
+                self::execute(("DELETE  FROM vote WHERE PostId =:PostId"), array("PostId" =>$value->PostId));
+                self::execute(("DELETE  FROM comment WHERE PostId =:PostId"), array("PostId" =>$value->PostId));
+               $t= self::execute(("DELETE  FROM post WHERE PostId =:PostId"), array("PostId" =>$value->PostId));
+                var_dump($t);
+            }
+        }
+
+        if($this->AcceptedAnswerId!=NULL){
+            self::execute("UPDATE post SET  AuthorId=:AuthorId, Title=:Title, Body=:Body, Timestamp=:Timestamp,AcceptedAnswerId=:AcceptedAnswerId, ParentId=:ParentId WHERE PostId=:PostId ", array("AuthorId" => $this->AuthorId, "Title" => $this->Title, "Body" => $this->Body,
+                "Timestamp" => $this->Timestamp, "AcceptedAnswerId" => NULL, "ParentId" => $this->ParentId, "PostId" => $this->PostId));
+            self::execute(("DELETE FROM post WHERE PostId =:PostId"), array("PostId" => $this->PostId));
+        }
+//        if($this->ParentId==NULL){
+//            $allanws= Post::get_all_anwsbypost($this->PostId);
+//            if($allanws && count($allanws)>1){ 
+//                foreach ($allanws as $value){
+//                    self::execute(("DELETE  FROM post WHERE ParentId =:ParentId"), array("ParentId" =>$value->PostId));
+//                }
+//            }
+//        }
         self::execute(("DELETE FROM post WHERE PostId =:PostId"), array("PostId" => $this->PostId));
+        self::execute(("DELETE  FROM post WHERE ParentId =:ParentId"), array("ParentId" =>$this->PostId));
         return $this;
     }
+
+//    public function delete() {
+//        $query=self::execute(("select * FROM posttag WHERE PostId =:PostId"), array("PostId" => $this->PostId));
+//        $data = $query->fetchAll();
+//        foreach ($data as $value) {
+//            if($value["PostId"]== $this->PostId){
+//                self::execute(("DELETE FROM posttag WHERE PostId =:PostId"), array("PostId" => $this->PostId));
+//            }
+//        }
+//        self::execute(("DELETE FROM post WHERE PostId =:PostId"), array("PostId" => $this->PostId));
+//        return $this;
+//    }
 
     public static function get_unanswere($nbpage,$offset) {
         $query = self::execute("SELECT * FROM post where ParentId IS NULL and  AcceptedAnswerId IS NULL  order by Timestamp DESC LIMIT $nbpage OFFSET $offset ", array());

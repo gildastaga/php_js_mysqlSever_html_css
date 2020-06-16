@@ -14,7 +14,7 @@ class ControllerPost extends Controller {
     public function index() {
         $user = $this->get_user_or_false();
         $nbpage = Configuration ::get("max_post");
-        $currentPage = (int) ($_POST['param1'] ?? 1);
+        $currentPage = (int) ($_GET['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_all_post($nbpage, $offset);
@@ -26,31 +26,35 @@ class ControllerPost extends Controller {
         $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
-        $nbr = ceil(count(Post::get_total()) / $nbpage);
-        $posts = Post::get_all_post($nbpage, $offset);
-        foreach($posts as $post) {
-            $post->markdown = $post->markdown();
-            $post->temp = $post->temp_ago()[0];
-            $post->name = $post->name();
-            $post->tags = Tag::get_tag_bypostId($post->PostId);
-            $post->nbr_vote = Post::nbr_vote($post->PostId);
-            $post->count_Answer = $post->count_Answer();
+        if($offset<0){
+            echo "";
+        } else {
+            $nbr = ceil(count(Post::get_total()) / $nbpage);
+            $posts = Post::get_all_post($nbpage, $offset);
+            foreach($posts as $post) {
+                $post->markdown = $post->markdown();
+                $post->temp = $post->temp_ago()[0];
+                $post->name = $post->name();
+                $post->tags = Tag::get_tag_bypostId($post->PostId);
+                $post->nbr_vote = Post::nbr_vote($post->PostId);
+                $post->count_Answer = $post->count_Answer();
+            }
+
+            $data = [];
+            $data["user"] = $user;
+            $data["posts"] = $posts;
+            $data["currentPage"] = $currentPage;
+            $data["nbr"] = $nbr;
+            $data["action"] = "indexJson";
+            echo json_encode($data);
         }
-        
-        $data = [];
-        $data["user"] = $user;
-        $data["posts"] = $posts;
-        $data["currentPage"] = $currentPage;
-        $data["nbr"] = $nbr;
-        $data["action"] = "indexJson";
-        echo json_encode($data);
     }
 
 //controller post: post/question
     public function questions() {
         $user = $this->get_user_or_false();
         $nbpage = Configuration ::get("max_post");
-        $currentPage = (int) ($_POST['param1'] ?? 1);
+        $currentPage = (int) ($_GET['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_all_post($nbpage, $offset);
@@ -61,7 +65,7 @@ class ControllerPost extends Controller {
     public function active() {
         $user = $this->get_user_or_false();
         $nbpage = Configuration ::get("max_post");
-        $currentPage = (int) ($_POST['param1'] ?? 1);
+        $currentPage = (int) ($_GET['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::getactive($nbpage, $offset);
@@ -72,32 +76,36 @@ class ControllerPost extends Controller {
         $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
-        $nbr = ceil(count(Post::get_total()) / $nbpage);
-        $posts =Post::getactive($nbpage, $offset);
-        foreach($posts as $post) {
-            $post->markdown = $post->markdown();
-            $post->temp = $post->temp_ago()[0];
-            $post->name = $post->name();
-            $post->tags = Tag::get_tag_bypostId($post->PostId);
-            $post->nbr_vote = Post::nbr_vote($post->PostId);
-            $post->count_Answer = $post->count_Answer();
-        }
-        
-        $data = [];
-        $data["user"] = $user;
-        $data["posts"] = $posts;
-        $data["currentPage"] = $currentPage;
-        $data["nbr"] = $nbr;
-        $data["action"] = "activeJson";
-        echo json_encode($data);
+        if($offset<0){
+            echo "";
+        } else {
+            $nbr = ceil(count(Post::get_total()) / $nbpage);
+            $posts =Post::getactive($nbpage, $offset);
+            foreach($posts as $post) {
+                $post->markdown = $post->markdown();
+                $post->temp = $post->temp_ago()[0];
+                $post->name = $post->name();
+                $post->tags = Tag::get_tag_bypostId($post->PostId);
+                $post->nbr_vote = Post::nbr_vote($post->PostId);
+                $post->count_Answer = $post->count_Answer();
+            }
+
+            $data = [];
+            $data["user"] = $user;
+            $data["posts"] = $posts;
+            $data["currentPage"] = $currentPage;
+            $data["nbr"] = $nbr;
+            $data["action"] = "activeJson";
+            echo json_encode($data);
+        }    
     }
 
     //controller post :post/unanswered
-    public function unanswered() {
+    public function unanswered() { 
         $user = $this->get_user_or_false();
         $nbpage = Configuration ::get("max_post");
-        $currentPage = (int) ($_POST['param1'] ?? 1);
-        $offset = $nbpage * ($currentPage - 1);
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage*($currentPage - 1);        
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_unanswere($nbpage, $offset);
         (new View("index"))->show(Array("posts" => $posts, "user" => $user,  "currentPage" => $currentPage, "nbr" => $nbr, "action" => "unanswered"));
@@ -108,31 +116,35 @@ class ControllerPost extends Controller {
         $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
-        $nbr = ceil(count(Post::get_total()) / $nbpage);
-        $posts = Post::get_unanswere($nbpage, $offset);
-        foreach($posts as $post) {
-            $post->markdown = $post->markdown();
-            $post->temp = $post->temp_ago()[0];
-            $post->name = $post->name();
-            $post->tags = Tag::get_tag_bypostId($post->PostId);
-            $post->nbr_vote = Post::nbr_vote($post->PostId);
-            $post->count_Answer = $post->count_Answer();
-        }
-        
-        $data = [];
-        $data["user"] = $user;
-        $data["posts"] = $posts;
-        $data["currentPage"] = $currentPage;
-        $data["nbr"] = $nbr;
-        $data["action"] = "unansweredJson";
-        echo json_encode($data);
+        if($offset<0){
+            echo "";
+        } else {
+            $nbr = ceil(count(Post::get_total()) / $nbpage);
+            $posts = Post::get_unanswere($nbpage, $offset);
+            foreach($posts as $post) {
+                $post->markdown = $post->markdown();
+                $post->temp = $post->temp_ago()[0];
+                $post->name = $post->name();
+                $post->tags = Tag::get_tag_bypostId($post->PostId);
+                $post->nbr_vote = Post::nbr_vote($post->PostId);
+                $post->count_Answer = $post->count_Answer();
+            }
+
+            $data = [];
+            $data["user"] = $user;
+            $data["posts"] = $posts;
+            $data["currentPage"] = $currentPage;
+            $data["nbr"] = $nbr;
+            $data["action"] = "unansweredJson";
+            echo json_encode($data);
+        }  
     }
 
     //controller neswest :post/neswet
     public function newest() {
         $user = $this->get_user_or_false();
         $nbpage = Configuration ::get("max_post");
-        $currentPage = (int) ($_POST['param1'] ?? 1);
+        $currentPage = (int) ($_GET['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_newest($nbpage, $offset);
@@ -143,23 +155,27 @@ class ControllerPost extends Controller {
         $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
-        $nbr = ceil(count(Post::get_total()) / $nbpage);
-        $posts = Post::get_newest($nbpage, $offset);
-        foreach($posts as $post) {
-            $post->markdown = $post->markdown();
-            $post->temp = $post->temp_ago()[0];
-            $post->name = $post->name();
-            $post->tags = Tag::get_tag_bypostId($post->PostId);
-            $post->nbr_vote = Post::nbr_vote($post->PostId);
-            $post->count_Answer = $post->count_Answer();
-        }
-        
-        $data = [];
-        $data["user"] = $user;
-        $data["posts"] = $posts;
-        $data["currentPage"] = $currentPage;
-        $data["nbr"] = $nbr;
-        echo json_encode($data);
+        if($offset<0){
+            echo "";
+        } else {
+            $nbr = ceil(count(Post::get_total()) / $nbpage);
+            $posts = Post::get_newest($nbpage, $offset);
+            foreach($posts as $post) {
+                $post->markdown = $post->markdown();
+                $post->temp = $post->temp_ago()[0];
+                $post->name = $post->name();
+                $post->tags = Tag::get_tag_bypostId($post->PostId);
+                $post->nbr_vote = Post::nbr_vote($post->PostId);
+                $post->count_Answer = $post->count_Answer();
+            }
+
+            $data = [];
+            $data["user"] = $user;
+            $data["posts"] = $posts;
+            $data["currentPage"] = $currentPage;
+            $data["nbr"] = $nbr;
+            echo json_encode($data);
+        }    
     }
     //controller post :post/ask a question
     public function Ak_a_question() {
@@ -278,7 +294,8 @@ class ControllerPost extends Controller {
 //                    $posts = $user->write_post($answered);
 //                }
                 if ($parent->AcceptedAnswerId!=NULL) {
-                    Tools::abort("!!!Cannot delete a post accepte :AcceptedAnswerId");
+                    $answered = new Post($parent->AuthorId, $parent->Title, $parent->Body, date('Y-m-d H:i:s'), NULL, $parent->ParentId, $parent->PostId);
+                   $posts = $user->write_post($answered);
                 } else {
                     if (Post::nbr_vote($posts->PostId) != 0) {
                         Vote::deletes($posts->PostId);
@@ -353,7 +370,7 @@ class ControllerPost extends Controller {
     public function by_tag() {
         $user = $this->get_user_or_false();
         $nbpage = Configuration ::get("max_post");
-        $currentPage = (int) ($_POST['param1'] ?? 1);
+        $currentPage = (int) ($_GET['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = "";
@@ -373,30 +390,35 @@ class ControllerPost extends Controller {
         $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['page'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
-        $nbr = ceil(count(Post::get_total()) / $nbpage);
-        if (isset($_GET['param1'])) {
-            $TagId = Tools::sanitize($_GET['param1']);
-            $tag = Tag::get_tag($TagId);
-            $posts = Post::get_AllPost_byTag($tag->TagId,$nbpage,$offset);            
+        if($offset<0){
+            echo "";
         } else {
-            $posts = Post::get_AllPost_byTa($nbpage,$offset);
-        }
-        foreach($posts as $post) {
-            $post->markdown = $post->markdown();
-            $post->temp = $post->temp_ago()[0];
-            $post->name = $post->name();
-            $post->tags = Tag::get_tag_bypostId($post->PostId);
-            $post->nbr_vote = Post::nbr_vote($post->PostId);
-            $post->count_Answer = $post->count_Answer();
-        }
-        
-        $data = [];
-        $data["user"] = $user;
-        $data["posts"] = $posts;
-        $data["currentPage"] = $currentPage;
-        $data["nbr"] = $nbr;
-        $data["action"] = "indexJson";
-        echo json_encode($data);
+            $nbr = ceil(count(Post::get_total()) / $nbpage);
+            if (isset($_GET['param1'])) {
+                $TagId = Tools::sanitize($_GET['param1']);
+                $tag = Tag::get_tag($TagId);
+                $nbr = ceil(count(Post::get_AllPost_byTag($tag->TagId,$nbpage,$offset)) / $nbpage);
+                $posts = Post::get_AllPost_byTag($tag->TagId,$nbpage,$offset);            
+            } else {
+                $posts = Post::get_AllPost_byTa($nbpage,$offset);
+            }
+            foreach($posts as $post) {
+                $post->markdown = $post->markdown();
+                $post->temp = $post->temp_ago()[0];
+                $post->name = $post->name();
+                $post->tags = Tag::get_tag_bypostId($post->PostId);
+                $post->nbr_vote = Post::nbr_vote($post->PostId);
+                $post->count_Answer = $post->count_Answer();
+            }
+
+            $data = [];
+            $data["user"] = $user;
+            $data["posts"] = $posts;
+            $data["currentPage"] = $currentPage;
+            $data["nbr"] = $nbr;
+            $data["action"] = "indexJson";
+            echo json_encode($data);
+        }    
     }
     
     public function TagName_available_service(){
@@ -423,28 +445,32 @@ class ControllerPost extends Controller {
         $nbpage = Configuration ::get("max_post");
         $currentPage = (int) ($_POST['param1'] ?? 1);
         $offset = $nbpage * ($currentPage - 1);
-        $nbr = ceil(count(Post::get_total()) / $nbpage); 
-        
-        if (isset($_GET["param1"])) {
-            $filter = Utils::url_safe_decode($_GET["param1"]);
-            $posts = Post::get_filter($filter,$nbpage,$offset);
-        }
-        foreach($posts as $post) {
-            $post->markdown = $post->markdown();
-            $post->temp = $post->temp_ago()[0];
-            $post->name = $post->name();
-            $post->tags = Tag::get_tag_bypostId($post->PostId);
-            $post->nbr_vote = Post::nbr_vote($post->PostId);
-            $post->count_Answer = $post->count_Answer();
-        }
-        
-        $data = [];
-        $data["user"] = $user;
-        $data["posts"] = $posts;
-        $data["currentPage"] = $currentPage;
-        $data["nbr"] = $nbr;
-        $data["action"] = "indexJson";
-        echo json_encode($data);
+        if($offset<0){
+            echo "";
+        } else {
+            $nbr = ceil(count(Post::get_total()) / $nbpage); 
+            if (isset($_GET["param1"])) {
+                $filter = Utils::url_safe_decode($_GET["param1"]);
+                $nbr = ceil(count(Post::get_filter($filter,$nbpage,$offset)) / $nbpage); 
+                $posts = Post::get_filter($filter,$nbpage,$offset);
+            }
+            foreach($posts as $post) {
+                $post->markdown = $post->markdown();
+                $post->temp = $post->temp_ago()[0];
+                $post->name = $post->name();
+                $post->tags = Tag::get_tag_bypostId($post->PostId);
+                $post->nbr_vote = Post::nbr_vote($post->PostId);
+                $post->count_Answer = $post->count_Answer();
+            }
+
+            $data = [];
+            $data["user"] = $user;
+            $data["posts"] = $posts;
+            $data["currentPage"] = $currentPage;
+            $data["nbr"] = $nbr;
+            $data["action"] = "indexJson";
+            echo json_encode($data);
+        }    
         
     }
   

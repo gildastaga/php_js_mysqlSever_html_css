@@ -81,7 +81,9 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                                                         "pointer-events:none;
                                                         -webkit-filter: grayscale(1);
                                                         filter: grayscale(1);" ?>">
-                        <a  style="page-linkml-auto" href="post/<?=$action.'/'.($currentPage-1) ?>">prev &laquo; </a>
+                        <?php // if($currentPage>1): ?>
+                            <a  style="page-linkml-auto" href="post/<?=$action.'/'.($currentPage-1) ?>">prev &laquo; </a>
+                        <?php //endif ?>    
                     </li>
                     <?php  for($page_i=1; $page_i<=$nbr; $page_i++): ?>
                         <li  style="page-item <?= ($currentPage==$page_i)? " -webkit-filter: blur(90deg);
@@ -97,7 +99,9 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                                                         "-webkit-filter: grayscale(1);
                                                         filter: grayscale(1);
                                                         pointer-events:none;" ?>">
-                        <a  style="page-linkml-auto" href="post/<?=$action.'/'.($currentPage+1) ?>">&raquo;next </a>
+                          <?php  if($currentPage<$nbr): ?>
+                                <a  style="page-linkml-auto" href="post/<?=$action.'/'.($currentPage+1) ?>">&raquo;next </a>
+                            <?php endif ?>
                     </li>
                 </div> 
             </div>            

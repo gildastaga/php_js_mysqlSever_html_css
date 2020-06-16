@@ -26,15 +26,15 @@ function getPost() {
     }
 function prev(action,page){
     if(page>=0){
-    $.post("post/"+action, {page: page}, function(data){
-        datas=jQuery.parseJSON(data);
-        index(datas);
-    });
+        $.post("post/"+action, {page: page}, function(data){
+            datas=jQuery.parseJSON(data);
+            index(datas);
+        });
     }
 }  
 function next(action,page){
     $.post("post/"+action, {page: page} , function(data){ 
-        datas=jQuery.parseJSON(data);console.log(datas);
+        datas=jQuery.parseJSON(data); 
         index(datas);
     });
 }
@@ -128,8 +128,8 @@ function index(datas) {
                                                         '"pointer-events:none;'+
                                                         '-webkit-filter: grayscale(1);'+
                                                         'filter: grayscale(1);" ">';
-            if(datas.currentPage!=0){                                    
-                table+='<span style="page-link ml-auto" onclick="prev(`'+ datas.action+'`,'+(datas.currentPage-1)+')"; id="prev">prev &laquo</span>' ;
+            if(datas.currentPage>1){ ;
+                table+='<span id="prev" style="page-link ml-auto" onclick="prev(`'+ datas.action+'`,'+(datas.currentPage-1)+')"; >prev &laquo</span>' ;
             }    
         table+='</li>';
         for(var page_i=1; page_i<=datas.nbr ;page_i++){
@@ -146,7 +146,9 @@ function index(datas) {
                                                         '"pointer-events:none;'+
                                                         '-webkit-filter: grayscale(1);'+
                                                         'filter: grayscale(1);" ">';
-        table+='<span style="page-link ml-auto" onclick="next(`'+ datas.action+'`,'+(datas.currentPage+1)+')"; id="next"> &raquo; next</span>' ;
+        if(datas.currentPage <datas.nbr){
+            table+='<span  id="next" style="page-link ml-auto" onclick="next(`'+ datas.action+'`,'+(datas.currentPage+1)+')"; > &raquo; next</span>' ;
+        }
         table+='</li>';
         table +='</div>';
         table +='</div>';
