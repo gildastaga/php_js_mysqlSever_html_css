@@ -192,11 +192,11 @@ class ControllerPost extends Controller {
             $errors = $post->validate();
             
             if (count($errors) == 0) {  
-                if (!isset($_POST['TagName'])) {
-                    $errors [] = "you had to add minimum 1 tag by post";
+                //if (isset($_POST['TagName'])) {
+                    //$errors [] = "you had to add minimum 1 tag by post";
 //                    $post->update();
 //                    $this->redirect("post", "index");
-                } else {
+                
                     $taglis = ($_POST['TagName']);                    
                     if( count($taglis)<=Configuration ::get("max_tags")){
                         $post->update();
@@ -210,7 +210,7 @@ class ControllerPost extends Controller {
                         $max_tag=Configuration ::get("max_tags");                       
                         $errors [] = "you had to add maximum : ". $max_tag." tag by post";
                     }    
-                }
+               // }
             }
         }
         (new View("ask_a_question"))->show(array("user" => $user, "Body" => $Body, "Title" => $Title, "errors" => $errors, "tag" => $tag));

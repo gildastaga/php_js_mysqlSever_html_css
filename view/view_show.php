@@ -43,8 +43,6 @@
                     }    
                   });
                   getComment();
-//                   $('#comment_0').attr($(this).next()).hide();
-//                 $('#comment_0'+'*').hide();
                 
                 $('.post_button').attr("disabled", true);
                 $(".textarea").on("input", function () {
@@ -93,7 +91,7 @@
                  getComment();
             });
             //save comment
-            function postComment() {console.log($("#Body").val());
+            function postComment() {
                 $.post('comment/add_comment_service/',{PostId,Body :$("#Body").val()},function (data) {
                     var tab = jQuery.parseJSON(data);
                     getComment(); 
@@ -308,7 +306,7 @@
                                         &nbsp &nbsp<h6 class="answer" > Add a Comment on the answer.</h6><br>
                                         <form class="form_comment" action="comment/add_comment/<?php echo $reponse->PostId; ?>" method="post">                 
                                             <textarea class="textarea" id="Body" name="Body" rows='2'></textarea>
-                                            <input class="post_button" id="post" type="submit" value="add you Comment"><input class="button_answer"  type="button" value="Cancel" style="background: red">
+                                            <input class="post_button"  type="submit" value="add you Comment"><input class="button_answer"  type="button" value="Cancel" style="background: red">
                                         </form>
                                         <?php endif; ?><br><br>
                                         <h6>BODY ANSWER</h6>
