@@ -16,7 +16,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
         <script src="js/post.js" type="text/javascript"></script>
-
+        
        
     </head>
     <body>
@@ -61,7 +61,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                             <li><a href="post/show/<?php echo $values->PostId; ?>"><?php echo $values->Title; ?></a></li>
                             &nbsp <?= "  " . $values->markdown(); ?>
                             <br>&nbsp &nbsp asked <span><?php echo $values->temp_ago()[0]; ?></span> 
-                            &nbsp by <?php echo $values->name(); ?>(<?php echo Post::nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp
+                            &nbsp by<span id="nb" ><?php echo $values->name(); ?></span>(<?php echo Post::nbr_vote($values->PostId); ?> vote(s) &nbsp, <?php echo $values->count_Answer(); ?> Answer (s)) &nbsp
                             <?php $taglispost = Tag::get_tag_bypostId($values->PostId); ?>
                             <?php foreach ($taglispost as $row): ?>
                                 <a href="post/by_tag/<?= $row->TagId ?>"><?= $row->TagName ?></a>&nbsp

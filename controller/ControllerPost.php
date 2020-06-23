@@ -473,5 +473,13 @@ class ControllerPost extends Controller {
         }    
         
     }
-  
+    public function tartsQuestion() {
+        $user = $this->get_user_or_false();
+        $nbpage = Configuration ::get("max_post");
+        $currentPage = (int) ($_GET['param1'] ?? 1);
+        $offset = $nbpage * ($currentPage - 1);
+        $nbr = ceil(count(Post::get_total()) / $nbpage);
+        $posts = Post::get_all_post($nbpage, $offset);
+        (new View("Stats_questions"))->show(array("user" => $user, "posts" => $posts,"currentPage" => $currentPage, "nbr" => $nbr, "action" => "index"));
+    }
 }
