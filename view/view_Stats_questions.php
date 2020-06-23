@@ -16,14 +16,29 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
         <script >
-        var post= document.getElementById('#period');alert("ok");
-        post.addEventListener('click', getdetail);
+        var post= document.getElementById('.option');
+       this.post.addEventListener('click', getdetail);
         function getdetail(){       this.alert("ok");
-            $.get("post/getdetailUser",{PostId:$("#period").val()},function(data) {
+            $.post("post/getdetailUser",{PostId:$("#period").val()},function(data) {
                 datas = jQuery.parseJSON(data);
                 index(datas);
             }) ;
         }
+        
+         posts = $("#postList");
+        function index(datas){
+            $("#postList").html("");
+            var table = "";
+            table += '<li>'+ datas.user.UserName +',' + datas.user.Email +',nombre de answeer :'+datas.nbr+'</li>';
+            posts.append(table);
+        }
+        
+        $(this).nextAll(".period").children(".option").click(function () {
+            $.post("post/getdetailUser",{PostId:$("#period").val()},function(data) {
+                datas = jQuery.parseJSON(data);
+                index(datas);
+            }) ;
+        } 
         </script>
 
 
@@ -45,13 +60,15 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
          
                 <?php endforeach; ?> 
         </div>
-        <form action=""  method="post">
-            <select  name="TagId" id="period">
+        <div>
+            <select  name="TagId" class="period" id="period"  >
                 <?php foreach ($posts as $rows): ?> 
-                    <option id="option"  name=<?php echo $rows->PostId; ?> value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>
-         
+                    <option class="option" onclick="getdetail()" value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>    
                 <?php endforeach; ?> 
-            </select>        
-        </form>
+            </select> 
+        </div>    
+        <div id="postList">
+            
+        </div>
     </body>
 </html>
