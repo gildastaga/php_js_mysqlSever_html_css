@@ -486,10 +486,12 @@ class ControllerPost extends Controller {
         if (isset($_POST['PostId'])){
             $PostId=Tools::sanitize($_POST['PostId']);
             $posts = Post::get_post_PostId($PostId);
-            $nbr= Post::get_all_anwsbyuser($posts->PostId,$posts);
+            $nbr= Post::get_all_anwsbyuser($posts->PostId,$posts->AuthorId);
             $data = [];
             $data["posts"] = $posts;
+            $data["nbr"] = $nbr;
+            echo json_encode($data);
         }
-        echo json_encode("ok");
+        
     }
 }
