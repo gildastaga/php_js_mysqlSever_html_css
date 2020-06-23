@@ -16,10 +16,14 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
         <script >
-        var post= document.querySelector('#option');
-//        post.onclick=getdetail;
+        var post= document.getElementById('select');
+        post.addEventListener( 'click',getdetail);
         function getdetail(){
-            alerte(post);
+            alerte("ok");
+            $.get("post/getdetailUser",{UserId:$("") function(data) {
+                datas = jQuery.parseJSON(data);
+                index(datas);
+            }) ;
         }
         </script>
 
@@ -39,7 +43,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <form action=""  method="post">
             <select  name="TagId">
                 <?php foreach ($posts as $rows): ?> 
-                <option id="option" onclick="getdetail()" name=<?php echo $rows->PostId; ?> value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>
+                <option id="option"  name=<?php echo $rows->PostId; ?> value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>
                 <?php endforeach; ?> 
             </select>        
         </form>
