@@ -16,10 +16,10 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
         <script >
-        var post= document.querySelector('option');
-        post.onclick=getdetail;
-        function getdetail(post.valueOf()){
-            alert(post.)
+        var post= document.querySelector('#option');
+//        post.onclick=getdetail;
+        function getdetail(){
+            alerte(post);
         }
         </script>
 
@@ -36,10 +36,10 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 <?php endif; ?>
             </form>              
         </div>
-        <form action="tag/asso_tag_post/<?php echo $posts->PostId; ?>"  method="post">
-            <select name="TagId">
+        <form action=""  method="post">
+            <select  name="TagId">
                 <?php foreach ($posts as $rows): ?> 
-                        <option value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>
+                <option id="option" onclick="getdetail()" name=<?php echo $rows->PostId; ?> value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>
                 <?php endforeach; ?> 
             </select>        
         </form>
