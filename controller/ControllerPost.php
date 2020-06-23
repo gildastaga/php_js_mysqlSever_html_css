@@ -486,7 +486,7 @@ class ControllerPost extends Controller {
         if (isset($_POST['PostId'])){
             $PostId=Tools::sanitize($_POST['PostId']);
             $posts = Post::get_post_PostId($PostId);
-            $nbr= Post::get_all_anwsbyuser($posts->PostId,$posts)
+            $nbr= Post::get_all_anwsbyuser($posts->PostId,$posts);
             $data = [];
             $data["posts"] = $posts;
         }
