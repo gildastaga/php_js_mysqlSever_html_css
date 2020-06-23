@@ -21,7 +21,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         function getdetail(){ 
          let nbre = this.data.datasets[0].data[donnee._index]; alert("ok");
             alert("ok");
-            $.get("post/getdetailUser",{PostId:$("#period")},function(data) {
+            $.get("post/getdetailUser",{PostId:$("#period").val()},function(data) {
                 datas = jQuery.parseJSON(data);
                 index(datas);
             }) ;

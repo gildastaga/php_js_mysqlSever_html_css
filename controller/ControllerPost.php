@@ -483,6 +483,13 @@ class ControllerPost extends Controller {
         (new View("Stats_questions"))->show(array("user" => $user, "posts" => $posts,"currentPage" => $currentPage, "nbr" => $nbr, "action" => "index"));
     }
     public function getdetailUser() {
+        if (isset($_POST['PostId'])){
+            $PostId=Tools::sanitize($_POST['PostId']);
+            $posts = Post::get_post_PostId($PostId);
+            $nbr= Post::get_all_anwsbyuser($posts->PostId,$posts)
+            $data = [];
+            $data["posts"] = $posts;
+        }
         echo json_encode("ok");
     }
 }
