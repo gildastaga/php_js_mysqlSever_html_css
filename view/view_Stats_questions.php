@@ -17,10 +17,11 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
         <script >
         var post= document.getElementById('select');
-        post.addEventListener( 'click',getdetail);
-        function getdetail(){
-            alerte("ok");
-            $.get("post/getdetailUser",{UserId:$("") function(data) {
+        post.addEventListener('click', getdetail);
+        function getdetail(){ 
+         let nbre = this.data.datasets[0].data[donnee._index]; alert("ok");
+            alert("ok");
+            $.get("post/getdetailUser",{PostId:$("#period")},function(data) {
                 datas = jQuery.parseJSON(data);
                 index(datas);
             }) ;
@@ -41,9 +42,10 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
             </form>              
         </div>
         <form action=""  method="post">
-            <select  name="TagId">
+            <select  name="TagId" id="period">
                 <?php foreach ($posts as $rows): ?> 
-                <option id="option"  name=<?php echo $rows->PostId; ?> value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>
+                    <option id="option"  name=<?php echo $rows->PostId; ?> value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>
+         
                 <?php endforeach; ?> 
             </select>        
         </form>

@@ -482,4 +482,7 @@ class ControllerPost extends Controller {
         $posts = Post::get_all_post($nbpage, $offset);
         (new View("Stats_questions"))->show(array("user" => $user, "posts" => $posts,"currentPage" => $currentPage, "nbr" => $nbr, "action" => "index"));
     }
+    public function getdetailUser() {
+        echo json_encode("ok");
+    }
 }
