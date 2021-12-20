@@ -480,6 +480,18 @@ class ControllerPost extends Controller {
         $offset = $nbpage * ($currentPage - 1);
         $nbr = ceil(count(Post::get_total()) / $nbpage);
         $posts = Post::get_all_post($nbpage, $offset);
+        if (isset($_POST['PostId'])){
+            $PostId=Tools::sanitize($_POST['PostId']);
+            $posts = Post::get_post_PostId($PostId);
+            $user= User::get_user_by_UserId($posts->AuthorId);
+            $nbr= Post::get_all_anwsbyuser($posts->PostId,$posts->AuthorId);            var_dump($nbr);
+            $data = [];
+            $data["user"] = $user;
+            $data["posts"] = $posts;
+            $data["nbr"] = $nbr;
+            echo json_encode($data);
+        }
+        
         (new View("Stats_questions"))->show(array("user" => $user, "posts" => $posts,"currentPage" => $currentPage, "nbr" => $nbr, "action" => "index"));
     }
     public function getdetailUser() {

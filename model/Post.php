@@ -459,12 +459,12 @@ class Post extends Model {
         }
     }
     public static function get_all_anwsbyuser($PostId,$UserId) {
-        $query = self::execute("select count(*) as nbr from post where AuthorId=:UserId and ParentId=:PostId GROUP BY PostId ORDER BY Timestamp DESC ", array("PostId"=>$PostId, "UserId"=>$UserId));
-        $array = $query->fetchAll();
-        if ($query->rowCount() == 0) {
+        $query = self::execute("select count(*)as nbpost FROM  post where AuthorId=:UserId and ParentId=:PostId  ", array("PostId"=>$PostId, "UserId"=>$UserId));
+        $data = $query->fetch();
+        if($data["nbpost"] == 0) {
             return 0;
         }else{
-            return $array["nbr"];
+            return $data["nbpost"];
         }
     }
     

@@ -16,11 +16,11 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         <script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
         <script >
-        var post= document.getElementById('.option');
-       this.post.addEventListener('click', getdetail);
-        function getdetail(){       this.alert("ok");
-            $.post("post/getdetailUser",{PostId:$("#period").val()},function(data) {
-                datas = jQuery.parseJSON(data);
+        //var post= document.getElementById('.'+<?php //echo $rows->PostId; ?>+');
+      // this.post.addEventListener('click', getdetail(PostId));
+        function getdetail(PostId){       this.alert("ok");
+            $.post("post/getdetailUser",{PostId},function(data) {
+                datas = jQuery.parseJSON(data);console.log(datas);
                 index(datas);
             }) ;
         }
@@ -29,8 +29,10 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         function index(datas){
             $("#postList").html("");
             var table = "";
-            table += '<li>'+ datas.user.UserName +',' + datas.user.Email +',nombre de answeer :'+datas.nbr+'</li>';
-            posts.append(table);
+            table += '<br><br><br><h4>detail</h4>';
+            table += 'UserName: '+ datas.user.UserName +'<br>Name: '+ datas.user.FullName +'<br>Email : ' + datas.user.Email +',<br> nombre de answeer : '+datas.nbr+' ';
+            table += '<br><br>';
+            $("#postList").append(table);
         }
         
         $(this).nextAll(".period").children(".option").click(function () {
@@ -39,6 +41,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
                 index(datas);
             }) ;
         } 
+        );
         </script>
 
 
@@ -56,7 +59,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
         </div>
         <div>
             <?php foreach ($posts as $rows): ?> 
-            <option id="option" onclick="getdetail()"  name=<?php echo $rows->PostId; ?> value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>
+            <option id="<?php echo $rows->PostId; ?>" onclick="getdetail(<?php echo $rows->PostId; ?>)"  name=<?php echo $rows->PostId; ?> value=<?php echo $rows->PostId; ?> ><?php echo $rows->Title; ?></option>
          
                 <?php endforeach; ?> 
         </div>
